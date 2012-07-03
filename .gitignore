@@ -4,3 +4,9 @@
 *.jar
 *.war
 *.ear
+
+plovdiv2.1.iml
+
+src/test/java/.DS_Store
+
+src/main/java/.DS_Store
