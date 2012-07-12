@@ -32,15 +32,7 @@ package controller;
 
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Random;
-import java.util.concurrent.ConcurrentHashMap;
-import model.EpiState;
-import model.MyEdge;
-import model.MyGraph;
-import model.MyVertex;
-import model.Strings;
+import model.*;
 import model.dynamics.SIRDynamics;
 import model.factories.EdgeFactory;
 import model.factories.GraphFactory;
@@ -49,8 +41,11 @@ import view.Display;
 import view.Display.Mode;
 import view.Exceptions;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Random;
+
 /**
- *
  * @author reseter
  */
 public class Controller {
@@ -73,21 +68,21 @@ public class Controller {
     }
 
     //auto-generated getters
-    public static EdgeFactory getEf() {
+    public static EdgeFactory getEdgeFactory() {
         if (ef == null) {
             ef = new EdgeFactory();
         }
         return ef;
     }
 
-    public static GraphFactory getGf() {
+    public static GraphFactory getGraphFactory() {
         if (gf == null) {
             gf = new GraphFactory();
         }
         return gf;
     }
 
-    public static VertexFactory getVf() {
+    public static VertexFactory getVertexFactory() {
         if (vf == null) {
             vf = new VertexFactory();
         }
@@ -96,6 +91,7 @@ public class Controller {
 
     /**
      * returns a mapping of edges agains their weigths
+     *
      * @return
      */
     public static HashMap getEdgeWeigths() {
@@ -108,8 +104,8 @@ public class Controller {
 
         return m;
     }
-    private static PajekParser parser;
-//maps a graph against the simulation thread that operates on it to enable me to stop the right thread
+
+    //maps a graph against the simulation thread that operates on it to enable me to stop the right thread
     private static HashMap<MyGraph, Simulator> simulations;
     private static Controller INSTANCE;
 
@@ -122,15 +118,13 @@ public class Controller {
 
     private Controller() {
         simulations = new HashMap<MyGraph, Simulator>();
-        parser = new PajekParser();
     }
 
     //----------SIMULATION CONTROLS
+
     /**
      * sets all vertices to susceptible state and gives them a generation index 0
      * (ie. not yet infected).
-     * 
-     * @param g
      */
     public static void setAllSusceptible() {
 //        g.setUserDatum(Strings.steps, 0);
@@ -148,7 +142,6 @@ public class Controller {
             e = (MyEdge) j.next();
             e.setUserDatum(Strings.infected, false);
         }
-//        Display.validate(); //TODO
         updateCounts();
     }
 
@@ -182,6 +175,7 @@ public class Controller {
     /**
      * Sets all undefined nodes to susceptible
      * Sets all resistant nodes in a non-SIR epidemic to susceptible
+     *
      * @param g
      */
     public static void eliminateImproperNodes(MyGraph g) {
@@ -201,7 +195,6 @@ public class Controller {
     /**
      * Given a graph g that holds its own simulation settings,
      * retrieves the simulator object from the storage and run it in a new thread.
-     * @param g the graph
      */
     public static void runSim() {
         Simulator sim = simulations.get(MyGraph.getInstance());
@@ -222,7 +215,8 @@ public class Controller {
     /**
      * Create a new simulator object, tells it where to display the results,
      * and puts it in the storage ready to be started
-     * @param g the graph for which the results are to be computed
+     *
+     * @param g  the graph for which the results are to be computed
      * @param vv the visualization engine that displays that graph
      */
     public static void initSimulator(MyGraph g, VisualizationViewer vv) {
@@ -230,34 +224,33 @@ public class Controller {
         simulations.put(g, sim);
     }
 
-   public static void stopSim() {
+    public static void stopSim() {
         Simulator sim = simulations.get(MyGraph.getInstance());
         sim.stopSim();
 //        sim.interrupt();
     }
 
     //------------SAVE/ LOAD FUNCTIONALITY--------------
+
     /**
      * Asks the parser to create a graph from file, makes a frame and
      * displays the graph in it
+     *
      * @param path
-     * @param g
      */
     public static void load(String path) {
         try {
-            MyGraph.setInstance(parser.load(path));
+            MyGraph.setInstance(PajekParser.load(path));
             Controller.setAllSusceptible();
         } catch (Exception ex) {
             Exceptions.showReadWriteErrorNotification(ex);
         }
         Display.redisplay();
-//        updateDisplay();
-
     }
 
     public static void save(String path, MyGraph g) {
         try {
-            parser.save(path, g);
+            PajekParser.save(path, g);
         } catch (Exception ex) {
             Exceptions.showReadWriteErrorNotification(ex);
         }
@@ -306,7 +299,7 @@ public class Controller {
     /**
      * Puts an graph into the collection of graphs, creates a displaying
      * frame for it and starts displaying it. 
-     * @param g 
+     * @param g
      */
     /**
      * Convenience pass-through to the display, prevents the simulators from
@@ -319,6 +312,7 @@ public class Controller {
     /**
      * Infects a given number of vertices in the given graph at random.
      * The number is assumed to be <= number of vertices in g
+     *
      * @param g
      * @param number
      */

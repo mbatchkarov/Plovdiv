@@ -37,35 +37,33 @@ package controller;
 
 import edu.uci.ics.jung.io.PajekNetReader;
 import edu.uci.ics.jung.io.PajekNetWriter;
+import model.MyGraph;
+import model.factories.EdgeFactory;
+import model.factories.GraphFactory2;
+import model.factories.VertexFactory;
+
 import java.io.IOException;
-import model.*;
-import model.factories.*;
 
 /**
- *
  * @author reseter
  */
 public class PajekParser {
 
-    private PajekNetReader reader;
-    private PajekNetWriter writer;
-//    private InfoGatherer gatherer;
-
-    public PajekParser(){
-
+    private PajekParser() {
+        //only static methods
     }
 
-    public MyGraph load(String path) throws IOException{
-        VertexFactory vf = Controller.getVf();
+    public static MyGraph load(String path) throws IOException {
+        VertexFactory vf = Controller.getVertexFactory();
         vf.reset();
-        EdgeFactory ef = Controller.getEf();
+        EdgeFactory ef = Controller.getEdgeFactory();
         ef.reset();
-        reader = new PajekNetReader(vf, ef);
+        PajekNetReader reader = new PajekNetReader(vf, ef);
         return (MyGraph) reader.load(path, new GraphFactory2());
     }
 
-    public void save(String path, MyGraph g) throws IOException{
-        writer = new PajekNetWriter();
+    public static void save(String path, MyGraph g) throws IOException {
+        PajekNetWriter writer = new PajekNetWriter();
         writer.save(g, path);
     }
 }

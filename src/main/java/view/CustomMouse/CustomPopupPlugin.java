@@ -34,7 +34,7 @@
  */
 package view.CustomMouse;
 
-import controller.*;
+import controller.Controller;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedGraph;
@@ -46,18 +46,25 @@ import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.EditingPopupGraphMousePlugin;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.util.ArrowFactory;
-import java.awt.Cursor;
-import java.awt.Shape;
-import java.awt.event.*;
+import model.EpiState;
+import model.MyEdge;
+import model.MyVertex;
+import model.Strings;
+import view.Display;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Point2D;
 import java.util.Set;
-import javax.swing.*;
-import model.*;
-import view.Display;
 
 /**
  * Allows the user to interact with the program using the mouse
+ *
  * @author mb724
  */
 public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements MouseListener, MouseMotionListener {
@@ -72,7 +79,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
     protected EdgeType edgeIsDirected;
 
     public CustomPopupPlugin() {
-        super(Controller.getVf(), Controller.getEf());
+        super(Controller.getVertexFactory(), Controller.getEdgeFactory());
 //        this(MouseEvent.BUTTON3_MASK);
         rawEdge.setCurve(0.0f, 0.0f, 0.33f, 100, .66f, -50,
                 1.0f, 0.0f);
@@ -82,7 +89,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
         this.cursor = Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
     }
 
-//    public customPopupPlugin(int modifiers) {
+    //    public customPopupPlugin(int modifiers) {
 //        super(modifiers);
 //    }
     @Override
@@ -114,7 +121,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                                 directedMenu.add(new AbstractAction("[" + other.getId() + "," + vertex.getId() + "]") {
 
                                     public void actionPerformed(ActionEvent e) {
-                                        graph.addEdge(Controller.getEf().create(),
+                                        graph.addEdge(Controller.getEdgeFactory().create(),
                                                 other, vertex, EdgeType.DIRECTED);
                                         vv.repaint();
                                         ((Display) Controller.getActiveWindow()).recalculateStats(null);
@@ -129,7 +136,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                                 undirectedMenu.add(new AbstractAction("[" + other.getId() + "," + vertex.getId() + "]") {
 
                                     public void actionPerformed(ActionEvent e) {
-                                        graph.addEdge(Controller.getEf().create(),
+                                        graph.addEdge(Controller.getEdgeFactory().create(),
                                                 other, vertex);
                                         vv.repaint();
                                         ((Display) Controller.getActiveWindow()).recalculateStats(null);
@@ -153,32 +160,34 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                     popup1.add(new AbstractAction("Set susceptible") {
 
                         public void actionPerformed(ActionEvent e) {
-                            vertex.setUserDatum("state", EpiState.SUSCEPTIBLE);vv.repaint();
+                            vertex.setUserDatum("state", EpiState.SUSCEPTIBLE);
+                            vv.repaint();
                             Controller.updateCounts();
                             Display.recalculateStats(vertex);
-                            
+
                         }
                     });
                     popup1.add(new AbstractAction("Set infected") {
 
                         public void actionPerformed(ActionEvent e) {
-                            vertex.setUserDatum("state", EpiState.INFECTED);vv.repaint();
+                            vertex.setUserDatum("state", EpiState.INFECTED);
+                            vv.repaint();
                             Controller.updateCounts();
                             Display.recalculateStats(vertex);
-                            
+
                         }
                     });
                     popup1.add(new AbstractAction("Set resistant") {
 
                         public void actionPerformed(ActionEvent e) {
                             vertex.setUserDatum("state", EpiState.RESISTANT);
-                                                        vv.repaint();
+                            vv.repaint();
                             Controller.updateCounts();
                             Display.recalculateStats(vertex);
                         }
                     });
                     vv.repaint();
-                    
+
                     popup1.show(vv, e.getX(), e.getY());
                 } else if (edge != null) {
                     popup1.add(new AbstractAction("Delete Edge") {
@@ -213,7 +222,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                     popup1.add(new AbstractAction("Create Vertex") {
 
                         public void actionPerformed(ActionEvent e) {
-                            final MyVertex newV = Controller.getVf().create();
+                            final MyVertex newV = Controller.getVertexFactory().create();
                             newV.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
                             graph.addVertex(newV);
                             layout.setLocation(newV, vv.getRenderContext().getMultiLayerTransformer().inverseTransform(ivp));

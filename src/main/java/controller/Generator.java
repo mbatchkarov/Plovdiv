@@ -33,21 +33,20 @@
  */
 package controller;
 
-import edu.uci.ics.jung.algorithms.generators.random.*;
-import java.util.HashSet;
+import edu.uci.ics.jung.algorithms.generators.random.BarabasiAlbertGenerator;
+import edu.uci.ics.jung.algorithms.generators.random.EppsteinPowerLawGenerator;
 import model.MyEdge;
 import model.MyGraph;
 import model.MyVertex;
-import model.factories.EdgeFactory;
-import model.factories.EdgeFactory2;
-import model.factories.GraphFactory2;
-import model.factories.VertexFactory;
-import model.factories.VertexFactory2;
+import model.factories.*;
+
+import java.util.HashSet;
 
 /**
  * This class handles provides my own lattice/ random generators, and the other generators are taken from JUNG 2.0,
  * with each Factory replaced by a MyFactory to enable me to use .create(graph), which takes into account the contents
  * of the internal buffer of the generator when issuing numbers to newly added graph elements
+ *
  * @author reseter
  */
 public class Generator {
@@ -55,13 +54,13 @@ public class Generator {
     public Generator() {
     }
 
-    public static MyGraph generateRandom(int v, int e){
-        VertexFactory vf = Controller.getVf();
+    public static MyGraph generateRandom(int v, int e) {
+        VertexFactory vf = Controller.getVertexFactory();
         vf.reset();
-        EdgeFactory ef = Controller.getEf();
+        EdgeFactory ef = Controller.getEdgeFactory();
         ef.reset();
         RandomGenerator r = new RandomGenerator(new GraphFactory2(), vf, ef, v, e);
-        MyGraph g= r.create();
+        MyGraph g = r.create();
         System.out.println("Generator has created: " + g);
         return g;
     }
@@ -74,15 +73,16 @@ public class Generator {
 
     /**
      * Generates a "rectangular" lattice, where the nodes form little rectangles/squares
+     *
      * @param m
      * @param n
      */
     public static MyGraph generateRectangularLattice(int m, int n) {
         //@see notes 17 JUL 2009
         MyGraph g = MyGraph.getNewInstance();
-        VertexFactory vf = Controller.getVf();
+        VertexFactory vf = Controller.getVertexFactory();
         vf.reset();
-        EdgeFactory ef = Controller.getEf();
+        EdgeFactory ef = Controller.getEdgeFactory();
         ef.reset();
 
         //feed stuff to the buffer
@@ -121,15 +121,16 @@ public class Generator {
 
     /**
      * Generates a MxN hexagonal lattice
+     *
      * @param m
      * @param n
      */
     public static MyGraph generateHexagonalLattice(int m, int n) {
         //@see notes 17 JUL 2009
         MyGraph g = MyGraph.getNewInstance();
-        VertexFactory vf = Controller.getVf();
+        VertexFactory vf = Controller.getVertexFactory();
         vf.reset();
-        EdgeFactory ef = Controller.getEf();
+        EdgeFactory ef = Controller.getEdgeFactory();
         ef.reset();
         MyVertex[][] nodes = new MyVertex[m][n];
         for (int i = 0; i <
@@ -184,27 +185,27 @@ public class Generator {
     }
 
     public static MyGraph generateKleinbergSmallWorld(int m, int n, double clusteringExponent) {
-//        VertexFactory vf = Controller.getVf();
+//        VertexFactory vf = Controller.getVertexFactory();
 //        vf.reset();
-//        EdgeFactory ef = Controller.getEf();
+//        EdgeFactory ef = Controller.getEdgeFactory();
 //        ef.reset();
 //        KleinbergSmallWorldGenerator gen = new KleinbergSmallWorldGenerator(new GraphFactory2(),
 //                vf, ef, m, n, clusteringExponent);
 //
 //        return (MyGraph) gen.create();
-        
+
         //make sure numbering starts from 1
-        Controller.getEf().reset();
-        Controller.getVf().reset();
+        Controller.getEdgeFactory().reset();
+        Controller.getVertexFactory().reset();
         SmallWorldGenerator gen = new SmallWorldGenerator(new GraphFactory2(),
-                Controller.getVf(), Controller.getEf(), m, n, clusteringExponent);
+                Controller.getVertexFactory(), Controller.getEdgeFactory(), m, n, clusteringExponent);
         return ((MyGraph) gen.create());
     }
 
     public static MyGraph generateEppsteinPowerLaw(int numVert, int numEdges, int r) {
         VertexFactory2 vf = new VertexFactory2();
         EdgeFactory2 ef = new EdgeFactory2();
-       EppsteinPowerLawGenerator<MyVertex, MyEdge> gen = new EppsteinPowerLawGenerator(new GraphFactory2(), vf, ef, numVert, numEdges, r);
+        EppsteinPowerLawGenerator<MyVertex, MyEdge> gen = new EppsteinPowerLawGenerator(new GraphFactory2(), vf, ef, numVert, numEdges, r);
         return (MyGraph) gen.create();
     }
 
@@ -213,14 +214,15 @@ public class Generator {
      * new vertex is created and is connected to existing vertices according
      * to the principle of "preferential attachment", whereby vertices with
      * higher degree have a higher probability of being selected for attachment.
+     *
      * @param evolveSteps
      * @param numVertices
      * @param numEdgesToAttach
      */
     public static MyGraph generateScaleFree(int evolveSteps, int numVertices, int numEdgesToAttach) {
-        VertexFactory vf = Controller.getVf();
+        VertexFactory vf = Controller.getVertexFactory();
         vf.reset();
-        EdgeFactory ef = Controller.getEf();
+        EdgeFactory ef = Controller.getEdgeFactory();
         ef.reset();
         HashSet<MyVertex> seeds = new HashSet<MyVertex>();
         //make sure numbering starts from 1
@@ -228,6 +230,6 @@ public class Generator {
                 new GraphFactory2(), vf, ef,
                 numVertices, numEdgesToAttach, seeds);
         gen.evolveGraph(evolveSteps);
-        return (MyGraph)gen.create();
+        return (MyGraph) gen.create();
     }
 }

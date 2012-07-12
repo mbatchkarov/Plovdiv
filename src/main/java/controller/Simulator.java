@@ -36,18 +36,7 @@ package controller;
 
 import cern.jet.random.engine.MersenneTwister;
 import edu.uci.ics.jung.graph.util.Pair;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Random;
-import javax.swing.JFrame;
-import model.EpiState;
-import model.MyEdge;
-import model.MyGraph;
-import model.MyVertex;
-import model.Strings;
+import model.*;
 import model.dynamics.Dynamics;
 import model.dynamics.SISDynamics;
 import org.jfree.chart.ChartFactory;
@@ -58,15 +47,17 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import view.Exceptions;
 
+import javax.swing.*;
+import java.util.*;
+
 /**
- *
  * @author reseter
  */
 public class Simulator extends Thread {
 
-//    private int speed;
+    //    private int speed;
     private boolean notStopped;
-//    private Controller controller; //replaced with static access
+    //    private Controller controller; //replaced with static access
     private final MyGraph g; //each simulator can run on only one graph
     private MersenneTwister mt;
     Dynamics d;
@@ -83,7 +74,6 @@ public class Simulator extends Thread {
 
     /**
      * Runs the simulation on the selected graph
-     * @param g the graph to run on
      */
     @Override
     public void run() {
@@ -158,7 +148,7 @@ public class Simulator extends Thread {
                     }
                 }
                 //modify graph structure
-                for(MyEdge e:edgesToAdd.keySet()){
+                for (MyEdge e : edgesToAdd.keySet()) {
                     g.removeEdge(e);
                     g.addEdge(e, edgesToAdd.get(e));
                 }
@@ -184,7 +174,7 @@ public class Simulator extends Thread {
                 frame.validate();
                 // ~~~~~~~~~~~~ END UPDATE STATS WINDOW~~~~~~~~~~~~~~
 
-                Controller.updateDisplay();
+                Controller.updateDisplay();//TODO does this actually do anything?
                 try {
                     //control simulation speed by waiting
                     Thread.sleep(speedMultiplier);
@@ -223,6 +213,7 @@ public class Simulator extends Thread {
 
     /**
      * prepares the data
+     *
      * @param x
      * @param y
      * @return
@@ -260,6 +251,7 @@ public class Simulator extends Thread {
 
     /**
      * Given a vertex, finds the number of infected neighbours it has
+     *
      * @param v
      * @return
      */
@@ -280,10 +272,11 @@ public class Simulator extends Thread {
      * Checks if the SUSCEPTIBLE node vertex second will get infected at this time step
      * and colour the edge from which the infection came
      * The vertex is assumed vy this method to have been in contact with an infected node
+     *
      * @param vertex the vertex
      */
     private void checkForInfection(MyVertex vertex, MyEdge currentEdge, double infProb, double beta,
-            HashMap<MyEdge, Pair> edgesToAdd) {
+                                   HashMap<MyEdge, Pair> edgesToAdd) {
         //compute a random probability
         Double randomProb = Math.abs(new Double(mt.nextInt()) / new Double(Integer.MAX_VALUE));
         //if this chap is unlucky
@@ -316,7 +309,7 @@ public class Simulator extends Thread {
                     while (!done) {
                         int second = r.nextInt(numSus);
                         if (first != second && !g.isNeighbor((MyVertex) v[first], (MyVertex) v[second])) {
-                            MyEdge e = new MyEdge(g.getEdgeCount()+3);
+                            MyEdge e = new MyEdge(g.getEdgeCount() + 3);
                             e.setWeigth(1.0);
                             e.setUserDatum(Strings.infected, false);
 //                            g.addEdge(e, (MyVertex) v[first], (MyVertex) v[second], EdgeType.UNDIRECTED);
@@ -337,7 +330,7 @@ public class Simulator extends Thread {
     /**
      * Checks if the given vertex will recover at this step,
      * it is assumed to be infected, so make your own checks
-     * @param first
+     *
      * @param recProb
      */
     private void checkForRecovery(MyVertex vertex, double recProb) {
