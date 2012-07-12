@@ -5,6 +5,6 @@ Project Plovdiv is a network epidemiology simulator and can be used to teach bas
 
 The screenshots below show the application in action.
 
-![Screenshot 1](./docs/screen1.png "Screenshot 1- a scale-free network with several infected individuals")
-![Screenshot 2](./docs/screen2.png "Screenshot 2- a small-world network")
-![Screenshot 3](./docs/screen3.png "Screenshot 3- a simulation of disease transmission in progress")
+![Screenshot 1](https://github.com/mbatchkarov/Plovdiv/blob/master/docs/screen1.png "Screenshot 1- a scale-free network with several infected individuals")
+![Screenshot 2](https://github.com/mbatchkarov/Plovdiv/blob/master/docs/screen2.png "Screenshot 2- a small-world network")
+![Screenshot 3](https://github.com/mbatchkarov/Plovdiv/blob/master/docs/screen3.png "Screenshot 3- a simulation of disease transmission in progress")
