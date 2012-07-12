@@ -371,6 +371,15 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="simRunUntilActionPerformed"/>
               </Events>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="simPauseMenuItem">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Pause"/>
+                <Property name="enabled" type="boolean" value="false"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="simPauseMenuItemActionPerformed"/>
+              </Events>
+            </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="simStop">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Stop"/>
@@ -457,13 +466,19 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace max="-2" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="jToolBar1" alignment="0" pref="775" max="32767" attributes="0"/>
+                  <Component id="jToolBar2" alignment="1" max="32767" attributes="0"/>
                   <Group type="102" alignment="1" attributes="0">
                       <Component id="pane" max="32767" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Component id="jToolBar3" min="-2" pref="137" max="-2" attributes="0"/>
                   </Group>
-                  <Component id="jToolBar2" alignment="1" pref="775" max="32767" attributes="0"/>
+                  <Group type="102" attributes="0">
+                      <Component id="jToolBar1" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jToolBar4" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jToolBar5" pref="476" max="32767" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -472,11 +487,15 @@
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" attributes="0">
-              <Component id="jToolBar1" min="-2" max="-2" attributes="0"/>
-              <EmptySpace max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="1" max="-2" attributes="0">
+                  <Component id="jToolBar4" alignment="0" pref="0" max="32767" attributes="0"/>
+                  <Component id="jToolBar1" alignment="0" max="32767" attributes="0"/>
+                  <Component id="jToolBar5" pref="0" max="32767" attributes="0"/>
+              </Group>
+              <EmptySpace min="-2" pref="12" max="-2" attributes="0"/>
               <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="pane" max="32767" attributes="0"/>
-                  <Component id="jToolBar3" alignment="0" pref="359" max="32767" attributes="0"/>
+                  <Component id="jToolBar3" max="32767" attributes="0"/>
               </Group>
               <EmptySpace max="-2" attributes="0"/>
               <Component id="jToolBar2" min="-2" max="-2" attributes="0"/>
@@ -527,7 +546,6 @@
             <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
               <ComponentRef name="modeSelection"/>
             </Property>
-            <Property name="selected" type="boolean" value="true"/>
             <Property name="text" type="java.lang.String" value="Edit"/>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
               <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
@@ -589,51 +607,13 @@
             <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="8"/>
           </AuxValues>
         </Component>
-        <Component class="javax.swing.JToolBar$Separator" name="jSeparator1">
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="8"/>
-          </AuxValues>
-        </Component>
-        <Component class="javax.swing.JButton" name="zoomInToolbar">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Zoom in"/>
-            <Property name="focusable" type="boolean" value="false"/>
-            <Property name="horizontalTextPosition" type="int" value="0"/>
-            <Property name="verticalTextPosition" type="int" value="3"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="zoomInToolbarActionPerformed"/>
-          </Events>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="8"/>
-          </AuxValues>
-        </Component>
-        <Component class="javax.swing.JButton" name="zoomOutToolbar">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="Zoom out"/>
-            <Property name="focusable" type="boolean" value="false"/>
-            <Property name="horizontalTextPosition" type="int" value="0"/>
-            <Property name="verticalTextPosition" type="int" value="3"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="zoomOutToolbarActionPerformed"/>
-          </Events>
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="8"/>
-          </AuxValues>
-        </Component>
-        <Component class="javax.swing.JToolBar$Separator" name="jSeparator7">
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="8"/>
-          </AuxValues>
-        </Component>
       </SubComponents>
     </Container>
     <Container class="javax.swing.JToolBar" name="jToolBar2">
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Graph-based statistics"/>
+            <TitledBorder title="Graph statistics"/>
           </Border>
         </Property>
         <Property name="rollover" type="boolean" value="true"/>
@@ -763,7 +743,7 @@
       <Properties>
         <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
           <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
-            <TitledBorder title="Node-based statistics"/>
+            <TitledBorder title="Node statistics"/>
           </Border>
         </Property>
         <Property name="orientation" type="int" value="1"/>
@@ -896,7 +876,7 @@
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="632" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
         <DimensionLayout dim="1">
@@ -905,6 +885,122 @@
           </Group>
         </DimensionLayout>
       </Layout>
+    </Container>
+    <Container class="javax.swing.JToolBar" name="jToolBar4">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+            <TitledBorder title="Zoom level"/>
+          </Border>
+        </Property>
+        <Property name="rollover" type="boolean" value="true"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="8"/>
+      </AuxValues>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
+      <SubComponents>
+        <Component class="javax.swing.JButton" name="zoomInToolbar">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Zoom in"/>
+            <Property name="focusable" type="boolean" value="false"/>
+            <Property name="horizontalTextPosition" type="int" value="0"/>
+            <Property name="verticalTextPosition" type="int" value="3"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="zoomInToolbarActionPerformed"/>
+          </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="8"/>
+          </AuxValues>
+        </Component>
+        <Component class="javax.swing.JButton" name="zoomOutToolbar">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Zoom out"/>
+            <Property name="focusable" type="boolean" value="false"/>
+            <Property name="horizontalTextPosition" type="int" value="0"/>
+            <Property name="verticalTextPosition" type="int" value="3"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="zoomOutToolbarActionPerformed"/>
+          </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="8"/>
+          </AuxValues>
+        </Component>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JToolBar" name="jToolBar5">
+      <Properties>
+        <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+          <Border info="org.netbeans.modules.form.compat2.border.TitledBorderInfo">
+            <TitledBorder title="Simulation controls"/>
+          </Border>
+        </Property>
+        <Property name="rollover" type="boolean" value="true"/>
+      </Properties>
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="8"/>
+      </AuxValues>
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.DesignBoxLayout"/>
+      <SubComponents>
+        <Component class="javax.swing.JButton" name="runPauseSimToolbarButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Run"/>
+            <Property name="focusable" type="boolean" value="false"/>
+            <Property name="horizontalTextPosition" type="int" value="0"/>
+            <Property name="verticalTextPosition" type="int" value="3"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="runPauseSimToolbarButtonActionPerformed"/>
+          </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="8"/>
+          </AuxValues>
+        </Component>
+        <Component class="javax.swing.JButton" name="stopSimToolbarButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Stop"/>
+            <Property name="focusable" type="boolean" value="false"/>
+            <Property name="horizontalTextPosition" type="int" value="0"/>
+            <Property name="verticalTextPosition" type="int" value="3"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="stopSimToolbarButtonActionPerformed"/>
+          </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="8"/>
+          </AuxValues>
+        </Component>
+        <Component class="javax.swing.JButton" name="doStepToolbarButton">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Do simulation step"/>
+            <Property name="focusable" type="boolean" value="false"/>
+            <Property name="horizontalTextPosition" type="int" value="0"/>
+            <Property name="verticalTextPosition" type="int" value="3"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="doStepToolbarButtonActionPerformed"/>
+          </Events>
+          <AuxValues>
+            <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="8"/>
+          </AuxValues>
+        </Component>
+        <Component class="javax.swing.JToolBar$Separator" name="jSeparator1">
+        </Component>
+        <Component class="javax.swing.JCheckBox" name="enableGUIToolbarCheckbox">
+          <Properties>
+            <Property name="selected" type="boolean" value="true"/>
+            <Property name="text" type="java.lang.String" value="Enable visualisation"/>
+            <Property name="focusable" type="boolean" value="false"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="enableGUIToolbarCheckboxActionPerformed"/>
+          </Events>
+        </Component>
+      </SubComponents>
     </Container>
   </SubComponents>
 </Form>

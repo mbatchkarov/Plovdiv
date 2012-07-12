@@ -195,10 +195,6 @@ public class Display extends JFrame {
         edit = new javax.swing.JToggleButton();
         transform = new javax.swing.JToggleButton();
         annotate = new javax.swing.JToggleButton();
-        jSeparator1 = new javax.swing.JToolBar.Separator();
-        zoomInToolbar = new javax.swing.JButton();
-        zoomOutToolbar = new javax.swing.JButton();
-        jSeparator7 = new javax.swing.JToolBar.Separator();
         jToolBar2 = new javax.swing.JToolBar();
         jLabel1 = new javax.swing.JLabel();
         totalCC = new javax.swing.JLabel();
@@ -232,6 +228,15 @@ public class Display extends JFrame {
         out = new javax.swing.JLabel();
         jSeparator15 = new javax.swing.JToolBar.Separator();
         pane = new javax.swing.JPanel();
+        jToolBar4 = new javax.swing.JToolBar();
+        zoomInToolbar = new javax.swing.JButton();
+        zoomOutToolbar = new javax.swing.JButton();
+        jToolBar5 = new javax.swing.JToolBar();
+        runPauseSimToolbarButton = new javax.swing.JButton();
+        stopSimToolbarButton = new javax.swing.JButton();
+        doStepToolbarButton = new javax.swing.JButton();
+        jSeparator1 = new javax.swing.JToolBar.Separator();
+        enableGUIToolbarCheckbox = new javax.swing.JCheckBox();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         newDoc = new javax.swing.JMenuItem();
@@ -267,6 +272,7 @@ public class Display extends JFrame {
         menuSimulation = new javax.swing.JMenu();
         simRun = new javax.swing.JMenuItem();
         simRunUntil = new javax.swing.JMenuItem();
+        simPauseMenuItem = new javax.swing.JMenuItem();
         simStop = new javax.swing.JMenuItem();
         jSeparator13 = new javax.swing.JSeparator();
         infect = new javax.swing.JMenuItem();
@@ -300,7 +306,6 @@ public class Display extends JFrame {
         jToolBar1.add(select);
 
         modeSelection.add(edit);
-        edit.setSelected(true);
         edit.setText("Edit");
         edit.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         edit.setFocusable(false);
@@ -338,32 +343,8 @@ public class Display extends JFrame {
             }
         });
         jToolBar1.add(annotate);
-        jToolBar1.add(jSeparator1);
 
-        zoomInToolbar.setText("Zoom in");
-        zoomInToolbar.setFocusable(false);
-        zoomInToolbar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        zoomInToolbar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        zoomInToolbar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                zoomInToolbarActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(zoomInToolbar);
-
-        zoomOutToolbar.setText("Zoom out");
-        zoomOutToolbar.setFocusable(false);
-        zoomOutToolbar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
-        zoomOutToolbar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
-        zoomOutToolbar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                zoomOutToolbarActionPerformed(evt);
-            }
-        });
-        jToolBar1.add(zoomOutToolbar);
-        jToolBar1.add(jSeparator7);
-
-        jToolBar2.setBorder(javax.swing.BorderFactory.createTitledBorder("Graph-based statistics"));
+        jToolBar2.setBorder(javax.swing.BorderFactory.createTitledBorder("Graph statistics"));
         jToolBar2.setRollover(true);
 
         jLabel1.setText("Clustering coefficient = ");
@@ -408,7 +389,7 @@ public class Display extends JFrame {
         jToolBar2.add(showDDToolbar);
         jToolBar2.add(jSeparator5);
 
-        jToolBar3.setBorder(javax.swing.BorderFactory.createTitledBorder("Node-based statistics"));
+        jToolBar3.setBorder(javax.swing.BorderFactory.createTitledBorder("Node statistics"));
         jToolBar3.setOrientation(1);
         jToolBar3.setRollover(true);
 
@@ -454,12 +435,84 @@ public class Display extends JFrame {
         pane.setLayout(paneLayout);
         paneLayout.setHorizontalGroup(
             paneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 632, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
         paneLayout.setVerticalGroup(
             paneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 363, Short.MAX_VALUE)
+            .addGap(0, 359, Short.MAX_VALUE)
         );
+
+        jToolBar4.setBorder(javax.swing.BorderFactory.createTitledBorder("Zoom level"));
+        jToolBar4.setRollover(true);
+
+        zoomInToolbar.setText("Zoom in");
+        zoomInToolbar.setFocusable(false);
+        zoomInToolbar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        zoomInToolbar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        zoomInToolbar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                zoomInToolbarActionPerformed(evt);
+            }
+        });
+        jToolBar4.add(zoomInToolbar);
+
+        zoomOutToolbar.setText("Zoom out");
+        zoomOutToolbar.setFocusable(false);
+        zoomOutToolbar.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        zoomOutToolbar.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        zoomOutToolbar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                zoomOutToolbarActionPerformed(evt);
+            }
+        });
+        jToolBar4.add(zoomOutToolbar);
+
+        jToolBar5.setBorder(javax.swing.BorderFactory.createTitledBorder("Simulation controls"));
+        jToolBar5.setRollover(true);
+
+        runPauseSimToolbarButton.setText("Run");
+        runPauseSimToolbarButton.setFocusable(false);
+        runPauseSimToolbarButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        runPauseSimToolbarButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        runPauseSimToolbarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                runPauseSimToolbarButtonActionPerformed(evt);
+            }
+        });
+        jToolBar5.add(runPauseSimToolbarButton);
+
+        stopSimToolbarButton.setText("Stop");
+        stopSimToolbarButton.setFocusable(false);
+        stopSimToolbarButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        stopSimToolbarButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        stopSimToolbarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                stopSimToolbarButtonActionPerformed(evt);
+            }
+        });
+        jToolBar5.add(stopSimToolbarButton);
+
+        doStepToolbarButton.setText("Do simulation step");
+        doStepToolbarButton.setFocusable(false);
+        doStepToolbarButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        doStepToolbarButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
+        doStepToolbarButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                doStepToolbarButtonActionPerformed(evt);
+            }
+        });
+        jToolBar5.add(doStepToolbarButton);
+        jToolBar5.add(jSeparator1);
+
+        enableGUIToolbarCheckbox.setSelected(true);
+        enableGUIToolbarCheckbox.setText("Enable visualisation");
+        enableGUIToolbarCheckbox.setFocusable(false);
+        enableGUIToolbarCheckbox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                enableGUIToolbarCheckboxActionPerformed(evt);
+            }
+        });
+        jToolBar5.add(enableGUIToolbarCheckbox);
 
         menuFile.setText("File");
 
@@ -732,6 +785,15 @@ public class Display extends JFrame {
         });
         menuSimulation.add(simRunUntil);
 
+        simPauseMenuItem.setText("Pause");
+        simPauseMenuItem.setEnabled(false);
+        simPauseMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                simPauseMenuItemActionPerformed(evt);
+            }
+        });
+        menuSimulation.add(simPauseMenuItem);
+
         simStop.setText("Stop");
         simStop.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -788,22 +850,30 @@ public class Display extends JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jToolBar1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 775, Short.MAX_VALUE)
+                    .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(pane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jToolBar3, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 775, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jToolBar4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jToolBar5, javax.swing.GroupLayout.DEFAULT_SIZE, 476, Short.MAX_VALUE)))
                 .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jToolBar4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jToolBar1, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jToolBar5, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
+                .addGap(12, 12, 12)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(pane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jToolBar3, javax.swing.GroupLayout.DEFAULT_SIZE, 363, Short.MAX_VALUE))
+                    .addComponent(jToolBar3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -1062,6 +1132,26 @@ public class Display extends JFrame {
         repaint();
 }//GEN-LAST:event_eNoneActionPerformed
 
+    private void runPauseSimToolbarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_runPauseSimToolbarButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_runPauseSimToolbarButtonActionPerformed
+
+    private void stopSimToolbarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_stopSimToolbarButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_stopSimToolbarButtonActionPerformed
+
+    private void doStepToolbarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doStepToolbarButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_doStepToolbarButtonActionPerformed
+
+    private void enableGUIToolbarCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableGUIToolbarCheckboxActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_enableGUIToolbarCheckboxActionPerformed
+
+    private void simPauseMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simPauseMenuItemActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_simPauseMenuItemActionPerformed
+
     /**
      * Initializes the display
      */
@@ -1305,6 +1395,7 @@ public class Display extends JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     static javax.swing.JToggleButton annotate;
     private javax.swing.JRadioButtonMenuItem circleL;
+    static javax.swing.JButton doStepToolbarButton;
     private javax.swing.JMenuItem dumbToJpg;
     private javax.swing.JRadioButtonMenuItem eBC;
     private javax.swing.JRadioButtonMenuItem eID;
@@ -1312,6 +1403,7 @@ public class Display extends JFrame {
     private javax.swing.JRadioButtonMenuItem eWeight;
     private static javax.swing.ButtonGroup edgeLabel;
     static javax.swing.JToggleButton edit;
+    private javax.swing.JCheckBox enableGUIToolbarCheckbox;
     private javax.swing.JMenuItem fileGenerate1;
     private javax.swing.JMenuItem fileLoad;
     private javax.swing.JMenuItem fileQuit1;
@@ -1333,7 +1425,7 @@ public class Display extends JFrame {
     private static javax.swing.JLabel jLabel9;
     private static javax.swing.JMenu jMenu2;
     private static javax.swing.JMenuBar jMenuBar1;
-    static javax.swing.JToolBar.Separator jSeparator1;
+    private javax.swing.JToolBar.Separator jSeparator1;
     static javax.swing.JToolBar.Separator jSeparator10;
     private javax.swing.JSeparator jSeparator13;
     private static javax.swing.JToolBar.Separator jSeparator14;
@@ -1345,12 +1437,13 @@ public class Display extends JFrame {
     static javax.swing.JToolBar.Separator jSeparator4;
     static javax.swing.JToolBar.Separator jSeparator5;
     private static javax.swing.JToolBar.Separator jSeparator6;
-    static javax.swing.JToolBar.Separator jSeparator7;
     private static javax.swing.JToolBar.Separator jSeparator8;
     private static javax.swing.JToolBar.Separator jSeparator9;
     static javax.swing.JToolBar jToolBar1;
     static javax.swing.JToolBar jToolBar2;
     static javax.swing.JToolBar jToolBar3;
+    static javax.swing.JToolBar jToolBar4;
+    static javax.swing.JToolBar jToolBar5;
     private javax.swing.JRadioButtonMenuItem kk;
     private static javax.swing.JMenu label2;
     private static javax.swing.JMenu label3;
@@ -1366,14 +1459,17 @@ public class Display extends JFrame {
     private javax.swing.JMenuItem newDoc;
     private static javax.swing.JLabel out;
     private static javax.swing.JPanel pane;
+    static javax.swing.JButton runPauseSimToolbarButton;
     static javax.swing.JToggleButton select;
     private javax.swing.JMenuItem setSusceptible;
     private javax.swing.JMenuItem showDD;
     static javax.swing.JButton showDDToolbar;
+    private javax.swing.JMenuItem simPauseMenuItem;
     private javax.swing.JMenuItem simRun;
     private javax.swing.JMenuItem simRunUntil;
     private javax.swing.JMenuItem simStop;
     private javax.swing.JRadioButtonMenuItem spring;
+    static javax.swing.JButton stopSimToolbarButton;
     static javax.swing.JLabel totalA;
     static javax.swing.JLabel totalAD;
     static javax.swing.JLabel totalAPL;
