@@ -30,9 +30,7 @@
 
 package view;
 
-import controller.*;
-import java.awt.FileDialog;
-import java.awt.Frame;
+import controller.Controller;
 import model.MyGraph;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -43,14 +41,17 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
 import view.generatorSettings.GeneratorSettings;
 
+import java.awt.*;
+
 /**
  * Shows dialog windows and and parses user input to evoke the appropriate
  * methods of the controller with correct data
+ *
  * @author reseter
  */
 public class InfoGatherer {
 
-//    private Controller c;
+    //    private Controller c;
 //    private Display d;
     private static InfoGatherer INSTANCE;
 
@@ -63,8 +64,9 @@ public class InfoGatherer {
 
     /**
      * Shows a standard save window and sends the settings to the controller
+     *
      * @param parent the window that this dialog was evoked from
-     * @param g the graph to save
+     * @param g      the graph to save
      */
     public void showSave(Frame parent, MyGraph g) {
         FileDialog window = new FileDialog(parent, "Save", FileDialog.SAVE);
@@ -75,6 +77,7 @@ public class InfoGatherer {
 
     /**
      * Shows a standard Load window and sends the settings to the controller
+     *
      * @param parent parent the window that this dialog was evoked from
      */
     public void showLoad(Frame parent) {
@@ -91,6 +94,7 @@ public class InfoGatherer {
     /**
      * Shows dialog window that collects user input regarding graph generation
      * and evokes the appropriate method of the generator (via the controller)
+     *
      * @param parent
      */
     public void showGenerate(Display parent) {
@@ -150,6 +154,7 @@ public class InfoGatherer {
 
         /**
          * prepares the data
+         *
          * @param x
          * @param y
          * @return
@@ -168,9 +173,7 @@ public class InfoGatherer {
                     dataset, PlotOrientation.HORIZONTAL, true, true, true);
 
             //optional customization
-            //...
-            ChartPanel chartPanel = new ChartPanel(chart);
-            return chartPanel;
+            return new ChartPanel(chart);
         }
     }
 }

@@ -199,7 +199,7 @@ public class Generator {
         Controller.getVertexFactory().reset();
         SmallWorldGenerator gen = new SmallWorldGenerator(new GraphFactory2(),
                 Controller.getVertexFactory(), Controller.getEdgeFactory(), m, n, clusteringExponent);
-        return ((MyGraph) gen.create());
+        return gen.create();
     }
 
     public static MyGraph generateEppsteinPowerLaw(int numVert, int numEdges, int r) {

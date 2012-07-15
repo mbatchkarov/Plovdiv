@@ -30,18 +30,6 @@
 
 package view.CustomVisualization;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.GradientPaint;
-import java.awt.Paint;
-import java.awt.Rectangle;
-import java.awt.Shape;
-import java.awt.Stroke;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.Point2D;
-
-import javax.swing.JComponent;
-
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.util.Context;
@@ -55,12 +43,17 @@ import model.MyEdge;
 import model.MyVertex;
 import model.Strings;
 
+import javax.swing.*;
+import java.awt.*;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
+
 /**
  * A renderer that will fill vertex shapes with a GradientPaint.
  * Most code lifted from JUNG's GradientVertexRenderer, the modifications include:
  * -the colour of the node changes depending on its specific boolean "trait"
- * @author Tom Nelson, modified Miroslav Batchkarov
  *
+ * @author Tom Nelson, modified Miroslav Batchkarov
  */
 public class CustomVertexRenderer implements Renderer.Vertex<MyVertex, MyEdge> {
 
@@ -77,8 +70,8 @@ public class CustomVertexRenderer implements Renderer.Vertex<MyVertex, MyEdge> {
     }
 
     public void paintVertex(RenderContext rc, Layout layout, MyVertex v) {
-        Graph  graph = layout.getGraph();
-        if (rc.getVertexIncludePredicate().evaluate(Context.<Graph , MyVertex>getInstance(graph, v))) {
+        Graph graph = layout.getGraph();
+        if (rc.getVertexIncludePredicate().evaluate(Context.<Graph, MyVertex>getInstance(graph, v))) {
             boolean vertexHit = true;
             // get the shape to be rendered
             Shape shape = (Shape) rc.getVertexShapeTransformer().transform(v);
@@ -104,7 +97,7 @@ public class CustomVertexRenderer implements Renderer.Vertex<MyVertex, MyEdge> {
         }
     }
 
-    protected boolean vertexHit(RenderContext  rc, Shape s) {
+    protected boolean vertexHit(RenderContext rc, Shape s) {
         JComponent vv = rc.getScreenDevice();
         Rectangle deviceRectangle = null;
         if (vv != null) {
@@ -116,7 +109,7 @@ public class CustomVertexRenderer implements Renderer.Vertex<MyVertex, MyEdge> {
         return rc.getMultiLayerTransformer().getTransformer(Layer.VIEW).transform(s).intersects(deviceRectangle);
     }
 
-    protected void paintShapeForVertex(RenderContext  rc, MyVertex v, Shape shape) {
+    protected void paintShapeForVertex(RenderContext rc, MyVertex v, Shape shape) {
         GraphicsDecorator g = rc.getGraphicsContext();
         Paint oldPaint = g.getPaint();
         Rectangle r = shape.getBounds();
@@ -126,7 +119,7 @@ public class CustomVertexRenderer implements Renderer.Vertex<MyVertex, MyEdge> {
         }
 
         Paint fillPaint = null;
-        if (pickedState != null && pickedState.isPicked((MyVertex) v)) {
+        if (pickedState != null && pickedState.isPicked(v)) {
             //if the vertex is picked, paint with universal colour
             fillPaint = new GradientPaint((float) r.getMinX(), (float) r.getMinY(), Color.BLUE,
                     (float) r.getMinX(), y2, Color.white, cyclic);
@@ -134,17 +127,16 @@ public class CustomVertexRenderer implements Renderer.Vertex<MyVertex, MyEdge> {
         } else {
             //if not picked, paint based on the state
             EpiState state = (EpiState) v.getUserDatum(Strings.state);
-            if (state!=null && state.equals(EpiState.SUSCEPTIBLE)) {
+            if (state != null && state.equals(EpiState.SUSCEPTIBLE)) {
                 fillPaint = new GradientPaint((float) r.getMinX(), (float) r.getMinY(), Color.white,
                         (float) r.getMinX(), y2, Color.yellow, cyclic);
-            } else if (state!=null && state.equals(EpiState.INFECTED)){
+            } else if (state != null && state.equals(EpiState.INFECTED)) {
                 fillPaint = new GradientPaint((float) r.getMinX(), (float) r.getMinY(), Color.white,
                         (float) r.getMinX(), y2, Color.red, cyclic);
-            }else if (state!=null && state.equals(EpiState.RESISTANT)){
+            } else if (state != null && state.equals(EpiState.RESISTANT)) {
                 fillPaint = new GradientPaint((float) r.getMinX(), (float) r.getMinY(), Color.white,
                         (float) r.getMinX(), y2, Color.green, cyclic);
-            }
-            else{//go black to indicate something's wrong
+            } else {//go black to indicate something's wrong
                 fillPaint = new GradientPaint((float) r.getMinX(), (float) r.getMinY(), Color.white,
                         (float) r.getMinX(), y2, Color.BLACK, cyclic);
             }

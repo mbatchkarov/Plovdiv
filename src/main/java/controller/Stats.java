@@ -34,21 +34,22 @@
  */
 package controller;
 
-import model.*;
 import edu.uci.ics.jung.algorithms.metrics.Metrics;
 import edu.uci.ics.jung.algorithms.scoring.BetweennessCentrality;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraDistance;
 import edu.uci.ics.jung.algorithms.shortestpath.DistanceStatistics;
-import edu.uci.ics.jung.graph.util.EdgeType;
+import model.MyEdge;
+import model.MyGraph;
+import model.MyVertex;
+import org.apache.commons.collections15.Transformer;
+
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.text.DecimalFormat;
 import java.util.Collection;
 import java.util.Map;
-import org.apache.commons.collections15.Transformer;
 
 /**
- *
  * @author mb724
  */
 public class Stats {
@@ -72,7 +73,7 @@ public class Stats {
         if (MyGraph.getInstance().getVertexCount() > 0) {
             double sum = 0;
             for (Object x : MyGraph.getInstance().getVertices()) {
-                sum += ccMap.get((MyVertex) x);
+                sum += ccMap.get(x);
             }
             double res = (sum) / (MyGraph.getInstance().getVertexCount());
             avgCC = round(res);
@@ -149,9 +150,9 @@ public class Stats {
             num1 /= m;
             den1 /= 2 * m;
             num2 = (num2 / (2 * m)) ^ 2;
-            try{
-            assortativity = round((num1 - num2) / (den1 - num2));}
-            catch(ArithmeticException ex){
+            try {
+                assortativity = round((num1 - num2) / (den1 - num2));
+            } catch (ArithmeticException ex) {
                 assortativity = Double.NaN;
             }
         } else {
@@ -212,6 +213,7 @@ public class Stats {
 
     /**
      * average geodesic path length over the entire network
+     *
      * @return
      */
     public static double getAPL() {
@@ -220,6 +222,7 @@ public class Stats {
 
     /**
      * APL for the specified vertex
+     *
      * @param vertex
      * @return
      */
@@ -233,7 +236,8 @@ public class Stats {
 
     /**
      * Returns a an array representing the distribution of the degrees in the graph
-     *position i holds the number of vertices of degree i
+     * position i holds the number of vertices of degree i
+     *
      * @return
      */
     public static int[] degreeDistribution() {
@@ -273,6 +277,7 @@ public class Stats {
 
     /**
      * Calculates the degree-assortativity coefficient of the graph
+     *
      * @return
      */
     public static double getAssortativity() {
@@ -281,6 +286,7 @@ public class Stats {
 
     /**
      * Calculates the weigthed degree correlation of the graph
+     *
      * @return
      */
     public static double getWeightedDegreeCorrelation() {
@@ -290,6 +296,7 @@ public class Stats {
     /**
      * Calculates the weighted degree of a nodes- that is the sum of the weigths
      * of its outgoing edges
+     *
      * @param v
      * @return
      */
@@ -305,9 +312,10 @@ public class Stats {
         }
     }
 
- 
+
     /**
      * computes the betweenness centrality of the given vertex
+     *
      * @param vertex
      * @return
      */
@@ -334,6 +342,7 @@ public class Stats {
     /**
      * Returns the distance from the currently selected node (if any) to
      * the node v
+     *
      * @param target
      * @return
      */
@@ -376,17 +385,18 @@ public class Stats {
 
     /**
      * Returns a pair, containing the min and max edge weight of the network on the screen
+     *
      * @return
      */
-    public static double[] getExtremaOfEdgeWeights(){
+    public static double[] getExtremaOfEdgeWeights() {
         double[] res = new double[2];
-        double min = Double.MAX_VALUE , max = Double.MIN_VALUE;
-        for(Object x:MyGraph.getInstance().getEdges()){
-            MyEdge e = (MyEdge)x;
-            if(e.getWeigth() > max){
+        double min = Double.MAX_VALUE, max = Double.MIN_VALUE;
+        for (Object x : MyGraph.getInstance().getEdges()) {
+            MyEdge e = (MyEdge) x;
+            if (e.getWeigth() > max) {
                 max = e.getWeigth();
             }
-            if(e.getWeigth() < min){
+            if (e.getWeigth() < min) {
                 min = e.getWeigth();
             }
         }

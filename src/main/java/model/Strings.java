@@ -35,7 +35,6 @@
 package model;
 
 /**
- *
  * @author reseter
  */
 public abstract class Strings {
@@ -47,9 +46,9 @@ public abstract class Strings {
             "entered the correct data type! ";
     public static final String readWriteError = "Error while reading/writing file! ";
     public static final String projectName = "Project Plovdiv v0.2 ";
-//    public static final String generation = "generation";
+    //    public static final String generation = "generation";
     public static final String state = "state";
-//    public static final String steps = "steps";
+    //    public static final String steps = "steps";
     public static final String speed = "speed";
     public static final String time = "time";
     public static final String dynamics = "dynamics";
@@ -57,26 +56,26 @@ public abstract class Strings {
     public static final String next = "next";
     public static final String noGraph = "No Graph Selected! ";
     public static final String numSus = "numSusceptible";
-    public static final String numInf = "numInfected";
+    public static final String numInfected = "numInfected";
     public static final String numRes = "numResistant";
     public static final String help = "<html>" +
             "<h2> File: </h2> " +
             "<li>Save to/ load from Pajek file" +
             "<li>Generate a random/scale-free/small-world graph" +
-            "<h2>View"+
-            "<li>Show the detailed statistics window "+
-            "<li> Label each node with the disease generation it got infected in"+
-            "<h2>Change layout"+
-            "<li>Allows you to select one of the wide variety of predefined layouts"+
-            "<h2>Change layout"+
-            "<li> Run until"+
-            "Lets you specify settings for the simulation and runs for the specified steps"+
-            "<li> Stop"+
-            "Terminates the simulation"+
-            "<li> Infect nodes"+
-            "Lets you infect a specified number of vertices at random"+
-            "<li> Set all to susceptible"+
-            "Sets all vertices back to susceptible state"+
+            "<h2>View" +
+            "<li>Show the detailed statistics window " +
+            "<li> Label each node with the disease generation it got infected in" +
+            "<h2>Change layout" +
+            "<li>Allows you to select one of the wide variety of predefined layouts" +
+            "<h2>Change layout" +
+            "<li> Run until" +
+            "Lets you specify settings for the simulation and runs for the specified steps" +
+            "<li> Stop" +
+            "Terminates the simulation" +
+            "<li> Infect nodes" +
+            "Lets you infect a specified number of vertices at random" +
+            "<li> Set all to susceptible" +
+            "Sets all vertices back to susceptible state" +
             "<h1> Using the mouse </h1>" +
             "<h3>All Modes:</h3>" +
             "<ul>" +

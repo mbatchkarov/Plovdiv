@@ -100,8 +100,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                     (VisualizationViewer<MyVertex, MyEdge>) e.getSource();
             final Layout<MyVertex, MyEdge> layout = vv.getGraphLayout();
             final Graph<MyVertex, MyEdge> graph = layout.getGraph();
-            final Point2D p = e.getPoint();
-            final Point2D ivp = p;
+            final Point2D ivp = e.getPoint();
             GraphElementAccessor<MyVertex, MyEdge> pickSupport = vv.getPickSupport();
 
             if (pickSupport != null) {
@@ -124,7 +123,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                                         graph.addEdge(Controller.getEdgeFactory().create(),
                                                 other, vertex, EdgeType.DIRECTED);
                                         vv.repaint();
-                                        ((Display) Controller.getActiveWindow()).recalculateStats(null);
+                                        Display.recalculateStats(null);
                                     }
                                 });
                             }
@@ -139,7 +138,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                                         graph.addEdge(Controller.getEdgeFactory().create(),
                                                 other, vertex);
                                         vv.repaint();
-                                        ((Display) Controller.getActiveWindow()).recalculateStats(null);
+                                        Display.recalculateStats(null);
                                     }
                                 });
                             }
@@ -154,7 +153,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             }
                             graph.removeVertex(vertex);
                             vv.repaint();
-                            ((Display) Controller.getActiveWindow()).recalculateStats(null);
+                            Display.recalculateStats(null);
                         }
                     });
                     popup1.add(new AbstractAction("Set susceptible") {
@@ -196,7 +195,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             pickedEdgeState.pick(edge, false);
                             graph.removeEdge(edge);
                             vv.repaint();
-                            ((Display) Controller.getActiveWindow()).recalculateStats(null);
+                            Display.recalculateStats(null);
                         }
                     });
 
@@ -215,7 +214,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                                     JOptionPane.showMessageDialog(Controller.getActiveWindow(), "Input is not a valid number!");
                                 }
                             }
-                            ((Display) Controller.getActiveWindow()).recalculateStats(null);
+                            Display.recalculateStats(null);
                         }
                     });
                 } else {
@@ -227,7 +226,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             graph.addVertex(newV);
                             layout.setLocation(newV, vv.getRenderContext().getMultiLayerTransformer().inverseTransform(ivp));
                             vv.repaint();
-                            ((Display) Controller.getActiveWindow()).recalculateStats(null);
+                            Display.recalculateStats(null);
                         }
                     });
                 }

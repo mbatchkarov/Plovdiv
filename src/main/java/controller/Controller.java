@@ -31,7 +31,6 @@
 package controller;
 
 import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.visualization.VisualizationViewer;
 import model.*;
 import model.dynamics.SIRDynamics;
 import model.factories.EdgeFactory;
@@ -106,7 +105,7 @@ public class Controller {
     }
 
     //maps a graph against the simulation thread that operates on it to enable me to stop the right thread
-    private static HashMap<MyGraph, Simulator> simulations;
+    private static Simulator sim;
     private static Controller INSTANCE;
 
     public static Controller getInstance() {
@@ -117,7 +116,6 @@ public class Controller {
     }
 
     private Controller() {
-        simulations = new HashMap<MyGraph, Simulator>();
     }
 
     //----------SIMULATION CONTROLS
@@ -149,6 +147,7 @@ public class Controller {
      * Attaches counters of the numbers of infected/susceptible/resistant to all graphs
      */
     public static void updateCounts() {
+        System.out.println("updating counts in thread " + Thread.currentThread().getName());
         MyGraph g = MyGraph.getInstance();
         int ns = 0, ni = 0, nr = 0;
         for (Object xx : g.getVertices()) {//count how many nodes are in each state
@@ -167,9 +166,9 @@ public class Controller {
 //            System.out.println("number  sus" + ns);
 //            System.out.println("number  res" + nr);
 
-        g.setUserDatum(Strings.numInf, ni);
-        g.setUserDatum(Strings.numRes, nr);
-        g.setUserDatum(Strings.numSus, ns);
+        MyGraph.setUserDatum(Strings.numInfected, ni);
+        MyGraph.setUserDatum(Strings.numRes, nr);
+        MyGraph.setUserDatum(Strings.numSus, ns);
     }
 
     /**
@@ -185,7 +184,7 @@ public class Controller {
             if (current.getUserDatum(Strings.state) == null) {
                 current.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
             }
-            if (current.getUserDatum(Strings.state).equals(EpiState.RESISTANT) && (g.getUserDatum(Strings.dynamics) instanceof SIRDynamics)) {
+            if (current.getUserDatum(Strings.state).equals(EpiState.RESISTANT) && (MyGraph.getUserDatum(Strings.dynamics) instanceof SIRDynamics)) {
                 current.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
             }
         }
@@ -194,40 +193,40 @@ public class Controller {
 
     /**
      * Given a graph g that holds its own simulation settings,
-     * retrieves the simulator object from the storage and run it in a new thread.
+     * retrieves the sim object from the storage and run it in a new thread.
      */
     public static void runSim() {
-        Simulator sim = simulations.get(MyGraph.getInstance());
-        sim.start();
+        sim = new Simulator(MyGraph.getInstance());
+        sim.resumeSim();
+        sim.startSim();
     }
 
     public static void pauseSim() {
-        Simulator sim = simulations.get(MyGraph.getInstance());
         sim.pauseSim();
 
     }
 
     public static void resumeSim() {
-        Simulator sim = simulations.get(MyGraph.getInstance());
-        sim.restart();
+        sim.resumeSim();
+    }
+
+    public static void doStepWithCurrentSettings() {
+//        sim.setNumSteps(1);
+        sim.doStepWithCurrentSettings();
     }
 
     /**
-     * Create a new simulator object, tells it where to display the results,
+     * Create a new sim object, tells it where to display the results,
      * and puts it in the storage ready to be started
      *
-     * @param g  the graph for which the results are to be computed
-     * @param vv the visualization engine that displays that graph
+     * @param g the graph for which the results are to be computed
      */
-    public static void initSimulator(MyGraph g, VisualizationViewer vv) {
+    public static void initSim(MyGraph g) {
         Simulator sim = new Simulator(g);
-        simulations.put(g, sim);
     }
 
     public static void stopSim() {
-        Simulator sim = simulations.get(MyGraph.getInstance());
         sim.stopSim();
-//        sim.interrupt();
     }
 
     //------------SAVE/ LOAD FUNCTIONALITY--------------
@@ -245,7 +244,7 @@ public class Controller {
         } catch (Exception ex) {
             Exceptions.showReadWriteErrorNotification(ex);
         }
-        Display.redisplay();
+        Display.redisplayCompletely();
     }
 
     public static void save(String path, MyGraph g) {
@@ -261,44 +260,44 @@ public class Controller {
     public static void generateRandom(int a, int b) {
         MyGraph.setInstance(Generator.generateRandom(a, b));
         Controller.setAllSusceptible();
-        Display.redisplay();
+        Display.redisplayCompletely();
 
     }
 
     public static void generate4Lattice(int a, int b) {
         MyGraph.setInstance(Generator.generateRectangularLattice(a, b));
-        Display.redisplay();
+        Display.redisplayCompletely();
         Controller.setAllSusceptible();
     }
 
     public static void generate6Lattice(int a, int b) {
         MyGraph.setInstance(Generator.generateHexagonalLattice(a, b));
         Controller.setAllSusceptible();
-        Display.redisplay();
+        Display.redisplayCompletely();
     }
 
     public static void generateKleinbergSmallWorld(int m, int n, double c) {
         MyGraph.setInstance(Generator.generateKleinbergSmallWorld(m, n, c));
         Controller.setAllSusceptible();
-        Display.redisplay();
+        Display.redisplayCompletely();
     }
 
     public static void generateScaleFree(int a, int b, int c) {
-        MyGraph.setInstance(Generator.generateScaleFree(a, b, c));
+        MyGraph.setInstance(Generator.generateScaleFree(a, 1, c));
         Controller.setAllSusceptible();
-        Display.redisplay();
+        Display.redisplayCompletely();
     }
 
     public static void generateEppsteinPowerLaw(int numVert, int numEdges, int r) {
         MyGraph.setInstance(Generator.generateEppsteinPowerLaw(numVert, numEdges, r));
         Controller.setAllSusceptible();
-        Display.redisplay();
+        Display.redisplayCompletely();
     }
 
     //------------OPENING NEW DOCUMENTS--------------------
     /**
      * Puts an graph into the collection of graphs, creates a displaying
-     * frame for it and starts displaying it. 
+     * frame for it and starts displaying it.
      * @param g
      */
     /**
