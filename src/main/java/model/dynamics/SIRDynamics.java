@@ -45,8 +45,8 @@ public class SIRDynamics extends model.dynamics.Dynamics{
 
     private double gama;
 
-    public SIRDynamics(double transmissionRate, double deltaT, double recoveryRate, MyGraph g){
-        super(transmissionRate, deltaT, g);
+    public SIRDynamics(double transmissionRate, double deltaT, double recoveryRate){
+        super(transmissionRate, deltaT);
         this.gama = recoveryRate;
     }
 

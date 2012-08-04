@@ -64,7 +64,7 @@ public class Simulator {
     //    private int speed;
 //    private boolean notStopped;
     //    private Controller controller; //replaced with static access
-    private final MyGraph<MyVertex, MyEdge> g; //each simulator can run on only one graph
+//    private final MyGraph<MyVertex, MyEdge> g; //each simulator can run on only one graph
     private final MersenneTwister mt;
     //    private boolean notPaused;
     private final SimModelThread thread;
@@ -79,12 +79,18 @@ public class Simulator {
     private CircularFifoBuffer<Integer> xValues;
     private CircularFifoBuffer<Integer> yValues;
     private JFrame statsFrame;
+    private boolean doOneStepOnly;
 
-    public Simulator(MyGraph g) {
-        this.g = g;
+    public Simulator() {
+//        this.g = g;
         mt = new MersenneTwister();
+        
+        sleepTime = 200;
+        doOneStepOnly = false;
         thread = new SimModelThread("sim-thread");
-//        thread.start();
+        //stuff below needed?
+        thread.start();
+        thread.pause();
     }
 
     private void doStep(double beta, MyGraph<MyVertex, MyEdge> g, Double recProb, Double infProb) {
@@ -155,7 +161,7 @@ public class Simulator {
                 dataset, PlotOrientation.VERTICAL, true, true, true);
         XYPlot xyPlot = (XYPlot) jfreechart.getPlot();
         NumberAxis domain = (NumberAxis) xyPlot.getRangeAxis();
-        domain.setRange(0, g.getVertexCount());
+        domain.setRange(0, MyGraph.getInstance().getVertexCount());
         domain.setTickUnit(new NumberTickUnit(5));
 
         //optional customization
@@ -178,6 +184,11 @@ public class Simulator {
         thread.unpause();
     }
 
+    public void resumeSimForOneStep() {
+        this.doOneStepOnly = true;
+        thread.unpause();
+    }
+
     public void startSim() {
         thread.start();
     }
@@ -190,7 +201,7 @@ public class Simulator {
      */
     private int numInfectedNeighbours(MyVertex v) {
         int ans = 0;
-        for (Object o : g.getNeighbors(v)) {
+        for (Object o : MyGraph.getInstance().getNeighbors(v)) {
             MyVertex current = (MyVertex) o;
 
             if (current.getUserDatum(Strings.state).equals(EpiState.INFECTED)) {
@@ -242,7 +253,7 @@ public class Simulator {
                     int first = sus.indexOf(vertex);
                     while (!done) {
                         int second = r.nextInt(numSus);
-                        if (first != second && !g.isNeighbor(v[first], v[second])) {
+                        if (first != second && !MyGraph.getInstance().isNeighbor(v[first], v[second])) {
                             MyEdge e = Controller.getEdgeFactory().create();//new MyEdge(g.getEdgeCount() + 3);   //todo wtf is the +3 for
                             e.setWeigth(1.0);
                             e.setUserDatum(Strings.infected, false);
@@ -371,19 +382,22 @@ public class Simulator {
             yValues = new CircularFifoBuffer<Integer>(100);
 
             //main loop
-
-            while (alive && stepNumber < numSteps) {
+            while (alive) {
                 try {
-                    System.out.println("Thread " + Thread.currentThread().getName() + " sleeping");
+//                    System.out.println("Thread " + Thread.currentThread().getName() + " sleeping");
                     sleep(sleepTime);
                     synchronized (this) {
-                        while (suspended && alive) {
-                            System.out.println("Thread " + Thread.currentThread().getName() + " waiting for resume signal");
+                        while (suspended && alive && !doOneStepOnly) {
+//                            System.out.println("Thread " + Thread.currentThread().getName() + " waiting for resume signal");
                             wait();
                         }
                     }
                     doStepWithCurrentSettings();
-//                    yield();
+                    //make sure
+                    if (doOneStepOnly) {
+                        doOneStepOnly = false;
+                        pause();
+                    }
 
                 } catch (InterruptedException e) {
                     System.err.println("Interrupted");
@@ -426,7 +440,7 @@ public class Simulator {
 
     public void doStepWithCurrentSettings() {
         System.out.println("Doing step " + stepNumber + " in thread " + Thread.currentThread().getName());
-        doStep(beta, g, recoveryProb, infectionProb);
+        doStep(beta, MyGraph.getInstance(), recoveryProb, infectionProb);
         Display.redisplayPartially();
         updateStatisticsDisplay(statsFrame);
     }

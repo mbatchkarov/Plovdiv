@@ -42,11 +42,11 @@ import model.*;
  */
 public class SIDynamics extends model.dynamics.Dynamics {
 
-    public SIDynamics(double transmissionRate, double deltaT, MyGraph g) {
+    public SIDynamics(double transmissionRate, double deltaT) {
         //no need to pass gama in, in this case it is always 0
         //so this.getGama() returns 0
 
-        super(transmissionRate, deltaT, g);
+        super(transmissionRate, deltaT);
     }
 
     //TODO da se ogleda tuk

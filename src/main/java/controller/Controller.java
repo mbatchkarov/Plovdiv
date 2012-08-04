@@ -27,7 +27,6 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package controller;
 
 import edu.uci.ics.jung.graph.Graph;
@@ -53,6 +52,22 @@ public class Controller {
     private static VertexFactory vf;
     private static GraphFactory gf;
     private static Display activeWindow;
+    //maps a graph against the simulation thread that operates on it to enable me to stop the right thread
+    private static Simulator sim;
+    private static Controller INSTANCE;
+
+    private Controller() {
+        Graph g = MyGraph.getInstance();//initializes the instance
+        MyGraph.setDefaultSimulationSettings();
+        sim = new Simulator();
+    }
+
+    public static Controller getInstance() {
+        if (INSTANCE == null) {
+            INSTANCE = new Controller();
+        }
+        return INSTANCE;
+    }
 
     public static void setActiveWindow(Display w) {
         activeWindow = w;
@@ -104,25 +119,10 @@ public class Controller {
         return m;
     }
 
-    //maps a graph against the simulation thread that operates on it to enable me to stop the right thread
-    private static Simulator sim;
-    private static Controller INSTANCE;
-
-    public static Controller getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new Controller();
-        }
-        return INSTANCE;
-    }
-
-    private Controller() {
-    }
-
     //----------SIMULATION CONTROLS
-
     /**
-     * sets all vertices to susceptible state and gives them a generation index 0
-     * (ie. not yet infected).
+     * sets all vertices to susceptible state and gives them a generation index
+     * 0 (ie. not yet infected).
      */
     public static void setAllSusceptible() {
 //        g.setUserDatum(Strings.steps, 0);
@@ -144,7 +144,8 @@ public class Controller {
     }
 
     /**
-     * Attaches counters of the numbers of infected/susceptible/resistant to all graphs
+     * Attaches counters of the numbers of infected/susceptible/resistant to all
+     * graphs
      */
     public static void updateCounts() {
         System.out.println("updating counts in thread " + Thread.currentThread().getName());
@@ -172,13 +173,13 @@ public class Controller {
     }
 
     /**
-     * Sets all undefined nodes to susceptible
-     * Sets all resistant nodes in a non-SIR epidemic to susceptible
+     * Sets all undefined nodes to susceptible Sets all resistant nodes in a
+     * non-SIR epidemic to susceptible
      *
      * @param g
      */
-    public static void eliminateImproperNodes(MyGraph g) {
-        Iterator i = g.getVertices().iterator();
+    public static void validateNodeStates() {
+        Iterator i = MyGraph.getInstance().getVertices().iterator();
         while (i.hasNext()) {
             MyVertex current = ((MyVertex) i.next());
             if (current.getUserDatum(Strings.state) == null) {
@@ -192,11 +193,11 @@ public class Controller {
     }
 
     /**
-     * Given a graph g that holds its own simulation settings,
-     * retrieves the sim object from the storage and run it in a new thread.
+     * Given a graph g that holds its own simulation settings, retrieves the sim
+     * object from the storage and run it in a new thread.
      */
     public static void runSim() {
-        sim = new Simulator(MyGraph.getInstance());
+        sim = new Simulator();
         sim.resumeSim();
         sim.startSim();
     }
@@ -210,30 +211,32 @@ public class Controller {
         sim.resumeSim();
     }
 
+    public static void resumeSimForOneStep() {
+        sim.resumeSimForOneStep();
+    }
+
     public static void doStepWithCurrentSettings() {
-//        sim.setNumSteps(1);
+//        sim.doStepWithCurrentSettings();
         sim.doStepWithCurrentSettings();
     }
 
     /**
-     * Create a new sim object, tells it where to display the results,
-     * and puts it in the storage ready to be started
+     * Create a new sim object, tells it where to display the results, and puts
+     * it in the storage ready to be started
      *
      * @param g the graph for which the results are to be computed
      */
-    public static void initSim(MyGraph g) {
-        Simulator sim = new Simulator(g);
-    }
-
+//    public static void initSim(MyGraph g) {
+//        Simulator sim = new Simulator(g);
+//    }
     public static void stopSim() {
         sim.stopSim();
     }
 
     //------------SAVE/ LOAD FUNCTIONALITY--------------
-
     /**
-     * Asks the parser to create a graph from file, makes a frame and
-     * displays the graph in it
+     * Asks the parser to create a graph from file, makes a frame and displays
+     * the graph in it
      *
      * @param path
      */
@@ -296,8 +299,9 @@ public class Controller {
 
     //------------OPENING NEW DOCUMENTS--------------------
     /**
-     * Puts an graph into the collection of graphs, creates a displaying
-     * frame for it and starts displaying it.
+     * Puts an graph into the collection of graphs, creates a displaying frame
+     * for it and starts displaying it.
+     *
      * @param g
      */
     /**
@@ -309,8 +313,12 @@ public class Controller {
     }
 
     /**
-     * Infects a given number of vertices in the given graph at random.
-     * The number is assumed to be <= number of vertices in g
+     * Infects a given number of vertices in the given graph at random. The
+     * number is assumed to be <= number of vertices in g
+     *
+     *
+     *
+
      *
      * @param g
      * @param number

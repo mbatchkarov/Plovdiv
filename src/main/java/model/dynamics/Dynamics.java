@@ -49,10 +49,10 @@ public abstract class Dynamics {
     //the graph this object is associated to
     private MyGraph g;
 
-    public Dynamics(double transmissionRate, double deltaT, MyGraph g){
+    public Dynamics(double transmissionRate, double deltaT){
         this.tau = transmissionRate;
         this.deltaT = deltaT;
-        this.g = g;
+//        this.g = g;
     }
 
     public abstract double getGama();

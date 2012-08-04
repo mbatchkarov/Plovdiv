@@ -46,8 +46,8 @@ public class SISDynamics extends model.dynamics.Dynamics{
     private double gama; //recovery rate
     private double edgeBreakingRate; //rate at which S-I connections break
 
-    public SISDynamics(double transmissionRate, double deltaT, double gama, double edgeBreakingRate, MyGraph g){
-        super(transmissionRate, deltaT, g);
+    public SISDynamics(double transmissionRate, double deltaT, double gama, double edgeBreakingRate){
+        super(transmissionRate, deltaT);
         this.gama= gama;
         this.edgeBreakingRate = edgeBreakingRate;
     }

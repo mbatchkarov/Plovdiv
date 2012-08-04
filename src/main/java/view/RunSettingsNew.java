@@ -41,14 +41,14 @@
 package view;
 
 import controller.Controller;
+import java.awt.event.ItemEvent;
+import java.awt.event.KeyEvent;
+import javax.swing.JComboBox;
+import javax.swing.JSlider;
 import model.MyGraph;
 import model.dynamics.SIDynamics;
 import model.dynamics.SIRDynamics;
 import model.dynamics.SISDynamics;
-
-import javax.swing.*;
-import java.awt.event.ItemEvent;
-import java.awt.event.KeyEvent;
 
 /**
  * @author reseter
@@ -332,16 +332,16 @@ public class RunSettingsNew extends javax.swing.JFrame {
             if (dynamics.getSelectedItem().toString().equals("SIR")) {
                 MyGraph.setUserDatum("dynamics",
                         new SIRDynamics(Double.parseDouble(tau.getText()),
-                                Double.parseDouble(deltaT.getText()), Double.parseDouble(gama.getText()), g));
+                                Double.parseDouble(deltaT.getText()), Double.parseDouble(gama.getText())));
             } else if (dynamics.getSelectedItem().toString().equals("SIS")) {
                 MyGraph.setUserDatum("dynamics",
                         new SISDynamics(Double.parseDouble(tau.getText()),
                                 Double.parseDouble(deltaT.getText()), Double.parseDouble(gama.getText()),
-                                Double.parseDouble(breakingRate.getText()), g));
+                                Double.parseDouble(breakingRate.getText())));
             } else {
                 MyGraph.setUserDatum("dynamics",
                         new SIDynamics(Double.parseDouble(tau.getText()),
-                                Double.parseDouble(deltaT.getText()), g));
+                                Double.parseDouble(deltaT.getText())));
             }
             //attach the running time to the graph
             MyGraph.setUserDatum("time",
@@ -350,10 +350,10 @@ public class RunSettingsNew extends javax.swing.JFrame {
             //attach the speed multiplier to the graph
             MyGraph.setUserDatum("speed", waitTime);
             //make sure the graphs is in a proper state
-            Controller.eliminateImproperNodes(g);
+            Controller.validateNodeStates();
             dispose();
-            Controller.initSim(g);
-            Controller.runSim();
+//            Controller.initSim(g);
+//            Controller.runSim();
         } catch (IllegalArgumentException ex) {
             Exceptions.showIllegalArgumentNotification(ex);
         }

@@ -27,34 +27,53 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package model;
 
 /**
- * Provides a single instance of a Graph, which is then displayed and modified by the program
+ * Provides a single instance of a Graph, which is then displayed and modified
+ * by the program
+ *
  * @author mb724
  */
+import controller.Controller;
 import edu.uci.ics.jung.graph.OrderedSparseMultigraph;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
+import model.dynamics.SIDynamics;
+import model.dynamics.SIRDynamics;
+import model.dynamics.SISDynamics;
 
 /**
  *
  * @author mb724
  */
-public class MyGraph<V, E> extends OrderedSparseMultigraph<V, E>  implements Serializable {
+public class MyGraph<V, E> extends OrderedSparseMultigraph<V, E> implements Serializable {
 
     private static MyGraph INSTANCE;
-    private static MyGraph BUFFER;
-     private static HashMap userData;
+    private static HashMap userData;
 
     /**
-     * Mutator 
+     * Mutator
+     *
      * @param newInstance
      */
     public static void setInstance(MyGraph newInstance) {
         INSTANCE = newInstance;
+    }
+
+    public static void setDefaultSimulationSettings() {
+        MyGraph.setUserDatum("dynamics",
+                new SISDynamics(0.1, 0.1, 0.1, 0.1));
+
+        //attach the running time to the graph
+        MyGraph.setUserDatum("time",
+                new Integer(100));
+
+        //attach the speed multiplier to the graph
+        MyGraph.setUserDatum("speed", 200);
+        //make sure the graphs is in a proper state
+        Controller.validateNodeStates();
     }
 
     protected MyGraph() {
@@ -63,14 +82,16 @@ public class MyGraph<V, E> extends OrderedSparseMultigraph<V, E>  implements Ser
 
     /**
      * returns a new instance, which can be used as a buffer...
+     *
      * @return
      */
-    public static MyGraph getNewInstance(){
+    public static MyGraph getNewInstance() {
         return new MyGraph();
     }
 
     /**
      * returns the signleton instance, which is to be displayed
+     *
      * @return
      */
     public static MyGraph getInstance() {
@@ -81,59 +102,57 @@ public class MyGraph<V, E> extends OrderedSparseMultigraph<V, E>  implements Ser
         return INSTANCE;
     }
 
-    public static MyGraph getBuffer() {
-        if (BUFFER == null) {
-            BUFFER = new MyGraph<Integer, Integer>();
-        }
-
-        return BUFFER;
-    }
-
-    public static void flushBuffer() {
-        BUFFER = null; //the getter will create a new one when required
-    }
-
-    public static void flushInstance(){
+//    public static MyGraph getBuffer() {
+//        if (BUFFER == null) {
+//            BUFFER = new MyGraph<Integer, Integer>();
+//        }
+//
+//        return BUFFER;
+//    }
+//
+//    public static void flushBuffer() {
+//        BUFFER = null; //the getter will create a new one when required
+//    }
+    public static void flushInstance() {
         INSTANCE = null;
     }
 
-    /**
-     * copies the contents of the memory to the buffer.
-     * Since all modifications are made to the original, the user can cancel all changes
-     * by clicking cancel (reverting to what's in the buffer)
-     */
-    public static void backupToBuffer() {
-
-        MyGraph.flushBuffer();
-        MyGraph x = MyGraph.getInstance();
-        MyGraph b = MyGraph.getBuffer();
-
-        //copy the vertices from x to b (instance to buffer)
-        Iterator i = x.getVertices().iterator();
-        while (i.hasNext()) {
-            MyVertex v = (MyVertex) i.next();
-            b.addVertex(v);
-        }
-        //copy the edges
-        Iterator it = x.getEdges().iterator();
-        while (it.hasNext()) {
-            MyEdge e = (MyEdge) it.next();
-            b.addEdge(e, INSTANCE.getEndpoints(e));
-        }
-
-    }
-
-    /**
-     * Replace the current graph with a new one, for example when the user loads or generates.
-     * The old graph is not save automatically.
-     */
-    public static void replaceFromBuffer() {
-        setInstance(null);
-        System.gc();
-        setInstance(BUFFER);
-//        BUFFER = null;
-    }
-
+//    /**
+//     * copies the contents of the memory to the buffer.
+//     * Since all modifications are made to the original, the user can cancel all changes
+//     * by clicking cancel (reverting to what's in the buffer)
+//     */
+//    public static void backupToBuffer() {
+//
+//        MyGraph.flushBuffer();
+//        MyGraph x = MyGraph.getInstance();
+//        MyGraph b = MyGraph.getBuffer();
+//
+//        //copy the vertices from x to b (instance to buffer)
+//        Iterator i = x.getVertices().iterator();
+//        while (i.hasNext()) {
+//            MyVertex v = (MyVertex) i.next();
+//            b.addVertex(v);
+//        }
+//        //copy the edges
+//        Iterator it = x.getEdges().iterator();
+//        while (it.hasNext()) {
+//            MyEdge e = (MyEdge) it.next();
+//            b.addEdge(e, INSTANCE.getEndpoints(e));
+//        }
+//
+//    }
+//
+//    /**
+//     * Replace the current graph with a new one, for example when the user loads or generates.
+//     * The old graph is not save automatically.
+//     */
+//    public static void replaceFromBuffer() {
+//        setInstance(null);
+//        System.gc();
+//        setInstance(BUFFER);
+////        BUFFER = null;
+//    }
     public static void setUserDatum(Object key, Object value) {
         if (key != null && value != null) {
             userData.put(key, value);
