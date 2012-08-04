@@ -65,6 +65,7 @@ public class Simulator {
 //    private boolean notStopped;
     //    private Controller controller; //replaced with static access
 //    private final MyGraph<MyVertex, MyEdge> g; //each simulator can run on only one graph
+
     private final MersenneTwister mt;
     //    private boolean notPaused;
     private final SimModelThread thread;
@@ -73,7 +74,6 @@ public class Simulator {
     private int sleepTime;
     private Dynamics d;
     private int numSteps;
-
     private volatile int stepNumber;
     private double beta;
     private CircularFifoBuffer<Integer> xValues;
@@ -84,7 +84,7 @@ public class Simulator {
     public Simulator() {
 //        this.g = g;
         mt = new MersenneTwister();
-        
+
         sleepTime = 200;
         doOneStepOnly = false;
         thread = new SimModelThread("sim-thread");
@@ -212,14 +212,14 @@ public class Simulator {
     }
 
     /**
-     * Checks if the SUSCEPTIBLE node vertex second will get infected at this time step
-     * and colour the edge from which the infection came
-     * The vertex is assumed vy this method to have been in contact with an infected node
+     * Checks if the SUSCEPTIBLE node vertex second will get infected at this
+     * time step and colour the edge from which the infection came The vertex is
+     * assumed vy this method to have been in contact with an infected node
      *
      * @param vertex the vertex
      */
     private void checkForInfection(MyVertex vertex, MyEdge currentEdge, double infProb, double beta,
-                                   HashMap<MyEdge, Pair> edgesToAdd) {
+            HashMap<MyEdge, Pair> edgesToAdd) {
         System.out.println("checking for infection in thread " + Thread.currentThread().getName());
         //compute a random probability
         Double randomProb = Math.abs((double) mt.nextInt() / new Double(Integer.MAX_VALUE));
@@ -274,8 +274,8 @@ public class Simulator {
     }
 
     /**
-     * Checks if the given vertex will recover at this step,
-     * it is assumed to be infected, so make your own checks
+     * Checks if the given vertex will recover at this step, it is assumed to be
+     * infected, so make your own checks
      *
      * @param recProb
      */
@@ -293,9 +293,8 @@ public class Simulator {
     }
 
     /**
-     * A thread to run the simulation in. Based on code from
-     * Green Light District:
-     * http://sourceforge.net/projects/stoplicht/
+     * A thread to run the simulation in. Based on code from Green Light
+     * District: http://sourceforge.net/projects/stoplicht/
      *
      * @author Joep Moritz
      * @author Miroslav Batchkarov
@@ -307,14 +306,15 @@ public class Simulator {
          */
         private volatile boolean suspended;
         /**
-         * Is the thread alive? If this is set to false, the thread will die gracefully
+         * Is the thread alive? If this is set to false, the thread will die
+         * gracefully
          */
         private volatile boolean alive;
+
         /**
          * The time in milliseconds this thread sleeps after a call to doStep()
          */
 //        private int sleepTime;
-
         /**
          * Returns the current sleep time
          */
@@ -328,7 +328,6 @@ public class Simulator {
 //        public void setSleepTime(int s) {
 //            sleepTime = s;
 //        }
-
         /**
          * Starts the thread.
          */
@@ -354,8 +353,8 @@ public class Simulator {
         }
 
         /**
-         * Stops the thread. Invoked when the program exitst.
-         * This method cannot be named stop().
+         * Stops the thread. Invoked when the program exitst. This method cannot
+         * be named stop().
          */
         public synchronized void die() {
             alive = false;
@@ -373,7 +372,6 @@ public class Simulator {
          * Invokes Model.doStep() and sleeps for sleepTime milliseconds
          */
         public void run() {
-            readSimSettingsFromGraph();
             statsFrame = new JFrame("Epidemics statistics");
             statsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             statsFrame.setVisible(true);
@@ -392,6 +390,7 @@ public class Simulator {
                             wait();
                         }
                     }
+                    readSimSettingsFromGraph();
                     doStepWithCurrentSettings();
                     //make sure
                     if (doOneStepOnly) {
@@ -410,12 +409,11 @@ public class Simulator {
 
         }
 
-
         private void readSimSettingsFromGraph() {
             //get simulation parameters
-            stepNumber = 0;
-            numSteps = (Integer) MyGraph.getUserDatum(Strings.time);
-            sleepTime = (Integer) MyGraph.getUserDatum(Strings.speed);
+            stepNumber = 0;//TODO this must not be set here
+//            numSteps = (Integer) MyGraph.getUserDatum(Strings.time);
+//            sleepTime = (Integer) MyGraph.getUserDatum(Strings.speed);
             d = (Dynamics) MyGraph.getUserDatum(Strings.dynamics);
 
             beta = 0;
@@ -445,7 +443,6 @@ public class Simulator {
         updateStatisticsDisplay(statsFrame);
     }
 
-
     private void updateStatisticsDisplay(JFrame frame) {
         xValues.add(stepNumber++);
         yValues.add((Integer) MyGraph.getUserDatum(Strings.numInfected));
@@ -456,5 +453,4 @@ public class Simulator {
         frame.repaint();
         panel.repaint();
     }
-
 }

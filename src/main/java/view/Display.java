@@ -70,10 +70,15 @@ import view.CustomVisualization.CustomVertexRenderer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import model.dynamics.SIDynamics;
+import model.dynamics.SIRDynamics;
+import model.dynamics.SISDynamics;
 
 /**
  * @author mb724
@@ -94,14 +99,15 @@ public class Display extends JFrame {
     private Mode mode;
     //the stats display associated with this window
     StatsThread st;
+    private static int waitTime = 100;
 
     /**
      * Creates new form Display
      *
      * @param mode what mode this window should be in (the only difference the
-     *             presence or absence of a single button and its function)
-     * @param n    initial number of vertices in the small-world tutorial, ignored
-     *             in any other mode
+     * presence or absence of a single button and its function)
+     * @param n initial number of vertices in the small-world tutorial, ignored
+     * in any other mode
      */
     public Display(Mode mode, int n) {
         boolean cancelled = false; //if the user fails to provide input
@@ -133,6 +139,7 @@ public class Display extends JFrame {
         } else {
             this.dispose();
         }
+        parseSimulationParameters(null);//trigger parsing of default values for transmission params
     }
 
     /**
@@ -243,6 +250,20 @@ public class Display extends JFrame {
         doStepToolbarButton = new javax.swing.JButton();
         jSeparator1 = new javax.swing.JToolBar.Separator();
         enableGUIToolbarCheckbox = new javax.swing.JCheckBox();
+        jPanel1 = new javax.swing.JPanel();
+        jLabel2 = new javax.swing.JLabel();
+        speed = new javax.swing.JSlider();
+        dynamics = new javax.swing.JComboBox();
+        jLabel4 = new javax.swing.JLabel();
+        tau = new javax.swing.JTextField();
+        gamaLabel = new javax.swing.JLabel();
+        gama = new javax.swing.JTextField();
+        edgeBreakingLabel = new javax.swing.JLabel();
+        breakingRate = new javax.swing.JTextField();
+        jLabel6 = new javax.swing.JLabel();
+        deltaT = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
+        jSeparator7 = new javax.swing.JSeparator();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         newDoc = new javax.swing.JMenuItem();
@@ -443,11 +464,11 @@ public class Display extends JFrame {
         pane.setLayout(paneLayout);
         paneLayout.setHorizontalGroup(
             paneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 100, Short.MAX_VALUE)
         );
         paneLayout.setVerticalGroup(
             paneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 359, Short.MAX_VALUE)
+            .addGap(0, 0, Short.MAX_VALUE)
         );
 
         jToolBar4.setBorder(javax.swing.BorderFactory.createTitledBorder("Zoom level"));
@@ -512,6 +533,146 @@ public class Display extends JFrame {
             }
         });
         jToolBar5.add(enableGUIToolbarCheckbox);
+
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Disease controls"));
+
+        jLabel2.setText("Dynamics");
+
+        speed.setMajorTickSpacing(1000);
+        speed.setMaximum(5000);
+        speed.setPaintLabels(true);
+        speed.setPaintTicks(true);
+        speed.setValue(1500);
+        speed.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                speedStateChanged(evt);
+            }
+        });
+        speed.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                speedKeyPressed(evt);
+            }
+        });
+
+        dynamics.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "SI", "SIS", "SIR" }));
+        dynamics.setSelectedIndex(2);
+        dynamics.addItemListener(new java.awt.event.ItemListener() {
+            public void itemStateChanged(java.awt.event.ItemEvent evt) {
+                dynamicsItemStateChanged(evt);
+            }
+        });
+
+        jLabel4.setText("Transmission rate");
+
+        tau.setText("2");
+        tau.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                handleSimControlInput(evt);
+            }
+        });
+
+        gamaLabel.setText("Recovery rate");
+
+        gama.setText("1");
+        gama.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                gamaKeyReleased(evt);
+            }
+        });
+
+        edgeBreakingLabel.setText("Edge breaking rate");
+
+        breakingRate.setText("0.1");
+        breakingRate.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                breakingRateActionPerformed(evt);
+            }
+        });
+        breakingRate.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                breakingRateKeyReleased(evt);
+            }
+        });
+
+        jLabel6.setText("Time step");
+
+        deltaT.setText("0.1");
+        deltaT.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                deltaTKeyReleased(evt);
+            }
+        });
+
+        jLabel8.setText("Wait time between steps, ms");
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGap(115, 115, 115))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(jSeparator7)
+                        .addGroup(jPanel1Layout.createSequentialGroup()
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addGroup(jPanel1Layout.createSequentialGroup()
+                                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(133, 133, 133))
+                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
+                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                            .addComponent(jLabel4, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                            .addComponent(gamaLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
+                                    .addComponent(edgeBreakingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(30, 30, 30)))
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(breakingRate, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(dynamics, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(gama)
+                                    .addComponent(tau, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(deltaT, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(speed, javax.swing.GroupLayout.PREFERRED_SIZE, 270, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(dynamics, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(tau, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(gama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(gamaLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(edgeBreakingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(breakingRate))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(deltaT))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jSeparator7, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel8)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(speed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         menuFile.setText("File");
 
@@ -852,8 +1013,10 @@ public class Display extends JFrame {
                     .addComponent(jToolBar2, javax.swing.GroupLayout.DEFAULT_SIZE, 882, Short.MAX_VALUE)
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(pane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(588, 588, 588)
-                        .addComponent(jToolBar3, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(578, 578, 578)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jToolBar3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                         .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -875,7 +1038,9 @@ public class Display extends JFrame {
                         .addComponent(pane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jToolBar3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jToolBar3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jToolBar2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -1159,6 +1324,116 @@ public class Display extends JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_simPauseMenuItemActionPerformed
 
+    private void speedStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_speedStateChanged
+        JSlider source = (JSlider) evt.getSource();
+        if (!source.getValueIsAdjusting()) {
+            waitTime = source.getValue();
+        }
+    }//GEN-LAST:event_speedStateChanged
+
+    private void speedKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_speedKeyPressed
+        parseSimulationParameters(evt);
+    }//GEN-LAST:event_speedKeyPressed
+
+    private void dynamicsItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_dynamicsItemStateChanged
+        JComboBox source = (JComboBox) evt.getItemSelectable();
+        if (evt.getStateChange() == ItemEvent.SELECTED) {
+            if (source.getSelectedItem().toString().equals("SI")) {
+                gamaLabel.setVisible(false);
+                gama.setVisible(false);
+                breakingRate.setVisible(false);
+                edgeBreakingLabel.setVisible(false);
+            }
+            if (source.getSelectedItem().toString().equals("SIS")) {
+                gamaLabel.setVisible(true);
+                gama.setVisible(true);
+                breakingRate.setVisible(true);
+                edgeBreakingLabel.setVisible(true);
+            }
+            if (source.getSelectedItem().toString().equals("SIR")) {
+                gamaLabel.setVisible(true);
+                gama.setVisible(true);
+//                gama.setText("1");
+                breakingRate.setVisible(false);
+                edgeBreakingLabel.setVisible(false);
+            }
+            parseSimulationParameters(null);
+            pack();
+            validate();
+            repaint();
+        }
+    }//GEN-LAST:event_dynamicsItemStateChanged
+
+    private void breakingRateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_breakingRateActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_breakingRateActionPerformed
+
+    private void handleSimControlInput(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_handleSimControlInput
+        parseSimulationParameters(evt);
+    }//GEN-LAST:event_handleSimControlInput
+
+    private void gamaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_gamaKeyReleased
+        parseSimulationParameters(evt);
+    }//GEN-LAST:event_gamaKeyReleased
+
+    private void breakingRateKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_breakingRateKeyReleased
+        parseSimulationParameters(evt);
+    }//GEN-LAST:event_breakingRateKeyReleased
+
+    private void deltaTKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_deltaTKeyReleased
+        parseSimulationParameters(evt);
+    }//GEN-LAST:event_deltaTKeyReleased
+
+    /**
+     * Parses the text of the provided text field. If that is not a valid
+     * double, the text is highlighted to grab the user's attention
+     *
+     * @param tau
+     * @return
+     */
+    private static double parseValueOrColourComponentOnError(JTextField textField) {
+        double value = 0;
+        try {
+            value = Double.parseDouble(textField.getText());
+            System.out.println("Raw string is " + textField.getText());
+            System.out.println("Parsed value is " + value);
+            textField.setForeground(Color.black);
+        } catch (NumberFormatException ex) {
+            textField.setForeground(Color.red);
+        }
+        return value;//TODO must return default value for field
+    }
+
+    //TODO convert this from a keylistener to a keybinding, http://docs.oracle.com/javase/tutorial/uiswing/misc/keybinding.html
+    private static void parseSimulationParameters(KeyEvent evt) {
+        //check the current state of the fields
+        //parse the contents of the text field that should be active (based on the combos)
+        //and attach them to the graph as a Dynamics object
+        //attach the dynamics setting to the graph
+        double tauValue = parseValueOrColourComponentOnError(tau);
+        double gamaValue = parseValueOrColourComponentOnError(gama);
+        double deltaTValue = parseValueOrColourComponentOnError(deltaT);
+        double brakingRateValue = parseValueOrColourComponentOnError(breakingRate);
+
+        if (dynamics.getSelectedItem().toString().equals("SIR")) {
+            MyGraph.setUserDatum("dynamics",
+                    new SIRDynamics(tauValue, deltaTValue, gamaValue));
+        } else if (dynamics.getSelectedItem().toString().equals("SIS")) {
+            MyGraph.setUserDatum("dynamics",
+                    new SISDynamics(tauValue, deltaTValue, gamaValue, brakingRateValue));
+        } else {
+            MyGraph.setUserDatum("dynamics", new SIDynamics(tauValue, deltaTValue));
+        }
+        //attach the running time to the graph
+//            MyGraph.setUserDatum("time",
+//                    new Integer(Integer.parseInt(runTime.getText())));
+
+        //attach the speed multiplier to the graph
+        MyGraph.setUserDatum("speed", waitTime);
+        //make sure the graphs is in a proper state
+        Controller.validateNodeStates();
+    }
+
     /**
      * Initialises the display
      */
@@ -1220,6 +1495,7 @@ public class Display extends JFrame {
         pane.validate();
         vv.repaint();
         pane.repaint();
+        parseSimulationParameters(null);
         //initially display nothing
         recalculateStats(null);
 
@@ -1471,16 +1747,19 @@ public class Display extends JFrame {
     private void zoomOut() {
         scaler.scale(vv, 1 / 1.1f, vv.getCenter());
     }
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     static javax.swing.JToggleButton annotate;
+    private static javax.swing.JTextField breakingRate;
     private javax.swing.JRadioButtonMenuItem circleL;
+    private static javax.swing.JTextField deltaT;
     static javax.swing.JButton doStepToolbarButton;
     private javax.swing.JMenuItem dumbToJpg;
+    private static javax.swing.JComboBox dynamics;
     private javax.swing.JRadioButtonMenuItem eBC;
     private javax.swing.JRadioButtonMenuItem eID;
     private javax.swing.JRadioButtonMenuItem eNone;
     private javax.swing.JRadioButtonMenuItem eWeight;
+    private javax.swing.JLabel edgeBreakingLabel;
     private static javax.swing.ButtonGroup edgeLabel;
     static javax.swing.JToggleButton edit;
     private javax.swing.JCheckBox enableGUIToolbarCheckbox;
@@ -1489,6 +1768,8 @@ public class Display extends JFrame {
     private javax.swing.JMenuItem fileQuit1;
     private javax.swing.JMenuItem fileSave;
     private javax.swing.JRadioButtonMenuItem fr;
+    private static javax.swing.JTextField gama;
+    private javax.swing.JLabel gamaLabel;
     private javax.swing.JMenuItem helpAbout;
     private javax.swing.JMenuItem helpHowTo;
     private static javax.swing.JLabel in;
@@ -1499,12 +1780,17 @@ public class Display extends JFrame {
     private static javax.swing.JLabel jLabel13;
     private static javax.swing.JLabel jLabel14;
     private static javax.swing.JLabel jLabel15;
+    private javax.swing.JLabel jLabel2;
     static javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
     static javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     static javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private static javax.swing.JLabel jLabel9;
     private static javax.swing.JMenu jMenu2;
     private static javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JToolBar.Separator jSeparator1;
     static javax.swing.JToolBar.Separator jSeparator10;
     private javax.swing.JSeparator jSeparator13;
@@ -1516,6 +1802,7 @@ public class Display extends JFrame {
     static javax.swing.JToolBar.Separator jSeparator4;
     static javax.swing.JToolBar.Separator jSeparator5;
     private static javax.swing.JToolBar.Separator jSeparator6;
+    private javax.swing.JSeparator jSeparator7;
     private static javax.swing.JToolBar.Separator jSeparator8;
     private static javax.swing.JToolBar.Separator jSeparator9;
     static javax.swing.JToolBar jToolBar1;
@@ -1547,7 +1834,9 @@ public class Display extends JFrame {
     private javax.swing.JMenuItem simRun;
     private javax.swing.JMenuItem simRunUntil;
     private javax.swing.JMenuItem simStop;
+    private javax.swing.JSlider speed;
     private javax.swing.JRadioButtonMenuItem spring;
+    private static javax.swing.JTextField tau;
     static javax.swing.JLabel totalA;
     static javax.swing.JLabel totalAD;
     static javax.swing.JLabel totalAPL;
