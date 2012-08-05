@@ -85,7 +85,7 @@ public class MyGraph<V, E> extends OrderedSparseMultigraph<V, E> implements Seri
      *
      * @return
      */
-    public static MyGraph getNewInstance() {
+    public static MyGraph<MyVertex, MyEdge> getNewInstance() {
         return new MyGraph();
     }
 
@@ -94,7 +94,7 @@ public class MyGraph<V, E> extends OrderedSparseMultigraph<V, E> implements Seri
      *
      * @return
      */
-    public static MyGraph getInstance() {
+    public static MyGraph<MyVertex, MyEdge> getInstance() {
         if (INSTANCE == null) {
             setInstance(new MyGraph<Integer, Integer>());
         }
