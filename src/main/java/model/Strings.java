@@ -50,7 +50,7 @@ public abstract class Strings {
     public static final String state = "state";
     //    public static final String steps = "steps";
     public static final String speed = "speed";
-    public static final String time = "time";
+    public static final String simSleepTime = "time";
     public static final String dynamics = "dynamics";
     public static final String infected = "infected";
     public static final String next = "next";

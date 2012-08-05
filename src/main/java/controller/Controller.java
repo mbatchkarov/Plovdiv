@@ -109,7 +109,7 @@ public class Controller {
      * @return
      */
     public static HashMap getEdgeWeigths() {
-        HashMap m = new HashMap<MyEdge, Double>();
+        HashMap<MyEdge, Double> m = new HashMap<MyEdge, Double>();
         Iterator i = MyGraph.getInstance().getEdges().iterator();
         while (i.hasNext()) {
             MyEdge e = (MyEdge) i.next();

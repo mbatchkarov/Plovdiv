@@ -213,14 +213,14 @@ public class Simulator {
 
     /**
      * Checks if the SUSCEPTIBLE node vertex second will get infected at this
-     * time step and colour the edge from which the infection came The vertex is
+     * simSleepTime step and colour the edge from which the infection came The vertex is
      * assumed vy this method to have been in contact with an infected node
      *
      * @param vertex the vertex
      */
     private void checkForInfection(MyVertex vertex, MyEdge currentEdge, double infProb, double beta,
             HashMap<MyEdge, Pair> edgesToAdd) {
-        System.out.println("checking for infection in thread " + Thread.currentThread().getName());
+//        System.out.println("checking for infection in thread " + Thread.currentThread().getName());
         //compute a random probability
         Double randomProb = Math.abs((double) mt.nextInt() / new Double(Integer.MAX_VALUE));
         //if this chap is unlucky
@@ -281,7 +281,7 @@ public class Simulator {
      */
     private void checkForRecovery(MyVertex vertex, double recProb) {
 //        compute a random number
-        System.out.println("checking for recovery in thread " + Thread.currentThread().getName());
+//        System.out.println("checking for recovery in thread " + Thread.currentThread().getName());
         double randomProb = Math.abs((double) mt.nextInt() / (double) Integer.MAX_VALUE);
         if (randomProb < recProb) {
             //put this vertex on the "waiting list" for recovery
@@ -312,18 +312,18 @@ public class Simulator {
         private volatile boolean alive;
 
         /**
-         * The time in milliseconds this thread sleeps after a call to doStep()
+         * The simSleepTime in milliseconds this thread sleeps after a call to doStep()
          */
 //        private int sleepTime;
         /**
-         * Returns the current sleep time
+         * Returns the current sleep simSleepTime
          */
 //        public int getSleepTime() {
 //            return sleepTime;
 //        }
 //
 //        /**
-//         * Sets the sleep time
+//         * Sets the sleep simSleepTime
 //         */
 //        public void setSleepTime(int s) {
 //            sleepTime = s;
@@ -412,7 +412,7 @@ public class Simulator {
         private void readSimSettingsFromGraph() {
             //get simulation parameters
             stepNumber = 0;//TODO this must not be set here
-//            numSteps = (Integer) MyGraph.getUserDatum(Strings.time);
+//            numSteps = (Integer) MyGraph.getUserDatum(Strings.simSleepTime);
 //            sleepTime = (Integer) MyGraph.getUserDatum(Strings.speed);
             d = (Dynamics) MyGraph.getUserDatum(Strings.dynamics);
 
@@ -420,6 +420,7 @@ public class Simulator {
             if (d instanceof SISDynamics) {
                 beta = ((SISDynamics) d).getEdgeBreakingRate();
             }
+            sleepTime = (Integer) MyGraph.getUserDatum(Strings.simSleepTime);
 
             //probabilities based on per-link traversal of the graph
             //probability of recovery is constant, and in this case so is the infection probability
@@ -432,7 +433,7 @@ public class Simulator {
             System.out.println("inf prob " + infectionProb);
             System.out.println("sleep time " + sleepTime);
             System.out.println("required steps " + numSteps);
-//            int numSteps = (int) ((double) time / d.getDeltaT());
+//            int numSteps = (int) ((double) simSleepTime / d.getDeltaT());
         }
     }
 
