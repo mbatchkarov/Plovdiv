@@ -36,7 +36,6 @@ package controller;
 
 import cern.jet.random.engine.MersenneTwister;
 import edu.uci.ics.jung.graph.util.Pair;
-import java.awt.FlowLayout;
 import model.*;
 import model.dynamics.Dynamics;
 import model.dynamics.SISDynamics;
@@ -53,6 +52,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import view.Display;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -474,6 +474,7 @@ public class Simulator {
     public void doStepWithCurrentSettings() {
 //        System.out.println("Doing step " + stepNumber + " in thread " + Thread.currentThread().getName());
         doStep(beta, MyGraph.getInstance(), recoveryProb, infectionProb);
+        updateStatisticsDisplay();
         Display.redisplayPartially();
         stepNumber++;
     }

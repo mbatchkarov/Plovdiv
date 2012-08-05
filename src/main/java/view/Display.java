@@ -85,118 +85,118 @@ import java.io.InputStream;
  */
 public class Display extends JFrame {
 
-	private static InfoGatherer gatherer;
-	//declared as fields rather than as local variables so that their value can be altered by listeners
-	public static VisualizationViewer vv;
-	private static ScalingControl scaler;
-	//    EditingModalGraphMouse<MyVertex, MyEdge> graphMouse;
-	private static CustomGraphMouse graphMouse;
-	static AnnotationControls<MyVertex, MyEdge> annotationControls;
-	static JPanel annotationControlsToolbar;
-	//the current layout
-	private static PersistentLayoutImpl2<MyVertex, MyEdge> persistentLayout;
-	//whether this window is a standard free roam or inludes interactive controls
-	private Mode mode;
-	//the stats display associated with this window
-	StatsThread st;
+    private static InfoGatherer gatherer;
+    //declared as fields rather than as local variables so that their value can be altered by listeners
+    public static VisualizationViewer vv;
+    private static ScalingControl scaler;
+    //    EditingModalGraphMouse<MyVertex, MyEdge> graphMouse;
+    private static CustomGraphMouse graphMouse;
+    static AnnotationControls<MyVertex, MyEdge> annotationControls;
+    static JPanel annotationControlsToolbar;
+    //the current layout
+    private static PersistentLayoutImpl2<MyVertex, MyEdge> persistentLayout;
+    //whether this window is a standard free roam or inludes interactive controls
+    private Mode mode;
+    //the stats display associated with this window
+    StatsThread st;
 
-	/**
-	 * Creates new form Display
-	 *
-	 * @param mode what mode this window should be in (the only difference the
-	 *             presence or absence of a single button and its function)
-	 * @param n    initial number of vertices in the small-world tutorial, ignored
-	 *             in any other mode
-	 */
-	public Display(Mode mode, int n) {
-		boolean cancelled = false; //if the user fails to provide input
-		this.mode = mode;
-		gatherer = InfoGatherer.getInstance();
-		initComponents();
-		//assume
-		//todo these modes are obsolete, remove
-		if (mode.equals(Mode.SF_INTERACTIVE)) {
-			Generator.generateRectangularLattice(1, 2);
-			redisplayCompletely();
-			isom.setSelected(true);
-			transform.setSelected(true);
+    /**
+     * Creates new form Display
+     *
+     * @param mode what mode this window should be in (the only difference the
+     *             presence or absence of a single button and its function)
+     * @param n    initial number of vertices in the small-world tutorial, ignored
+     *             in any other mode
+     */
+    public Display(Mode mode, int n) {
+        boolean cancelled = false; //if the user fails to provide input
+        this.mode = mode;
+        gatherer = InfoGatherer.getInstance();
+        initComponents();
+        //assume
+        //todo these modes are obsolete, remove
+        if (mode.equals(Mode.SF_INTERACTIVE)) {
+            Generator.generateRectangularLattice(1, 2);
+            redisplayCompletely();
+            isom.setSelected(true);
+            transform.setSelected(true);
 
-		} else if (mode.equals(Mode.SW_INTERACTIVE)) {
-			Generator.generateKleinbergSmallWorld(n, 2, 0);
-			circleL.setSelected(true);
-			redisplayCompletely();
-			transform.setSelected(true);
-			layout.setVisible(false);
+        } else if (mode.equals(Mode.SW_INTERACTIVE)) {
+            Generator.generateKleinbergSmallWorld(n, 2, 0);
+            circleL.setSelected(true);
+            redisplayCompletely();
+            transform.setSelected(true);
+            layout.setVisible(false);
 
-		} else {
-			// normal mode
-			Generator.generateRectangularLattice(0, 0);
-		}
-		if (!cancelled) {
-			this.setExtendedState(Frame.MAXIMIZED_BOTH);
-			redisplayCompletely();
-		} else {
-			this.dispose();
-		}
-		parseSimulationParameters(null);//trigger parsing of default values for transmission params
-	}
+        } else {
+            // normal mode
+            Generator.generateRectangularLattice(0, 0);
+        }
+        if (!cancelled) {
+            this.setExtendedState(Frame.MAXIMIZED_BOTH);
+            redisplayCompletely();
+        } else {
+            this.dispose();
+        }
+        parseSimulationParameters(null);//trigger parsing of default values for transmission params
+    }
 
-	/**
-	 * Sets the info gatherer this displays cooperates with. Must be explicitly
-	 * called after the both the display and the are created
-	 *
-	 * @param i
-	 */
-	public void setInfoGatherer(InfoGatherer i) {
-		gatherer = i;
-	}
+    /**
+     * Sets the info gatherer this displays cooperates with. Must be explicitly
+     * called after the both the display and the are created
+     *
+     * @param i
+     */
+    public void setInfoGatherer(InfoGatherer i) {
+        gatherer = i;
+    }
 
-	/**
-	 * Recalculates and display the stats of the graph and of the vertex passed
-	 * in. If it is null, returns all local statistics to "0.0"
-	 *
-	 * @param v
-	 */
-	public static void recalculateStats(MyVertex v) {
-		Stats.recalculateAll();
-		//populate information labels accross the screen
-		totalCC.setText("" + Stats.getCC());
-		totalAPL.setText("" + Stats.getAPL());
-		totalAD.setText("" + Stats.getAvgDegree());
-		totalA.setText("" + Stats.getWeightedDegreeCorrelation());
-		//information about a certain node
-		if (v != null) {
-			localCC.setText("" + Stats.getCC(v));
-			localAPL.setText("" + Stats.getAPL(v));
-			localBC.setText("" + Stats.getBC(v));
-			in.setText("" + MyGraph.getInstance().inDegree(v));
-			out.setText("" + MyGraph.getInstance().outDegree(v));
+    /**
+     * Recalculates and display the stats of the graph and of the vertex passed
+     * in. If it is null, returns all local statistics to "0.0"
+     *
+     * @param v
+     */
+    public static void recalculateStats(MyVertex v) {
+        Stats.recalculateAll();
+        //populate information labels accross the screen
+        totalCC.setText("" + Stats.getCC());
+        totalAPL.setText("" + Stats.getAPL());
+        totalAD.setText("" + Stats.getAvgDegree());
+        totalA.setText("" + Stats.getWeightedDegreeCorrelation());
+        //information about a certain node
+        if (v != null) {
+            localCC.setText("" + Stats.getCC(v));
+            localAPL.setText("" + Stats.getAPL(v));
+            localBC.setText("" + Stats.getBC(v));
+            in.setText("" + MyGraph.getInstance().inDegree(v));
+            out.setText("" + MyGraph.getInstance().outDegree(v));
 
-		} else {
-			localCC.setText("0.0");
-			localAPL.setText("0.0");
-			localBC.setText("0.0");
-			in.setText("0.0");
-			out.setText("0.0");
-		}
+        } else {
+            localCC.setText("0.0");
+            localAPL.setText("0.0");
+            localBC.setText("0.0");
+            in.setText("0.0");
+            out.setText("0.0");
+        }
 //        repaint();
 //        validate();
 //        if (st != null && st.isVisible()) {
 //            st.updateContents();
 //        }
-		//TODO commented thsi out, but it should be there
-	}
+        //TODO commented thsi out, but it should be there
+    }
 
-	public VisualizationViewer getVV() {
-		return vv;
-	}
+    public VisualizationViewer getVV() {
+        return vv;
+    }
 
-	/**
-	 * This method is called from within the constructor to initialize the form.
-	 * WARNING: Do NOT modify this code. The content of this method is always
-	 * regenerated by the Form Editor.
-	 */
-	@SuppressWarnings("unchecked")
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
 	// <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
 	private void initComponents() {
 
@@ -1151,314 +1151,320 @@ public class Display extends JFrame {
 		pack();
 	}// </editor-fold>//GEN-END:initComponents
 
-	public void loadLayout(String path) throws IOException, ClassNotFoundException {
-		persistentLayout.restore(path);
-	}
+    public void loadLayout(String path) throws IOException, ClassNotFoundException {
+        persistentLayout.restore(path);
+    }
 
-	public void loadLayout(InputStream is) throws IOException, ClassNotFoundException {
-		persistentLayout.restore(is);
-	}
+    public void loadLayout(InputStream is) throws IOException, ClassNotFoundException {
+        persistentLayout.restore(is);
+    }
 
 	private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
 	}//GEN-LAST:event_formWindowClosing
 
 	private void zoomInToolbarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomInToolbarActionPerformed
-		try {
-			zoomIn();
-		} catch (NullPointerException e) {
-			//no graph exists, but that's ok
-		}
+            try {
+                zoomIn();
+            } catch (NullPointerException e) {
+                //no graph exists, but that's ok
+            }
 	}//GEN-LAST:event_zoomInToolbarActionPerformed
 
 	private void zoomOutToolbarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_zoomOutToolbarActionPerformed
-		try {
-			zoomOut();
-		} catch (NullPointerException e) {
-			//no graph exists, but that's ok
-		}
+            try {
+                zoomOut();
+            } catch (NullPointerException e) {
+                //no graph exists, but that's ok
+            }
 	}//GEN-LAST:event_zoomOutToolbarActionPerformed
 
 	private void annotateItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_annotateItemStateChanged
-		if (annotate.isSelected()) {
-			getGraphMouse().setMode(ModalGraphMouse.Mode.ANNOTATING);
-		}
+            if (annotate.isSelected()) {
+                getGraphMouse().setMode(ModalGraphMouse.Mode.ANNOTATING);
+            }
 
-		annotationControlsToolbar.setVisible(annotate.isSelected());
+            annotationControlsToolbar.setVisible(annotate.isSelected());
 	}//GEN-LAST:event_annotateItemStateChanged
 
 	private void transformItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_transformItemStateChanged
-		if (transform.isSelected()) {
-			getGraphMouse().setMode(ModalGraphMouse.Mode.TRANSFORMING);
-		}
+            if (transform.isSelected()) {
+                getGraphMouse().setMode(ModalGraphMouse.Mode.TRANSFORMING);
+            }
 	}//GEN-LAST:event_transformItemStateChanged
 
 	private void editItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_editItemStateChanged
-		if (edit.isSelected()) {
-			getGraphMouse().setMode(ModalGraphMouse.Mode.EDITING);
-		}
+            if (edit.isSelected()) {
+                getGraphMouse().setMode(ModalGraphMouse.Mode.EDITING);
+            }
 	}//GEN-LAST:event_editItemStateChanged
 
 	private void selectItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_selectItemStateChanged
-		if (select.isSelected()) {
-			getGraphMouse().setMode(ModalGraphMouse.Mode.PICKING);
-		}
+            if (select.isSelected()) {
+                getGraphMouse().setMode(ModalGraphMouse.Mode.PICKING);
+            }
 	}//GEN-LAST:event_selectItemStateChanged
 
 	private void kkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_kkActionPerformed
 //        redisplayCompletely();
-		this.changeLayout();
+            this.changeLayout();
 	}//GEN-LAST:event_kkActionPerformed
 
 	private void frActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_frActionPerformed
 //        redisplayCompletely();
-		this.changeLayout();
+            this.changeLayout();
 	}//GEN-LAST:event_frActionPerformed
 
 	private void isomActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_isomActionPerformed
 //        redisplayCompletely();
-		this.changeLayout();
+            this.changeLayout();
 	}//GEN-LAST:event_isomActionPerformed
 
 	private void springActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_springActionPerformed
 //        redisplayCompletely();
-		this.changeLayout();
+            this.changeLayout();
 	}//GEN-LAST:event_springActionPerformed
 
 	private void circleLActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_circleLActionPerformed
 //        redisplayCompletely();
-		this.changeLayout();
+            this.changeLayout();
 	}//GEN-LAST:event_circleLActionPerformed
 
 	private void showDDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showDDActionPerformed
-		showDDToolbar.doClick();
+            showDDToolbar.doClick();
 	}//GEN-LAST:event_showDDActionPerformed
 
 	private void dumbToJpgActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dumbToJpgActionPerformed
-		FileDialog window = new FileDialog(this, "Save", FileDialog.SAVE);
-		window.setSize(500, 500);
-		window.setVisible(true);
-		String path = window.getDirectory() + window.getFile();
-		if (!path.equals("nullnull")) {//if the user clicks CANCEL path will be set to "nullnull"
-			if (!path.endsWith(".jpg")) {
-				path += ".jpg";
-			}
-			File f = new File(path);
-			IOClass.writeJPEGImage(vv, f);
-		}
+            FileDialog window = new FileDialog(this, "Save", FileDialog.SAVE);
+            window.setSize(500, 500);
+            window.setVisible(true);
+            String path = window.getDirectory() + window.getFile();
+            if (!path.equals("nullnull")) {//if the user clicks CANCEL path will be set to "nullnull"
+                if (!path.endsWith(".jpg")) {
+                    path += ".jpg";
+                }
+                File f = new File(path);
+                IOClass.writeJPEGImage(vv, f);
+            }
 
 	}//GEN-LAST:event_dumbToJpgActionPerformed
 
 	private void infectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infectButtonActionPerformed
 //        try {
-		InfectDisp d = new InfectDisp(MyGraph.getInstance());
+            InfectDisp d = new InfectDisp(MyGraph.getInstance());
 //        } catch (NullPointerException e) {
 //            Exceptions.showNoGraphWarning();
 //        }
 	}//GEN-LAST:event_infectButtonActionPerformed
 
 	private void healAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_healAllButtonActionPerformed
-		if (MyGraph.getInstance() != null) {
-			Controller.setAllSusceptible();
-			vv.repaint();
-		} else {
-			Exceptions.showNoGraphWarning();
-		}
+            if (MyGraph.getInstance() != null) {
+                Controller.setAllSusceptible();
+                vv.repaint();
+            } else {
+                Exceptions.showNoGraphWarning();
+            }
 	}//GEN-LAST:event_healAllButtonActionPerformed
 
 	private void helpHowToActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpHowToActionPerformed
-		JOptionPane.showMessageDialog(this, Strings.help);
+            JOptionPane.showMessageDialog(this, Strings.help);
 	}//GEN-LAST:event_helpHowToActionPerformed
 
 	private void helpAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpAboutActionPerformed
-		JOptionPane.showMessageDialog(this, Strings.about);
+            JOptionPane.showMessageDialog(this, Strings.about);
 	}//GEN-LAST:event_helpAboutActionPerformed
 
 	private void newDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newDocActionPerformed
-		MyGraph.flushInstance();
-		redisplayCompletely();
+            MyGraph.flushInstance();
+            redisplayCompletely();
 	}//GEN-LAST:event_newDocActionPerformed
 
 	private void fileSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileSaveActionPerformed
-		gatherer.showSave(this, MyGraph.getInstance());
+            gatherer.showSave(this, MyGraph.getInstance());
 	}//GEN-LAST:event_fileSaveActionPerformed
 
 	private void fileLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileLoadActionPerformed
-		gatherer.showLoad(this);
+            gatherer.showLoad(this);
 	}//GEN-LAST:event_fileLoadActionPerformed
 
 	private void fileGenerate1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileGenerate1ActionPerformed
-		gatherer.showGenerate(this);
+            gatherer.showGenerate(this);
 	}//GEN-LAST:event_fileGenerate1ActionPerformed
 
 	private void fileQuit1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileQuit1ActionPerformed
-		// TODO a bit rude, bit OK as a temp solution
-		System.exit(1);
+            // TODO a bit rude, bit OK as a temp solution
+            System.exit(1);
 	}//GEN-LAST:event_fileQuit1ActionPerformed
 
 	private void vDEgreeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vDEgreeActionPerformed
 //        vertexLabelIndex.put(MyGraph.getInstance(), vertexLabel.getSelection().getMnemonic() - 65);
-		repaint();
+            repaint();
 	}//GEN-LAST:event_vDEgreeActionPerformed
 
 	private void vCCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vCCActionPerformed
 //        vertexLabelIndex.put(MyGraph.getInstance(), vertexLabel.getSelection().getMnemonic() - 65);
-		repaint();
+            repaint();
 	}//GEN-LAST:event_vCCActionPerformed
 
 	private void vBCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vBCActionPerformed
 //        vertexLabelIndex.put(MyGraph.getInstance(), vertexLabel.getSelection().getMnemonic() - 65);
-		repaint();
+            repaint();
 	}//GEN-LAST:event_vBCActionPerformed
 
 	private void vDistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vDistActionPerformed
 //        vertexLabelIndex.put(MyGraph.getInstance(), vertexLabel.getSelection().getMnemonic() - 65);
-		repaint();
+            repaint();
 	}//GEN-LAST:event_vDistActionPerformed
 
 	private void vGenerationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vGenerationActionPerformed
 //        vertexLabelIndex.put(MyGraph.getInstance(), vertexLabel.getSelection().getMnemonic() - 65);
-		repaint();
+            repaint();
 	}//GEN-LAST:event_vGenerationActionPerformed
 
 	private void vIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vIDActionPerformed
-		repaint();
+            repaint();
 	}//GEN-LAST:event_vIDActionPerformed
 
 	private void vNoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vNoneActionPerformed
 //        vertexLabelIndex.put(MyGraph.getInstance(), vertexLabel.getSelection().getMnemonic() - 65);
-		repaint();
+            repaint();
 	}//GEN-LAST:event_vNoneActionPerformed
 
 	private void eWeightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eWeightActionPerformed
 //        edgeLabelIndex.put(MyGraph.getInstance(), edgeLabel.getSelection().getMnemonic() - 72);
-		repaint();
+            repaint();
 	}//GEN-LAST:event_eWeightActionPerformed
 
 	private void eIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eIDActionPerformed
 //        edgeLabelIndex.put(MyGraph.getInstance(), edgeLabel.getSelection().getMnemonic() - 72);
-		repaint();
+            repaint();
 	}//GEN-LAST:event_eIDActionPerformed
 
 	private void eBCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eBCActionPerformed
 //        edgeLabelIndex.put(MyGraph.getInstance(), edgeLabel.getSelection().getMnemonic() - 72);
-		repaint();
+            repaint();
 	}//GEN-LAST:event_eBCActionPerformed
 
 	private void eNoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eNoneActionPerformed
 //        edgeLabelIndex.put(MyGraph.getInstance(), edgeLabel.getSelection().getMnemonic() - 72);
-		repaint();
+            repaint();
 	}//GEN-LAST:event_eNoneActionPerformed
 
 	private void pauseSimToolbarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseSimToolbarButtonActionPerformed
-		if (checkEmptyPopupError()) {
-			String currText = pauseSimToolbarButton.getText().toLowerCase();
-			if (currText.trim().equals("pause")) {
-				pauseSimToolbarButton.setText("Resume");
-				Controller.pauseSim();
-			} else {
-				pauseSimToolbarButton.setText("Pause   ");
-				Controller.resumeSim();
-			}
-		}
+            if (checkEmptyPopupError()) {
+                String currText = pauseSimToolbarButton.getText().toLowerCase();
+                if (currText.trim().equals("pause")) {
+                    pauseSimToolbarButton.setText("Resume");
+                    Controller.pauseSim();
+                } else {
+                    pauseSimToolbarButton.setText("Pause   ");
+                    Controller.resumeSim();
+                }
+            }
 	}//GEN-LAST:event_pauseSimToolbarButtonActionPerformed
 
-	public boolean checkEmptyPopupError() {
-		if (MyGraph.getInstance().getVertexCount() < 1) {
-			JOptionPane.showMessageDialog(this, "That makes no sense whan the graph is empty!");
-			return false;
-		} else {
-			return true;
-		}
-	}
+    public boolean checkEmptyPopupError() {
+        if (MyGraph.getInstance().getVertexCount() < 1) {
+            JOptionPane.showMessageDialog(this, "That makes no sense whan the graph is empty!");
+            return false;
+        } else {
+            return true;
+        }
+    }
 
 	private void doStepToolbarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doStepToolbarButtonActionPerformed
-		if (checkEmptyPopupError()) {
-			checkEmptyPopupError();
-			Controller.resumeSimForOneStep();
-		}
+            if (checkEmptyPopupError()) {
+                checkEmptyPopupError();
+                Controller.resumeSimForOneStep();
+            }
 	}//GEN-LAST:event_doStepToolbarButtonActionPerformed
 
 	private void simPauseMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simPauseMenuItemActionPerformed
-		// TODO add your handling code here:
+            // TODO add your handling code here:
 	}//GEN-LAST:event_simPauseMenuItemActionPerformed
 
 	private void speedSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_speedSliderStateChanged
-		JSlider source = (JSlider) evt.getSource();
-		if (!source.getValueIsAdjusting()) {
-			parseSimulationParameters(null);
-		}
+            JSlider source = (JSlider) evt.getSource();
+            if (!source.getValueIsAdjusting()) {
+                parseSimulationParameters(null);
+            }
 	}//GEN-LAST:event_speedSliderStateChanged
 
 	private void speedSliderKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_speedSliderKeyPressed
-		parseSimulationParameters(evt);
+            parseSimulationParameters(evt);
 	}//GEN-LAST:event_speedSliderKeyPressed
 
 	private void dynamicsItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_dynamicsItemStateChanged
-		JComboBox source = (JComboBox) evt.getItemSelectable();
-		if (evt.getStateChange() == ItemEvent.SELECTED) {
-			if (source.getSelectedItem().toString().equals("SI")) {
-				gamaLabel.setVisible(false);
-				gama.setVisible(false);
-				breakingRate.setVisible(false);
-				edgeBreakingLabel.setVisible(false);
-			}
-			if (source.getSelectedItem().toString().equals("SIS")) {
-				gamaLabel.setVisible(true);
-				gama.setVisible(true);
-				breakingRate.setVisible(true);
-				edgeBreakingLabel.setVisible(true);
-			}
-			if (source.getSelectedItem().toString().equals("SIR")) {
-				gamaLabel.setVisible(true);
-				gama.setVisible(true);
+            JComboBox source = (JComboBox) evt.getItemSelectable();
+            if (evt.getStateChange() == ItemEvent.SELECTED) {
+                if (source.getSelectedItem().toString().equals("SI")) {
+                    gamaLabel.setVisible(false);
+                    gama.setVisible(false);
+                    breakingRate.setVisible(false);
+                    edgeBreakingLabel.setVisible(false);
+                }
+                if (source.getSelectedItem().toString().equals("SIS")) {
+                    gamaLabel.setVisible(true);
+                    gama.setVisible(true);
+                    breakingRate.setVisible(true);
+                    edgeBreakingLabel.setVisible(true);
+                }
+                if (source.getSelectedItem().toString().equals("SIR")) {
+                    gamaLabel.setVisible(true);
+                    gama.setVisible(true);
 //                gama.setText("1");
-				breakingRate.setVisible(false);
-				edgeBreakingLabel.setVisible(false);
-			}
-			parseSimulationParameters(null);
-			pack();
-			validate();
-			repaint();
-		}
+                    breakingRate.setVisible(false);
+                    edgeBreakingLabel.setVisible(false);
+                }
+                parseSimulationParameters(null);
+                pack();
+                validate();
+                repaint();
+            }
 	}//GEN-LAST:event_dynamicsItemStateChanged
 
 	private void breakingRateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_breakingRateActionPerformed
-		// TODO add your handling code here:
+            // TODO add your handling code here:
 	}//GEN-LAST:event_breakingRateActionPerformed
 
 	private void handleSimControlInput(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_handleSimControlInput
-		parseSimulationParameters(evt);
+            parseSimulationParameters(evt);
 	}//GEN-LAST:event_handleSimControlInput
 
 	private void gamaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_gamaKeyReleased
-		parseSimulationParameters(evt);
+            parseSimulationParameters(evt);
 	}//GEN-LAST:event_gamaKeyReleased
 
 	private void breakingRateKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_breakingRateKeyReleased
-		parseSimulationParameters(evt);
+            parseSimulationParameters(evt);
 	}//GEN-LAST:event_breakingRateKeyReleased
 
 	private void deltaTKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_deltaTKeyReleased
-		parseSimulationParameters(evt);
+            parseSimulationParameters(evt);
 	}//GEN-LAST:event_deltaTKeyReleased
 
 	private void showDDToolbarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showDDToolbarActionPerformed
-		if (checkEmptyPopupError()) {
-			checkEmptyPopupError();
-			new StatsThread().start();
-		}
+            if (checkEmptyPopupError()) {
+                checkEmptyPopupError();
+                new StatsThread().start();
+            }
 	}//GEN-LAST:event_showDDToolbarActionPerformed
 
 	private void editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editActionPerformed
-		// TODO add your handling code here:
+            // TODO add your handling code here:
 	}//GEN-LAST:event_editActionPerformed
 
 	private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-		doStepToolbarButton.doClick();
+            if (checkEmptyPopupError()) {
+                checkEmptyPopupError();
+                doStepToolbarButton.doClick();
+            }
 	}//GEN-LAST:event_jMenuItem1ActionPerformed
 
 	private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-		infectButton.doClick();
+            if (checkEmptyPopupError()) {
+                checkEmptyPopupError();
+                infectButton.doClick();
+            }
 	}//GEN-LAST:event_jButton1ActionPerformed
 
 //	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1467,159 +1473,158 @@ public class Display extends JFrame {
 //			infectButton.doClick();
 //		}
 //	}
-
 	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-		if (checkEmptyPopupError()) {
-			checkEmptyPopupError();
-			healAllButton.doClick();
-		}
+            if (checkEmptyPopupError()) {
+                checkEmptyPopupError();
+                healAllButton.doClick();
+            }
 	}//GEN-LAST:event_jButton2ActionPerformed
 
-	public static JPanel getStatsPanel() {
-		return statsPanel;
-	}
+    public static JPanel getStatsPanel() {
+        return statsPanel;
+    }
 
-	/**
-	 * Parses the text of the provided text field. If that is not a valid
-	 * double, the text is highlighted to grab the user's attention
-	 *
-	 * @return
-	 */
-	private static double parseValueOrColourComponentOnError(JTextField textField) {
-		double value = 0;
-		try {
-			value = Double.parseDouble(textField.getText());
+    /**
+     * Parses the text of the provided text field. If that is not a valid
+     * double, the text is highlighted to grab the user's attention
+     *
+     * @return
+     */
+    private static double parseValueOrColourComponentOnError(JTextField textField) {
+        double value = 0;
+        try {
+            value = Double.parseDouble(textField.getText());
 //            System.out.println("Raw string is " + textField.getText());
 //            System.out.println("Parsed value is " + value);
-			textField.setForeground(Color.black);
-		} catch (NumberFormatException ex) {
-			textField.setForeground(Color.red);
-		}
-		return value;//TODO must return default value for field
-	}
+            textField.setForeground(Color.black);
+        } catch (NumberFormatException ex) {
+            textField.setForeground(Color.red);
+        }
+        return value;//TODO must return default value for field
+    }
 
-	//TODO convert this from a keylistener to a keybinding, http://docs.oracle.com/javase/tutorial/uiswing/misc/keybinding.html
-	private static void parseSimulationParameters(KeyEvent evt) {
-		//check the current state of the fields
-		//parse the contents of the text field that should be active (based on the combos)
-		//and attach them to the graph as a Dynamics object
-		//attach the dynamics setting to the graph
-		double tauValue = parseValueOrColourComponentOnError(tau);
-		double gamaValue = parseValueOrColourComponentOnError(gama);
-		double deltaTValue = parseValueOrColourComponentOnError(deltaT);
-		double brakingRateValue = parseValueOrColourComponentOnError(breakingRate);
+    //TODO convert this from a keylistener to a keybinding, http://docs.oracle.com/javase/tutorial/uiswing/misc/keybinding.html
+    private static void parseSimulationParameters(KeyEvent evt) {
+        //check the current state of the fields
+        //parse the contents of the text field that should be active (based on the combos)
+        //and attach them to the graph as a Dynamics object
+        //attach the dynamics setting to the graph
+        double tauValue = parseValueOrColourComponentOnError(tau);
+        double gamaValue = parseValueOrColourComponentOnError(gama);
+        double deltaTValue = parseValueOrColourComponentOnError(deltaT);
+        double brakingRateValue = parseValueOrColourComponentOnError(breakingRate);
 
-		if (dynamics.getSelectedItem().toString().equals("SIR")) {
-			MyGraph.setUserDatum("dynamics",
-			new SIRDynamics(tauValue, deltaTValue, gamaValue));
-		} else if (dynamics.getSelectedItem().toString().equals("SIS")) {
-			MyGraph.setUserDatum("dynamics",
-			new SISDynamics(tauValue, deltaTValue, gamaValue, brakingRateValue));
-		} else {
-			MyGraph.setUserDatum("dynamics", new SIDynamics(tauValue, deltaTValue));
-		}
-		//attach the running simSleepTime to the graph
+        if (dynamics.getSelectedItem().toString().equals("SIR")) {
+            MyGraph.setUserDatum("dynamics",
+                    new SIRDynamics(tauValue, deltaTValue, gamaValue));
+        } else if (dynamics.getSelectedItem().toString().equals("SIS")) {
+            MyGraph.setUserDatum("dynamics",
+                    new SISDynamics(tauValue, deltaTValue, gamaValue, brakingRateValue));
+        } else {
+            MyGraph.setUserDatum("dynamics", new SIDynamics(tauValue, deltaTValue));
+        }
+        //attach the running simSleepTime to the graph
 //            MyGraph.setUserDatum("simSleepTime",
 //                    new Integer(Integer.parseInt(runTime.getText())));
 
-		//attach the speed multiplier to the graph
-		MyGraph.setUserDatum(Strings.simSleepTime, speedSlider.getValue());
-		//make sure the graphs is in a proper state
-		Controller.validateNodeStates();
-	}
+        //attach the speed multiplier to the graph
+        MyGraph.setUserDatum(Strings.simSleepTime, speedSlider.getValue());
+        //make sure the graphs is in a proper state
+        Controller.validateNodeStates();
+    }
 
-	/**
-	 * Initialises the display
-	 */
-	public static void redisplayCompletely() {
+    /**
+     * Initialises the display
+     */
+    public static void redisplayCompletely() {
 
 //        ObservableGraph g = new ObservableGraph(MyGraph.getInstance());
-		//clear all previous content
-		pane.removeAll();
-		pane.setLayout(new BorderLayout());
+        //clear all previous content
+        pane.removeAll();
+        pane.setLayout(new BorderLayout());
 
-		persistentLayout =
-		new PersistentLayoutImpl2<MyVertex, MyEdge>(getSelectedGraphLayout(MyGraph.getInstance()));
-		vv =
-		new VisualizationViewer<MyVertex, MyEdge>(persistentLayout, pane.getSize());
-		vv.setPreferredSize(new Dimension(350, 350));
-		vv.getRenderer().setVertexRenderer(
-		new CustomVertexRenderer(vv.getPickedVertexState(), false));
-		vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(Color.black));
-		vv.getRenderContext().setArrowFillPaintTransformer(new ConstantTransformer(Color.black));
-		vv.getRenderContext().setArrowDrawPaintTransformer(new ConstantTransformer(Color.black));
-		vv.getRenderContext().setVertexLabelTransformer(new CustomVertexLabeler());
-		vv.getRenderContext().setEdgeLabelTransformer(new CustomEdgeLabeller());
+        persistentLayout =
+                new PersistentLayoutImpl2<MyVertex, MyEdge>(getSelectedGraphLayout(MyGraph.getInstance()));
+        vv =
+                new VisualizationViewer<MyVertex, MyEdge>(persistentLayout, pane.getSize());
+        vv.setPreferredSize(new Dimension(350, 350));
+        vv.getRenderer().setVertexRenderer(
+                new CustomVertexRenderer(vv.getPickedVertexState(), false));
+        vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(Color.black));
+        vv.getRenderContext().setArrowFillPaintTransformer(new ConstantTransformer(Color.black));
+        vv.getRenderContext().setArrowDrawPaintTransformer(new ConstantTransformer(Color.black));
+        vv.getRenderContext().setVertexLabelTransformer(new CustomVertexLabeler());
+        vv.getRenderContext().setEdgeLabelTransformer(new CustomEdgeLabeller());
 //        vv.getRenderer().getVertexLabelRenderer().setPositioner(new InsidePositioner());
-		vv.getRenderer().getVertexLabelRenderer().setPositioner(new CenterLabelPositioner());
-		vv.getRenderer().getVertexLabelRenderer().setPosition(Renderer.VertexLabel.Position.AUTO);
+        vv.getRenderer().getVertexLabelRenderer().setPositioner(new CenterLabelPositioner());
+        vv.getRenderer().getVertexLabelRenderer().setPosition(Renderer.VertexLabel.Position.AUTO);
 
 
-		//#########  MOUSE  PLUGINS  ###############
-		graphMouse =
-		new CustomGraphMouse(vv.getRenderContext(), Controller.getVertexFactory(), Controller.getEdgeFactory());
+        //#########  MOUSE  PLUGINS  ###############
+        graphMouse =
+                new CustomGraphMouse(vv.getRenderContext(), Controller.getVertexFactory(), Controller.getEdgeFactory());
 
-		vv.setGraphMouse(graphMouse);
-		//put the mouse in the selected mode
-		if (select.isSelected()) {
-			graphMouse.setMode(ModalGraphMouse.Mode.PICKING);
-		} else if (transform.isSelected()) {
-			graphMouse.setMode(ModalGraphMouse.Mode.TRANSFORMING);
-		} else if (annotate.isSelected()) {
-			graphMouse.setMode(ModalGraphMouse.Mode.ANNOTATING);
-		} else if (edit.isSelected()) {
-			graphMouse.setMode(ModalGraphMouse.Mode.EDITING);
-		}
+        vv.setGraphMouse(graphMouse);
+        //put the mouse in the selected mode
+        if (select.isSelected()) {
+            graphMouse.setMode(ModalGraphMouse.Mode.PICKING);
+        } else if (transform.isSelected()) {
+            graphMouse.setMode(ModalGraphMouse.Mode.TRANSFORMING);
+        } else if (annotate.isSelected()) {
+            graphMouse.setMode(ModalGraphMouse.Mode.ANNOTATING);
+        } else if (edit.isSelected()) {
+            graphMouse.setMode(ModalGraphMouse.Mode.EDITING);
+        }
 
-		scaler = new CrossoverScalingControl();
-		annotationControls =
-		new AnnotationControls<MyVertex, MyEdge>(graphMouse.getAnnotatingPlugin());
+        scaler = new CrossoverScalingControl();
+        annotationControls =
+                new AnnotationControls<MyVertex, MyEdge>(graphMouse.getAnnotatingPlugin());
 
-		pane.add(vv, BorderLayout.CENTER);
+        pane.add(vv, BorderLayout.CENTER);
 
-		annotationControlsToolbar =
-		new JPanel();
+        annotationControlsToolbar =
+                new JPanel();
 //        JComboBox modeBox = graphMouse.getModeComboBox();
 //        controls.add(modeBox);
-		annotationControlsToolbar.add(annotationControls.getAnnotationsToolBar());
-		pane.add(annotationControlsToolbar, BorderLayout.SOUTH);
-		annotationControlsToolbar.setVisible(annotate.isSelected());
+        annotationControlsToolbar.add(annotationControls.getAnnotationsToolBar());
+        pane.add(annotationControlsToolbar, BorderLayout.SOUTH);
+        annotationControlsToolbar.setVisible(annotate.isSelected());
 
-		pane.setVisible(true);
-		pane.validate();
-		vv.repaint();
-		pane.repaint();
-		parseSimulationParameters(null);
-		//initially display nothing
-		recalculateStats(null);
-
-
-		/**
-		 * Generates an artificial mouse event to make the VisualizationViewer
-		 * repaint
-		 */
-		Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
-		new MouseEvent(pane, MouseEvent.MOUSE_MOVED, 0, 0, -1, -1, 2, false));
-
-	}
-
-	public static void redisplayPartially() {
-		pane.validate();
-		vv.repaint();
-		pane.repaint();
-		//Generates an artificial mouse event to make the VisualizationViewer repaint
-		Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
-		new MouseEvent(pane, MouseEvent.MOUSE_MOVED, 0, 0, -1, -1, 2, false));
-	}
-
-	public static void redisplayStatistics() {
+        pane.setVisible(true);
+        pane.validate();
+        vv.repaint();
+        pane.repaint();
+        parseSimulationParameters(null);
+        //initially display nothing
+        recalculateStats(null);
 
 
-		// Generates an artificial mouse event to make the VisualizationViewer repaint
-		Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
-		new MouseEvent(pane, MouseEvent.MOUSE_MOVED, 0, 0, -1, -1, 2, false));
+        /**
+         * Generates an artificial mouse event to make the VisualizationViewer
+         * repaint
+         */
+        Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
+                new MouseEvent(pane, MouseEvent.MOUSE_MOVED, 0, 0, -1, -1, 2, false));
 
-	}
+    }
+
+    public static void redisplayPartially() {
+        pane.validate();
+        vv.repaint();
+        pane.repaint();
+        //Generates an artificial mouse event to make the VisualizationViewer repaint
+        Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
+                new MouseEvent(pane, MouseEvent.MOUSE_MOVED, 0, 0, -1, -1, 2, false));
+    }
+
+    public static void redisplayStatistics() {
+
+
+        // Generates an artificial mouse event to make the VisualizationViewer repaint
+        Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
+                new MouseEvent(pane, MouseEvent.MOUSE_MOVED, 0, 0, -1, -1, 2, false));
+
+    }
 //    private JFreeChart createChart(Dataset simInfectedCount) {
 //        final JFreeChart result = ChartFactory.createTimeSeriesChart(
 //                "***TODO***", "hh:mm:ss", "milliVolts", dataset, true, true, true);
@@ -1637,150 +1642,149 @@ public class Display extends JFrame {
 //        return result;
 //    }
 
-	/**
-	 * Returns an appropriate layout based on the state of the layout selection
-	 * buttons
-	 *
-	 * @return
-	 */
-	public static Layout<MyVertex, MyEdge> getSelectedGraphLayout(Graph g) {
-		//ascii code of 0 is 48, 1 is 49, etc, and the menus have been assigned mnemonics from 0-5
-		int type = layouts.getSelection().getMnemonic() - 48;
+    /**
+     * Returns an appropriate layout based on the state of the layout selection
+     * buttons
+     *
+     * @return
+     */
+    public static Layout<MyVertex, MyEdge> getSelectedGraphLayout(Graph g) {
+        //ascii code of 0 is 48, 1 is 49, etc, and the menus have been assigned mnemonics from 0-5
+        int type = layouts.getSelection().getMnemonic() - 48;
 //        System.out.println("layout is: " + type);
-		Layout<MyVertex, MyEdge> l = null;
-		switch (type) {
-			case 0: {
-				l = new KKLayout<MyVertex, MyEdge>(g);
-				break;
-			}
-			case 1: {
-				l = new FRLayout<MyVertex, MyEdge>(g);
-				break;
-			}
-			case 2: {
-				l = new ISOMLayout<MyVertex, MyEdge>(g);
-				break;
-			}
-			case 3: {
-				l = new SpringLayout<MyVertex, MyEdge>(g);
+        Layout<MyVertex, MyEdge> l = null;
+        switch (type) {
+            case 0: {
+                l = new KKLayout<MyVertex, MyEdge>(g);
+                break;
+            }
+            case 1: {
+                l = new FRLayout<MyVertex, MyEdge>(g);
+                break;
+            }
+            case 2: {
+                l = new ISOMLayout<MyVertex, MyEdge>(g);
+                break;
+            }
+            case 3: {
+                l = new SpringLayout<MyVertex, MyEdge>(g);
 //                ((SpringLayout)layout).setForceMultiplier(10.0); //how close nodes are together
-				((SpringLayout) l).setRepulsionRange(10000);
-				break;
-			}
-			case 4: {
-				l = new CircleLayout<MyVertex, MyEdge>(g);
-				break;
-			}
-			case 5: {
-				l = new BalloonLayout<MyVertex, MyEdge>((Forest<MyVertex, MyEdge>) g);
-				break;
-			}
-			default: {
-				l = new KKLayout<MyVertex, MyEdge>(g);
-				break;
-			}
-		}
-		return l;
-	}
+                ((SpringLayout) l).setRepulsionRange(10000);
+                break;
+            }
+            case 4: {
+                l = new CircleLayout<MyVertex, MyEdge>(g);
+                break;
+            }
+            case 5: {
+                l = new BalloonLayout<MyVertex, MyEdge>((Forest<MyVertex, MyEdge>) g);
+                break;
+            }
+            default: {
+                l = new KKLayout<MyVertex, MyEdge>(g);
+                break;
+            }
+        }
+        return l;
+    }
 
-	/**
-	 * Based on AnimatingAddNodeDemo, should animate layout change
-	 */
-	public void changeLayout() {
-		try {
-			ObservableGraph g = new ObservableGraph(MyGraph.getInstance());
-			Layout oldLayout = vv.getGraphLayout();
-			Layout newLayout = getSelectedGraphLayout(g);
-			newLayout.setSize(oldLayout.getSize());
-			oldLayout.initialize();
-			Relaxer relaxer = new VisRunner((IterativeContext) oldLayout);
-			relaxer.stop();
-			relaxer.prerelax();
-			LayoutTransition<MyVertex, MyEdge> lt =
-			new LayoutTransition<MyVertex, MyEdge>(vv, oldLayout, newLayout);
-			Animator animator = new Animator(lt);
-			animator.start();
+    /**
+     * Based on AnimatingAddNodeDemo, should animate layout change
+     */
+    public void changeLayout() {
+        try {
+            ObservableGraph g = new ObservableGraph(MyGraph.getInstance());
+            Layout oldLayout = vv.getGraphLayout();
+            Layout newLayout = getSelectedGraphLayout(g);
+            newLayout.setSize(oldLayout.getSize());
+            oldLayout.initialize();
+            Relaxer relaxer = new VisRunner((IterativeContext) oldLayout);
+            relaxer.stop();
+            relaxer.prerelax();
+            LayoutTransition<MyVertex, MyEdge> lt =
+                    new LayoutTransition<MyVertex, MyEdge>(vv, oldLayout, newLayout);
+            Animator animator = new Animator(lt);
+            animator.start();
 //				vv.getRenderContext().getMultiLayerTransformer().setToIdentity();
-			vv.repaint();
+            vv.repaint();
 
-		} catch (Exception ex) {
-			System.out.println("Error while changing layout: " + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println("Error while changing layout: " + ex.getMessage());
 
-		}
+        }
 
-	}
+    }
 
-	/**
-	 * Enables external objects to change the layout
-	 *
-	 * @param newIndex The menu index of the desired new layout
-	 */
-	public void changeLayout(int newIndex) {
-		switch (newIndex) {
+    /**
+     * Enables external objects to change the layout
+     *
+     * @param newIndex The menu index of the desired new layout
+     */
+    public void changeLayout(int newIndex) {
+        switch (newIndex) {
 
-			case 0: {
-				kk.doClick();
-				break;
+            case 0: {
+                kk.doClick();
+                break;
 
-			}
-
-
-			case 1: {
-				fr.doClick();
-				break;
-
-			}
+            }
 
 
-			case 2: {
-				isom.doClick();
-				break;
+            case 1: {
+                fr.doClick();
+                break;
 
-			}
-
-
-			case 3: {
-				spring.doClick();
-				break;
-
-			}
+            }
 
 
-			case 4: {
-				circleL.doClick();
-				break;
+            case 2: {
+                isom.doClick();
+                break;
 
-			}
+            }
 
 
-		}
-	}
+            case 3: {
+                spring.doClick();
+                break;
 
-	/**
-	 * returns the index of the selectedvertex labeling option in the menu
-	 *
-	 * @return
-	 */
-	public static int getSelectedVertexLabelingOption() {
-		//the return type will begin with one of these options
-		//Degree, Clustering, Centrality, Label
-		//mnemonics here are set to A,B,C,D, so subtract 65 to get the selected index
-		return vertexLabel.getSelection().getMnemonic() - 65;
-	}
+            }
 
-	public static int getSelectedEdgeLabelingOption() {
-		//first one is H, so subtract 72
-		return edgeLabel.getSelection().getMnemonic() - 72;
-	}
 
-	private void zoomIn() {
-		scaler.scale(vv, 1.1f, vv.getCenter());
-	}
+            case 4: {
+                circleL.doClick();
+                break;
 
-	private void zoomOut() {
-		scaler.scale(vv, 1 / 1.1f, vv.getCenter());
-	}
+            }
 
+
+        }
+    }
+
+    /**
+     * returns the index of the selectedvertex labeling option in the menu
+     *
+     * @return
+     */
+    public static int getSelectedVertexLabelingOption() {
+        //the return type will begin with one of these options
+        //Degree, Clustering, Centrality, Label
+        //mnemonics here are set to A,B,C,D, so subtract 65 to get the selected index
+        return vertexLabel.getSelection().getMnemonic() - 65;
+    }
+
+    public static int getSelectedEdgeLabelingOption() {
+        //first one is H, so subtract 72
+        return edgeLabel.getSelection().getMnemonic() - 72;
+    }
+
+    private void zoomIn() {
+        scaler.scale(vv, 1.1f, vv.getCenter());
+    }
+
+    private void zoomOut() {
+        scaler.scale(vv, 1 / 1.1f, vv.getCenter());
+    }
 	// Variables declaration - do not modify//GEN-BEGIN:variables
 	static javax.swing.JToggleButton annotate;
 	private static javax.swing.JTextField breakingRate;
@@ -1880,15 +1884,15 @@ public class Display extends JFrame {
 	static javax.swing.JButton zoomOutToolbar;
 	// End of variables declaration//GEN-END:variables
 
-	/**
-	 * @return the graphMouse
-	 */
-	ModalGraphMouse getGraphMouse() {
-		return graphMouse;
-	}
+    /**
+     * @return the graphMouse
+     */
+    ModalGraphMouse getGraphMouse() {
+        return graphMouse;
+    }
 
-	public enum Mode {
+    public enum Mode {
 
-		NORMAL, SF_INTERACTIVE, SW_INTERACTIVE
-	}
+        NORMAL, SF_INTERACTIVE, SW_INTERACTIVE
+    }
 }
