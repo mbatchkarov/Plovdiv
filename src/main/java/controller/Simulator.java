@@ -36,6 +36,7 @@ package controller;
 
 import cern.jet.random.engine.MersenneTwister;
 import edu.uci.ics.jung.graph.util.Pair;
+import java.awt.FlowLayout;
 import model.*;
 import model.dynamics.Dynamics;
 import model.dynamics.SISDynamics;
@@ -73,18 +74,17 @@ public class Simulator {
     private Double infectionProb;
     private int sleepTime;
     private Dynamics d;
-    private int numSteps;
+//    private int numSteps;
     private volatile int stepNumber;
     private double beta;
     private CircularFifoBuffer<Integer> xValues;
     private CircularFifoBuffer<Integer> yValues;
-    private JFrame statsFrame;
     private boolean doOneStepOnly;
-
+    
     public Simulator() {
 //        this.g = g;
+        stepNumber = 0;//TODO this must not be set here
         mt = new MersenneTwister();
-
         sleepTime = 200;
         doOneStepOnly = false;
         thread = new SimModelThread("sim-thread");
@@ -92,9 +92,9 @@ public class Simulator {
         thread.start();
         thread.pause();
     }
-
+    
     private void doStep(double beta, MyGraph<MyVertex, MyEdge> g, Double recProb, Double infProb) {
-        System.out.println("Doing step " + stepNumber + " in thread " + Thread.currentThread().getName());
+//        System.out.println("Doing step " + stepNumber + " in thread " + Thread.currentThread().getName());
         Collection<MyEdge> edges = g.getEdges();
         Collection<MyVertex> vertices = g.getVertices();
         //make sure all nodes have a next state
@@ -114,7 +114,7 @@ public class Simulator {
                 this.checkForInfection(first, current, infProb, beta, edgesToAdd);
             }
         }
-
+        
         for (MyVertex current : vertices) {//for all nodes check for recovery
             if (current.getUserDatum(Strings.state).equals(EpiState.INFECTED)) {
                 this.checkForRecovery(current, recProb);
@@ -143,12 +143,12 @@ public class Simulator {
      * @return
      */
     private ChartPanel getPanelForDisplay(CircularFifoBuffer<Integer> x, CircularFifoBuffer<Integer> y) {
-
+        
         Integer[] xarr = new Integer[x.size()];
         Integer[] yarr = new Integer[y.size()];
         xarr = x.toArray(xarr);
         yarr = y.toArray(yarr);
-
+        
         XYSeries series1 = new XYSeries("Infected vertices");
         for (int i = 0; i < xarr.length; i++) {
             series1.add(xarr[i], yarr[i]);
@@ -158,37 +158,40 @@ public class Simulator {
 
         // create the chart
         JFreeChart jfreechart = ChartFactory.createXYLineChart("Infected vertices vs Time steps", "Time steps", "Individuals",
-                dataset, PlotOrientation.VERTICAL, true, true, true);
+                dataset, PlotOrientation.VERTICAL, false, false, false);
         XYPlot xyPlot = (XYPlot) jfreechart.getPlot();
-        NumberAxis domain = (NumberAxis) xyPlot.getRangeAxis();
-        domain.setRange(0, MyGraph.getInstance().getVertexCount());
-        domain.setTickUnit(new NumberTickUnit(5));
+        NumberAxis yAxis = (NumberAxis) xyPlot.getRangeAxis();
+        yAxis.setRange(0, MyGraph.getInstance().getVertexCount());
+        yAxis.setTickUnit(new NumberTickUnit(5));
+        
+        NumberAxis xAxis = (NumberAxis) xyPlot.getDomainAxis();
+        xAxis.setAutoRange(true);
 
         //optional customization
-        return new ChartPanel(jfreechart);
+        return new ChartPanel(jfreechart, true, false, false, false, false);
     }
-
+    
     public void stopSim() {
         thread.die();
     }
-
+    
     public void pauseSim() {
         thread.pause();
     }
-
-    public void setNumSteps(int n) {
-        numSteps = n;
-    }
+//
+//    public void setNumSteps(int n) {
+//        numSteps = n;
+//    }
 
     public void resumeSim() {
         thread.unpause();
     }
-
+    
     public void resumeSimForOneStep() {
         this.doOneStepOnly = true;
         thread.unpause();
     }
-
+    
     public void startSim() {
         thread.start();
     }
@@ -203,7 +206,7 @@ public class Simulator {
         int ans = 0;
         for (Object o : MyGraph.getInstance().getNeighbors(v)) {
             MyVertex current = (MyVertex) o;
-
+            
             if (current.getUserDatum(Strings.state).equals(EpiState.INFECTED)) {
                 ans++;
             }
@@ -213,21 +216,22 @@ public class Simulator {
 
     /**
      * Checks if the SUSCEPTIBLE node vertex second will get infected at this
-     * time step and colour the edge from which the infection came The vertex is
-     * assumed vy this method to have been in contact with an infected node
+     * simSleepTime step and colour the edge from which the infection came The
+     * vertex is assumed vy this method to have been in contact with an infected
+     * node
      *
      * @param vertex the vertex
      */
     private void checkForInfection(MyVertex vertex, MyEdge currentEdge, double infProb, double beta,
             HashMap<MyEdge, Pair> edgesToAdd) {
-        System.out.println("checking for infection in thread " + Thread.currentThread().getName());
+//        System.out.println("checking for infection in thread " + Thread.currentThread().getName());
         //compute a random probability
         Double randomProb = Math.abs((double) mt.nextInt() / new Double(Integer.MAX_VALUE));
         //if this chap is unlucky
         if (randomProb < infProb) {
-
+            
             Double randomProb1 = Math.abs((double) mt.nextInt() / (double) Integer.MAX_VALUE);
-
+            
             if (randomProb1 < d.getTau() / (d.getTau() + beta)) {//see email 21 DEC 1009, 13:16
                 //put in the "waiting list" to be infected
                 vertex.setUserDatum(Strings.next, d.getNextState(vertex));
@@ -270,7 +274,7 @@ public class Simulator {
                 }
             }
         }
-
+        
     }
 
     /**
@@ -281,7 +285,7 @@ public class Simulator {
      */
     private void checkForRecovery(MyVertex vertex, double recProb) {
 //        compute a random number
-        System.out.println("checking for recovery in thread " + Thread.currentThread().getName());
+//        System.out.println("checking for recovery in thread " + Thread.currentThread().getName());
         double randomProb = Math.abs((double) mt.nextInt() / (double) Integer.MAX_VALUE);
         if (randomProb < recProb) {
             //put this vertex on the "waiting list" for recovery
@@ -300,6 +304,7 @@ public class Simulator {
      * @author Miroslav Batchkarov
      */
     class SimModelThread extends Thread {
+        private static final int WINDOW_WIDTH = 50;
 
         /**
          * Is the thread suspended?
@@ -312,18 +317,19 @@ public class Simulator {
         private volatile boolean alive;
 
         /**
-         * The time in milliseconds this thread sleeps after a call to doStep()
+         * The simSleepTime in milliseconds this thread sleeps after a call to
+         * doStep()
          */
 //        private int sleepTime;
         /**
-         * Returns the current sleep time
+         * Returns the current sleep simSleepTime
          */
 //        public int getSleepTime() {
 //            return sleepTime;
 //        }
 //
 //        /**
-//         * Sets the sleep time
+//         * Sets the sleep simSleepTime
 //         */
 //        public void setSleepTime(int s) {
 //            sleepTime = s;
@@ -372,12 +378,12 @@ public class Simulator {
          * Invokes Model.doStep() and sleeps for sleepTime milliseconds
          */
         public void run() {
-            statsFrame = new JFrame("Epidemics statistics");
-            statsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-            statsFrame.setVisible(true);
+//            statsPanel = new JFrame("Epidemics statistics");
+//            statsPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+//            statsPanel.setVisible(true);
 
-            xValues = new CircularFifoBuffer<Integer>(100);
-            yValues = new CircularFifoBuffer<Integer>(100);
+            xValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
+            yValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
 
             //main loop
             while (alive) {
@@ -397,7 +403,7 @@ public class Simulator {
                         doOneStepOnly = false;
                         pause();
                     }
-
+                    
                 } catch (InterruptedException e) {
                     System.err.println("Interrupted");
                     e.printStackTrace();
@@ -406,51 +412,55 @@ public class Simulator {
             System.out.println("Alive: " + isAlive());
             System.out.println("Running: " + isRunning());
             System.out.println("Step no " + stepNumber);
-
+            
         }
-
+        
         private void readSimSettingsFromGraph() {
             //get simulation parameters
-            stepNumber = 0;//TODO this must not be set here
-//            numSteps = (Integer) MyGraph.getUserDatum(Strings.time);
+//            numSteps = (Integer) MyGraph.getUserDatum(Strings.simSleepTime);
 //            sleepTime = (Integer) MyGraph.getUserDatum(Strings.speed);
             d = (Dynamics) MyGraph.getUserDatum(Strings.dynamics);
-
+            
             beta = 0;
             if (d instanceof SISDynamics) {
                 beta = ((SISDynamics) d).getEdgeBreakingRate();
             }
+            sleepTime = (Integer) MyGraph.getUserDatum(Strings.simSleepTime);
 
             //probabilities based on per-link traversal of the graph
             //probability of recovery is constant, and in this case so is the infection probability
             recoveryProb = 1d - Math.exp((-1 * (d.getGama() * d.getDeltaT())));
             infectionProb = 1d - Math.exp((-1 * ((d.getTau() + beta) * d.getDeltaT())));
-            System.out.println("tau " + d.getTau());
-            System.out.println("deltaT" + d.getDeltaT());
-            System.out.println("gama " + d.getGama());
-            System.out.println("recovery prob " + recoveryProb);
-            System.out.println("inf prob " + infectionProb);
-            System.out.println("sleep time " + sleepTime);
-            System.out.println("required steps " + numSteps);
-//            int numSteps = (int) ((double) time / d.getDeltaT());
+//            System.out.println("tau " + d.getTau());
+//            System.out.println("deltaT" + d.getDeltaT());
+//            System.out.println("gama " + d.getGama());
+//            System.out.println("recovery prob " + recoveryProb);
+//            System.out.println("inf prob " + infectionProb);
+//            System.out.println("sleep time " + sleepTime);
+//            System.out.println("required steps " + numSteps);
+//            int numSteps = (int) ((double) simSleepTime / d.getDeltaT());
         }
     }
-
+    
     public void doStepWithCurrentSettings() {
-        System.out.println("Doing step " + stepNumber + " in thread " + Thread.currentThread().getName());
+//        System.out.println("Doing step " + stepNumber + " in thread " + Thread.currentThread().getName());
         doStep(beta, MyGraph.getInstance(), recoveryProb, infectionProb);
         Display.redisplayPartially();
-        updateStatisticsDisplay(statsFrame);
+        updateStatisticsDisplay(Display.getStatsPanel());//todo del this
+        stepNumber++;
     }
-
-    private void updateStatisticsDisplay(JFrame frame) {
-        xValues.add(stepNumber++);
+    
+    private void updateStatisticsDisplay(JPanel statsPanel) {
+//        System.out.println("updating stats frame in thread " + Thread.currentThread().getName());
+        xValues.add(stepNumber);
         yValues.add((Integer) MyGraph.getUserDatum(Strings.numInfected));
         ChartPanel panel = getPanelForDisplay(xValues, yValues);
-        frame.setContentPane(panel);
-        frame.pack();
-        frame.validate();
-        frame.repaint();
+        statsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        statsPanel.removeAll();
+        statsPanel.add(panel);
+        statsPanel.setPreferredSize(statsPanel.getPreferredSize());
+        statsPanel.validate();
+        statsPanel.revalidate();
         panel.repaint();
     }
 }
