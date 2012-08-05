@@ -303,7 +303,7 @@ public class Stats {
     private static double weightedDegree(Object v) {
         if (v instanceof MyVertex) {
             double res = 0;
-            for (Object e : MyGraph.getInstance().getOutEdges(v)) {
+            for (Object e : MyGraph.getInstance().getOutEdges((MyVertex)v)) {
                 res += ((MyEdge) e).getWeigth();
             }
             return round(res);
