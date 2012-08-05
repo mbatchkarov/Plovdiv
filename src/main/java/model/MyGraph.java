@@ -162,4 +162,12 @@ public class MyGraph<V, E> extends OrderedSparseMultigraph<V, E> implements Seri
     public static Object getUserDatum(Object key) {
         return userData.get(key);
     }
+
+    public static Object getUserDatum(Object key, Object defaultValue) {
+        if (userData.containsKey(key)) {
+            return userData.get(key);
+        } else {
+            return defaultValue;
+        }
+    }
 }

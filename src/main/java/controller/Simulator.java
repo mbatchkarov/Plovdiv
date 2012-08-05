@@ -80,19 +80,24 @@ public class Simulator {
     private CircularFifoBuffer<Integer> xValues;
     private CircularFifoBuffer<Integer> yValues;
     private boolean doOneStepOnly;
-    
+    private static final int WINDOW_WIDTH = 50;
+
     public Simulator() {
 //        this.g = g;
         stepNumber = 0;//TODO this must not be set here
         mt = new MersenneTwister();
         sleepTime = 200;
         doOneStepOnly = false;
+
+        xValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
+        yValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
+
         thread = new SimModelThread("sim-thread");
         //stuff below needed?
         thread.start();
         thread.pause();
     }
-    
+
     private void doStep(double beta, MyGraph<MyVertex, MyEdge> g, Double recProb, Double infProb) {
 //        System.out.println("Doing step " + stepNumber + " in thread " + Thread.currentThread().getName());
         Collection<MyEdge> edges = g.getEdges();
@@ -114,7 +119,7 @@ public class Simulator {
                 this.checkForInfection(first, current, infProb, beta, edgesToAdd);
             }
         }
-        
+
         for (MyVertex current : vertices) {//for all nodes check for recovery
             if (current.getUserDatum(Strings.state).equals(EpiState.INFECTED)) {
                 this.checkForRecovery(current, recProb);
@@ -143,12 +148,12 @@ public class Simulator {
      * @return
      */
     private ChartPanel getPanelForDisplay(CircularFifoBuffer<Integer> x, CircularFifoBuffer<Integer> y) {
-        
+
         Integer[] xarr = new Integer[x.size()];
         Integer[] yarr = new Integer[y.size()];
         xarr = x.toArray(xarr);
         yarr = y.toArray(yarr);
-        
+
         XYSeries series1 = new XYSeries("Infected vertices");
         for (int i = 0; i < xarr.length; i++) {
             series1.add(xarr[i], yarr[i]);
@@ -163,35 +168,31 @@ public class Simulator {
         NumberAxis yAxis = (NumberAxis) xyPlot.getRangeAxis();
         yAxis.setRange(0, MyGraph.getInstance().getVertexCount());
         yAxis.setTickUnit(new NumberTickUnit(5));
-        
+
         NumberAxis xAxis = (NumberAxis) xyPlot.getDomainAxis();
         xAxis.setAutoRange(true);
 
         //optional customization
         return new ChartPanel(jfreechart, true, false, false, false, false);
     }
-    
+
     public void stopSim() {
         thread.die();
     }
-    
+
     public void pauseSim() {
         thread.pause();
     }
-//
-//    public void setNumSteps(int n) {
-//        numSteps = n;
-//    }
 
     public void resumeSim() {
         thread.unpause();
     }
-    
+
     public void resumeSimForOneStep() {
         this.doOneStepOnly = true;
         thread.unpause();
     }
-    
+
     public void startSim() {
         thread.start();
     }
@@ -206,7 +207,7 @@ public class Simulator {
         int ans = 0;
         for (Object o : MyGraph.getInstance().getNeighbors(v)) {
             MyVertex current = (MyVertex) o;
-            
+
             if (current.getUserDatum(Strings.state).equals(EpiState.INFECTED)) {
                 ans++;
             }
@@ -229,9 +230,9 @@ public class Simulator {
         Double randomProb = Math.abs((double) mt.nextInt() / new Double(Integer.MAX_VALUE));
         //if this chap is unlucky
         if (randomProb < infProb) {
-            
+
             Double randomProb1 = Math.abs((double) mt.nextInt() / (double) Integer.MAX_VALUE);
-            
+
             if (randomProb1 < d.getTau() / (d.getTau() + beta)) {//see email 21 DEC 1009, 13:16
                 //put in the "waiting list" to be infected
                 vertex.setUserDatum(Strings.next, d.getNextState(vertex));
@@ -274,7 +275,7 @@ public class Simulator {
                 }
             }
         }
-        
+
     }
 
     /**
@@ -296,6 +297,21 @@ public class Simulator {
         }
     }
 
+    public void updateStatisticsDisplay() {
+        JPanel statsPanel = Display.getStatsPanel();
+//        System.out.println("updating stats frame in thread " + Thread.currentThread().getName());
+        xValues.add(stepNumber);
+        yValues.add((Integer) MyGraph.getUserDatum(Strings.numInfected, 0));
+        ChartPanel panel = getPanelForDisplay(xValues, yValues);
+        statsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        statsPanel.removeAll();
+        statsPanel.add(panel);
+        statsPanel.setPreferredSize(statsPanel.getPreferredSize());
+        statsPanel.validate();
+        statsPanel.revalidate();
+        panel.repaint();
+    }
+
     /**
      * A thread to run the simulation in. Based on code from Green Light
      * District: http://sourceforge.net/projects/stoplicht/
@@ -304,7 +320,6 @@ public class Simulator {
      * @author Miroslav Batchkarov
      */
     class SimModelThread extends Thread {
-        private static final int WINDOW_WIDTH = 50;
 
         /**
          * Is the thread suspended?
@@ -316,27 +331,6 @@ public class Simulator {
          */
         private volatile boolean alive;
 
-        /**
-         * The simSleepTime in milliseconds this thread sleeps after a call to
-         * doStep()
-         */
-//        private int sleepTime;
-        /**
-         * Returns the current sleep simSleepTime
-         */
-//        public int getSleepTime() {
-//            return sleepTime;
-//        }
-//
-//        /**
-//         * Sets the sleep simSleepTime
-//         */
-//        public void setSleepTime(int s) {
-//            sleepTime = s;
-//        }
-        /**
-         * Starts the thread.
-         */
         public SimModelThread(String name) {
             super(name);
             alive = true;
@@ -378,13 +372,6 @@ public class Simulator {
          * Invokes Model.doStep() and sleeps for sleepTime milliseconds
          */
         public void run() {
-//            statsPanel = new JFrame("Epidemics statistics");
-//            statsPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//            statsPanel.setVisible(true);
-
-            xValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
-            yValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
-
             //main loop
             while (alive) {
                 try {
@@ -403,7 +390,7 @@ public class Simulator {
                         doOneStepOnly = false;
                         pause();
                     }
-                    
+
                 } catch (InterruptedException e) {
                     System.err.println("Interrupted");
                     e.printStackTrace();
@@ -412,15 +399,13 @@ public class Simulator {
             System.out.println("Alive: " + isAlive());
             System.out.println("Running: " + isRunning());
             System.out.println("Step no " + stepNumber);
-            
+
         }
-        
+
         private void readSimSettingsFromGraph() {
             //get simulation parameters
-//            numSteps = (Integer) MyGraph.getUserDatum(Strings.simSleepTime);
-//            sleepTime = (Integer) MyGraph.getUserDatum(Strings.speed);
             d = (Dynamics) MyGraph.getUserDatum(Strings.dynamics);
-            
+
             beta = 0;
             if (d instanceof SISDynamics) {
                 beta = ((SISDynamics) d).getEdgeBreakingRate();
@@ -441,28 +426,13 @@ public class Simulator {
 //            int numSteps = (int) ((double) simSleepTime / d.getDeltaT());
         }
     }
-    
+
     public void doStepWithCurrentSettings() {
 //        System.out.println("Doing step " + stepNumber + " in thread " + Thread.currentThread().getName());
         doStep(beta, MyGraph.getInstance(), recoveryProb, infectionProb);
         Display.redisplayPartially();
-        //maybe do 
-        Display.redisplayStatistics();
-        updateStatisticsDisplay(Display.getStatsPanel());//todo del this
+//        Display.redisplayStatistics();
+        updateStatisticsDisplay();//todo del this
         stepNumber++;
-    }
-    
-    private void updateStatisticsDisplay(JPanel statsPanel) {
-//        System.out.println("updating stats frame in thread " + Thread.currentThread().getName());
-        xValues.add(stepNumber);
-        yValues.add((Integer) MyGraph.getUserDatum(Strings.numInfected));
-        ChartPanel panel = getPanelForDisplay(xValues, yValues);
-        statsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        statsPanel.removeAll();
-        statsPanel.add(panel);
-        statsPanel.setPreferredSize(statsPanel.getPreferredSize());
-        statsPanel.validate();
-        statsPanel.revalidate();
-        panel.repaint();
     }
 }

@@ -62,7 +62,7 @@ public class InfectDisp extends javax.swing.JFrame {
     public InfectDisp(MyGraph g) {
         this.g = g;
         initComponents();
-        int numInf = Integer.parseInt(MyGraph.getUserDatum(Strings.numInfected).toString());
+        int numInf = Integer.parseInt(MyGraph.getUserDatum(Strings.numInfected, 0).toString());
         max.setText("Value should be between 0 and " + (g.getVertexCount() - numInf));
         setVisible(true);
     }

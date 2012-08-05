@@ -105,6 +105,7 @@ public class Display extends JFrame {
     private Mode mode;
     //the stats display associated with this window
     StatsThread st;
+    private static volatile boolean guiEnabled = true;
 
     /**
      * Creates new form Display
@@ -259,6 +260,8 @@ public class Display extends JFrame {
         pauseSimToolbarButton = new javax.swing.JButton();
         doStepToolbarButton = new javax.swing.JButton();
         enableGUIToolbarCheckbox = new javax.swing.JCheckBox();
+        jButton1 = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         menuFile = new javax.swing.JMenu();
         newDoc = new javax.swing.JMenuItem();
@@ -292,13 +295,11 @@ public class Display extends JFrame {
         spring = new javax.swing.JRadioButtonMenuItem();
         circleL = new javax.swing.JRadioButtonMenuItem();
         menuSimulation = new javax.swing.JMenu();
-        simRun = new javax.swing.JMenuItem();
-        simRunUntil = new javax.swing.JMenuItem();
         simPauseMenuItem = new javax.swing.JMenuItem();
-        simStop = new javax.swing.JMenuItem();
+        jMenuItem1 = new javax.swing.JMenuItem();
         jSeparator13 = new javax.swing.JSeparator();
-        infect = new javax.swing.JMenuItem();
-        setSusceptible = new javax.swing.JMenuItem();
+        infectButton = new javax.swing.JMenuItem();
+        healAllButton = new javax.swing.JMenuItem();
         menuHelp = new javax.swing.JMenu();
         helpHowTo = new javax.swing.JMenuItem();
         helpAbout = new javax.swing.JMenuItem();
@@ -720,6 +721,7 @@ public class Display extends JFrame {
         pauseSimToolbarButton.setText("Resume");
         pauseSimToolbarButton.setFocusable(false);
         pauseSimToolbarButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        pauseSimToolbarButton.setSize(new java.awt.Dimension(93, 29));
         pauseSimToolbarButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         pauseSimToolbarButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -746,6 +748,20 @@ public class Display extends JFrame {
             }
         });
 
+        jButton1.setText("Infect...");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
+        jButton2.setText("Heal all");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
@@ -756,9 +772,12 @@ public class Display extends JFrame {
                     .addComponent(enableGUIToolbarCheckbox)
                     .addGroup(jPanel4Layout.createSequentialGroup()
                         .addGap(22, 22, 22)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(doStepToolbarButton)
-                            .addComponent(pauseSimToolbarButton)))))
+                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jButton1)
+                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(doStepToolbarButton)
+                                .addComponent(pauseSimToolbarButton))
+                            .addComponent(jButton2)))))
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -768,8 +787,12 @@ public class Display extends JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(doStepToolbarButton)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jButton2)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(enableGUIToolbarCheckbox)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(70, 70, 70))
         );
 
         menuFile.setText("File");
@@ -1026,24 +1049,7 @@ public class Display extends JFrame {
 
         menuSimulation.setText("Simulation");
 
-        simRun.setText("Run until infinity");
-        simRun.setEnabled(false);
-        simRun.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                simRunActionPerformed(evt);
-            }
-        });
-        menuSimulation.add(simRun);
-
-        simRunUntil.setText("Run until...");
-        simRunUntil.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                simRunUntilActionPerformed(evt);
-            }
-        });
-        menuSimulation.add(simRunUntil);
-
-        simPauseMenuItem.setText("Pause");
+        simPauseMenuItem.setText("Pause/ Resume");
         simPauseMenuItem.setEnabled(false);
         simPauseMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1052,30 +1058,30 @@ public class Display extends JFrame {
         });
         menuSimulation.add(simPauseMenuItem);
 
-        simStop.setText("Stop");
-        simStop.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItem1.setText("Do step");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                simStopActionPerformed(evt);
+                jMenuItem1ActionPerformed(evt);
             }
         });
-        menuSimulation.add(simStop);
+        menuSimulation.add(jMenuItem1);
         menuSimulation.add(jSeparator13);
 
-        infect.setText("Infect nodes...");
-        infect.addActionListener(new java.awt.event.ActionListener() {
+        infectButton.setText("Infect nodes...");
+        infectButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                infectActionPerformed(evt);
+                infectButtonActionPerformed(evt);
             }
         });
-        menuSimulation.add(infect);
+        menuSimulation.add(infectButton);
 
-        setSusceptible.setText("Set all to susceptible");
-        setSusceptible.addActionListener(new java.awt.event.ActionListener() {
+        healAllButton.setText("Heal all nodes");
+        healAllButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                setSusceptibleActionPerformed(evt);
+                healAllButtonActionPerformed(evt);
             }
         });
-        menuSimulation.add(setSusceptible);
+        menuSimulation.add(healAllButton);
 
         jMenuBar1.add(menuSimulation);
 
@@ -1135,8 +1141,8 @@ public class Display extends JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(jToolBar1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(statsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(8, 8, 8)
@@ -1250,59 +1256,22 @@ public class Display extends JFrame {
 
     }//GEN-LAST:event_dumbToJpgActionPerformed
 
-    private void simRunActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simRunActionPerformed
-        MyGraph g = MyGraph.getInstance(); //get once, use twice, to save processor simSleepTime
-        if (g != null) {
-            RunSettingsNew r = new RunSettingsNew(g, false);//run for MAX_INT steps
-            //tell simulator where to display simulation, this gets decoupled if user clicks cancel
-            //or after simulation completes
-//            Controller.initSim(g, vv);
-        } else {
-            Exceptions.showNoGraphWarning();
-        }
-    }//GEN-LAST:event_simRunActionPerformed
-
-    private void simRunUntilActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simRunUntilActionPerformed
-        MyGraph g = MyGraph.getInstance(); //get once, use twice, to save processor simSleepTime
-        if (g != null) {
-            //gather data
-            RunSettingsNew r = new RunSettingsNew(g, true);//ask how many steps
-
-            //tell simulator where to display simulation, this gets decoupled if user clicks cancel
-            //or after simulation completes
-//            Controller.initSim(g, vv);
-        } else {
-            Exceptions.showNoGraphWarning();
-        }
-
-        //        c.runSimulation(this.MyGraph.getInstance());
-        //        c.setSimulationDisplay(null);//decouple the simulator from the display
-    }//GEN-LAST:event_simRunUntilActionPerformed
-
-    private void simStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simStopActionPerformed
-        try {
-            Controller.stopSim();
-        } catch (NullPointerException e) {
-            Exceptions.showNoGraphWarning();
-        }
-    }//GEN-LAST:event_simStopActionPerformed
-
-    private void infectActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infectActionPerformed
+    private void infectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infectButtonActionPerformed
 //        try {
         InfectDisp d = new InfectDisp(MyGraph.getInstance());
 //        } catch (NullPointerException e) {
 //            Exceptions.showNoGraphWarning();
 //        }
-    }//GEN-LAST:event_infectActionPerformed
+    }//GEN-LAST:event_infectButtonActionPerformed
 
-    private void setSusceptibleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_setSusceptibleActionPerformed
+    private void healAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_healAllButtonActionPerformed
         if (MyGraph.getInstance() != null) {
             Controller.setAllSusceptible();
             vv.repaint();
         } else {
             Exceptions.showNoGraphWarning();
         }
-    }//GEN-LAST:event_setSusceptibleActionPerformed
+    }//GEN-LAST:event_healAllButtonActionPerformed
 
     private void helpHowToActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_helpHowToActionPerformed
         JOptionPane.showMessageDialog(this, Strings.help);
@@ -1389,24 +1358,37 @@ public class Display extends JFrame {
     }//GEN-LAST:event_eNoneActionPerformed
 
     private void pauseSimToolbarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_pauseSimToolbarButtonActionPerformed
-        String currText = pauseSimToolbarButton.getText().toLowerCase();
-        if (currText.equals("pause")) {
-            pauseSimToolbarButton.setText("Resume");
-            Controller.pauseSim();
-        } else {
-            pauseSimToolbarButton.setText("Pause");
-            Controller.resumeSim();
+        if (checkEmptyPopupError()) {
+            String currText = pauseSimToolbarButton.getText().toLowerCase();
+            if (currText.trim().equals("pause")) {
+                pauseSimToolbarButton.setText("Resume");
+                Controller.pauseSim();
+            } else {
+                pauseSimToolbarButton.setText("Pause   ");
+                Controller.resumeSim();
+            }
         }
-
     }//GEN-LAST:event_pauseSimToolbarButtonActionPerformed
 
+    public boolean checkEmptyPopupError() {
+        if (MyGraph.getInstance().getVertexCount() < 1) {
+            JOptionPane.showMessageDialog(this, "That makes no sense whan the graph is empty!");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     private void doStepToolbarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doStepToolbarButtonActionPerformed
-//        Controller.doStepWithCurrentSettings();
-        Controller.resumeSimForOneStep();
+        if (checkEmptyPopupError()) {
+            checkEmptyPopupError();
+            Controller.resumeSimForOneStep();
+        }
     }//GEN-LAST:event_doStepToolbarButtonActionPerformed
 
     private void enableGUIToolbarCheckboxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_enableGUIToolbarCheckboxActionPerformed
-        // TODO add your handling code here:
+        this.guiEnabled = enableGUIToolbarCheckbox.isSelected();
+        this.vv.setEnabled(guiEnabled);
     }//GEN-LAST:event_enableGUIToolbarCheckboxActionPerformed
 
     private void simPauseMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simPauseMenuItemActionPerformed
@@ -1474,12 +1456,33 @@ public class Display extends JFrame {
     }//GEN-LAST:event_deltaTKeyReleased
 
     private void showDDToolbarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showDDToolbarActionPerformed
-        // TODO add your handling code here:
+        if (checkEmptyPopupError()) {
+            checkEmptyPopupError();
+            new StatsThread().start();
+        }
     }//GEN-LAST:event_showDDToolbarActionPerformed
 
     private void editActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_editActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_editActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        doStepToolbarButton.doClick();
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        if (checkEmptyPopupError()) {
+            checkEmptyPopupError();
+            infectButton.doClick();
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        if (checkEmptyPopupError()) {
+            checkEmptyPopupError();
+            healAllButton.doClick();
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     public static JPanel getStatsPanel() {
         return statsPanel;
@@ -1612,99 +1615,16 @@ public class Display extends JFrame {
 
     public static void redisplayPartially() {
 
-//        ObservableGraph g = new ObservableGraph(MyGraph.getInstance());
-        //clear all previous content
-//        pane.removeAll();
-//        pane.setLayout(new BorderLayout());
-//
-//        persistentLayout =
-//                new PersistentLayoutImpl2<MyVertex, MyEdge>(getSelectedGraphLayout(MyGraph.getInstance()));
-//        vv =
-//                new VisualizationViewer<MyVertex, MyEdge>(persistentLayout, pane.getSize());
-//        vv.setPreferredSize(new Dimension(350, 350));
-//        vv.getRenderer().setVertexRenderer(
-//                new CustomVertexRenderer(vv.getPickedVertexState(), false));
-//        vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(Color.black));
-//        vv.getRenderContext().setArrowFillPaintTransformer(new ConstantTransformer(Color.black));
-//        vv.getRenderContext().setArrowDrawPaintTransformer(new ConstantTransformer(Color.black));
-//        vv.getRenderContext().setVertexLabelTransformer(new CustomVertexLabeler());
-//        vv.getRenderContext().setEdgeLabelTransformer(new CustomEdgeLabeller());
-////        vv.getRenderer().getVertexLabelRenderer().setPositioner(new InsidePositioner());
-//        vv.getRenderer().getVertexLabelRenderer().setPositioner(new CenterLabelPositioner());
-//        vv.getRenderer().getVertexLabelRenderer().setPosition(Renderer.VertexLabel.Position.AUTO);
-//
-//
-//        //#########  MOUSE  PLUGINS  ###############
-//        graphMouse =
-//                new CustomGraphMouse(vv.getRenderContext(), Controller.getVertexFactory(), Controller.getEdgeFactory());
-//
-//        vv.setGraphMouse(graphMouse);
-//        //put the mouse in the selected mode
-//        if (select.isSelected()) {
-//            graphMouse.setMode(ModalGraphMouse.Mode.PICKING);
-//        } else if (transform.isSelected()) {
-//            graphMouse.setMode(ModalGraphMouse.Mode.TRANSFORMING);
-//        } else if (annotate.isSelected()) {
-//            graphMouse.setMode(ModalGraphMouse.Mode.ANNOTATING);
-//        } else if (edit.isSelected()) {
-//            graphMouse.setMode(ModalGraphMouse.Mode.EDITING);
-//        }
-//
-//        scaler = new CrossoverScalingControl();
-//        annotationControls =
-//                new AnnotationControls<MyVertex, MyEdge>(graphMouse.getAnnotatingPlugin());
-//
-//        pane.add(vv, BorderLayout.CENTER);
-//
-//        annotationControlsToolbar =
-//                new JPanel();
-////        JComboBox modeBox = graphMouse.getModeComboBox();
-////        controls.add(modeBox);
-//        annotationControlsToolbar.add(annotationControls.getAnnotationsToolBar());
-//        pane.add(annotationControlsToolbar, BorderLayout.SOUTH);
-//        annotationControlsToolbar.setVisible(annotate.isSelected());
-//
-//        pane.setVisible(true);
-        pane.validate();
-        vv.repaint();
-        pane.repaint();
-        //initially display nothing
-//        recalculateStats(MyGraph.getInstance());
-
-
-        /**
-         * Generates an artificial mouse event to make the VisualizationViewer
-         * repaint
-         */
-        Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
-                new MouseEvent(pane, MouseEvent.MOUSE_MOVED, 0, 0, -1, -1, 2, false));
+        if (guiEnabled) {
+            pane.validate();
+            vv.repaint();
+            pane.repaint();
+            //Generates an artificial mouse event to make the VisualizationViewer repaint
+            Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
+                    new MouseEvent(pane, MouseEvent.MOUSE_MOVED, 0, 0, -1, -1, 2, false));
+        }
 
     }
-
-    public static void redisplayStatistics() {
-
-        
-        // Generates an artificial mouse event to make the VisualizationViewer repaint
-        Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
-                new MouseEvent(pane, MouseEvent.MOUSE_MOVED, 0, 0, -1, -1, 2, false));
-
-    }
-//    private JFreeChart createChart(Dataset simInfectedCount) {
-//        final JFreeChart result = ChartFactory.createTimeSeriesChart(
-//                "***TODO***", "hh:mm:ss", "milliVolts", dataset, true, true, true);
-//        final XYPlot plot = result.getXYPlot();
-//        ValueAxis domain = plot.getDomainAxis();
-//        domain.setAutoRange(true);
-//        ValueAxis range = plot.getRangeAxis();
-//        
-//        //TODO this will have to be updated when the graph is modified
-//        range.setRange(0, MyGraph.getInstance().getVertexCount());
-//        
-////        DateAxis axis = (DateAxis) plot.getDomainAxis();
-////        axis.setDateFormatOverride(new SimpleDateFormat("MMM-yyyy"));
-////        axis.setAutoTickUnitSelection(false);
-//        return result;
-//    }
 
     /**
      * Returns an appropriate layout based on the state of the layout selection
@@ -1872,11 +1792,14 @@ public class Display extends JFrame {
     private javax.swing.JRadioButtonMenuItem fr;
     private static javax.swing.JTextField gama;
     private javax.swing.JLabel gamaLabel;
+    private javax.swing.JMenuItem healAllButton;
     private javax.swing.JMenuItem helpAbout;
     private javax.swing.JMenuItem helpHowTo;
     private static javax.swing.JLabel in;
-    private javax.swing.JMenuItem infect;
+    private javax.swing.JMenuItem infectButton;
     private javax.swing.JRadioButtonMenuItem isom;
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton2;
     static javax.swing.JLabel jLabel10;
     private static javax.swing.JLabel jLabel11;
     static javax.swing.JLabel jLabel12;
@@ -1892,6 +1815,7 @@ public class Display extends JFrame {
     private static javax.swing.JLabel jLabel9;
     private static javax.swing.JMenu jMenu2;
     private static javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -1918,13 +1842,9 @@ public class Display extends JFrame {
     private static javax.swing.JPanel pane;
     static javax.swing.JButton pauseSimToolbarButton;
     static javax.swing.JToggleButton select;
-    private javax.swing.JMenuItem setSusceptible;
     private javax.swing.JMenuItem showDD;
     static javax.swing.JButton showDDToolbar;
     private javax.swing.JMenuItem simPauseMenuItem;
-    private javax.swing.JMenuItem simRun;
-    private javax.swing.JMenuItem simRunUntil;
-    private javax.swing.JMenuItem simStop;
     private static javax.swing.JSlider speedSlider;
     private javax.swing.JRadioButtonMenuItem spring;
     private static javax.swing.JPanel statsPanel;

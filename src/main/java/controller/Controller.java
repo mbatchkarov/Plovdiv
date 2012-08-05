@@ -348,5 +348,6 @@ public class Controller {
 //        MyGraph g = MyGraph.getNewInstance();
         setAllSusceptible();
         Controller.setActiveWindow(new Display(Mode.NORMAL, 0));
+        sim.updateStatisticsDisplay();
     }
 }
