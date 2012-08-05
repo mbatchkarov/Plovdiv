@@ -80,13 +80,17 @@ public class Simulator {
     private CircularFifoBuffer<Integer> xValues;
     private CircularFifoBuffer<Integer> yValues;
     private boolean doOneStepOnly;
-    
+    private static final int WINDOW_WIDTH = 50;
     public Simulator() {
 //        this.g = g;
         stepNumber = 0;//TODO this must not be set here
         mt = new MersenneTwister();
         sleepTime = 200;
         doOneStepOnly = false;
+
+        xValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
+        yValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
+
         thread = new SimModelThread("sim-thread");
         //stuff below needed?
         thread.start();
@@ -163,9 +167,13 @@ public class Simulator {
         NumberAxis yAxis = (NumberAxis) xyPlot.getRangeAxis();
         yAxis.setRange(0, MyGraph.getInstance().getVertexCount());
         yAxis.setTickUnit(new NumberTickUnit(5));
-        
-        NumberAxis xAxis = (NumberAxis) xyPlot.getDomainAxis();
-        xAxis.setAutoRange(true);
+//<<<<<<< HEAD
+//        
+//=======
+//
+//>>>>>>> 68e7d4f27ad0fb0c2693f8d452f06029b1cedad2
+//        NumberAxis xAxis = (NumberAxis) xyPlot.getDomainAxis();
+//        xAxis.setAutoRange(true);
 
         //optional customization
         return new ChartPanel(jfreechart, true, false, false, false, false);
@@ -178,10 +186,13 @@ public class Simulator {
     public void pauseSim() {
         thread.pause();
     }
+//<<<<<<< HEAD
 //
 //    public void setNumSteps(int n) {
 //        numSteps = n;
 //    }
+//=======
+//>>>>>>> 68e7d4f27ad0fb0c2693f8d452f06029b1cedad2
 
     public void resumeSim() {
         thread.unpause();
@@ -296,6 +307,21 @@ public class Simulator {
         }
     }
 
+    public void updateStatisticsDisplay() {
+        JPanel statsPanel = Display.getStatsPanel();
+//        System.out.println("updating stats frame in thread " + Thread.currentThread().getName());
+        xValues.add(stepNumber);
+        yValues.add((Integer) MyGraph.getUserDatum(Strings.numInfected, 0));
+        ChartPanel panel = getPanelForDisplay(xValues, yValues);
+        statsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        statsPanel.removeAll();
+        statsPanel.add(panel);
+        statsPanel.setPreferredSize(statsPanel.getPreferredSize());
+        statsPanel.validate();
+        statsPanel.revalidate();
+        panel.repaint();
+    }
+
     /**
      * A thread to run the simulation in. Based on code from Green Light
      * District: http://sourceforge.net/projects/stoplicht/
@@ -316,6 +342,7 @@ public class Simulator {
          */
         private volatile boolean alive;
 
+//<<<<<<< HEAD
         /**
          * The simSleepTime in milliseconds this thread sleeps after a call to
          * doStep()
@@ -337,6 +364,8 @@ public class Simulator {
         /**
          * Starts the thread.
          */
+//=======
+//>>>>>>> 68e7d4f27ad0fb0c2693f8d452f06029b1cedad2
         public SimModelThread(String name) {
             super(name);
             alive = true;
@@ -378,6 +407,7 @@ public class Simulator {
          * Invokes Model.doStep() and sleeps for sleepTime milliseconds
          */
         public void run() {
+//<<<<<<< HEAD
 //            statsPanel = new JFrame("Epidemics statistics");
 //            statsPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 //            statsPanel.setVisible(true);
@@ -385,6 +415,8 @@ public class Simulator {
             xValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
             yValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
 
+//=======
+//>>>>>>> 68e7d4f27ad0fb0c2693f8d452f06029b1cedad2
             //main loop
             while (alive) {
                 try {
@@ -416,9 +448,6 @@ public class Simulator {
         }
         
         private void readSimSettingsFromGraph() {
-            //get simulation parameters
-//            numSteps = (Integer) MyGraph.getUserDatum(Strings.simSleepTime);
-//            sleepTime = (Integer) MyGraph.getUserDatum(Strings.speed);
             d = (Dynamics) MyGraph.getUserDatum(Strings.dynamics);
             
             beta = 0;
@@ -446,7 +475,6 @@ public class Simulator {
 //        System.out.println("Doing step " + stepNumber + " in thread " + Thread.currentThread().getName());
         doStep(beta, MyGraph.getInstance(), recoveryProb, infectionProb);
         Display.redisplayPartially();
-        updateStatisticsDisplay(Display.getStatsPanel());//todo del this
         stepNumber++;
     }
     
