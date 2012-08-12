@@ -94,7 +94,6 @@ public class Display extends JFrame {
     private static CustomGraphMouse graphMouse;
     static AnnotationControls<MyVertex, MyEdge> annotationControls;
     static JToolBar annotationControlsToolbar;
-    //the current layout
     private static PersistentLayoutImpl2<MyVertex, MyEdge> persistentLayout;
     //the stats display associated with this window
     StatsThread st;
@@ -113,7 +112,6 @@ public class Display extends JFrame {
         //display a graph
         Controller.generateKleinbergSmallWorld(10, 2, 0);
         circleL.setSelected(true);
-        layout.setVisible(false);
 
         //set shortcuts for controlling the simulation speed
         InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -251,6 +249,8 @@ public class Display extends JFrame {
         totalAPL = new javax.swing.JLabel();
         totalAD = new javax.swing.JLabel();
         totalA = new javax.swing.JLabel();
+        stepsLabel = new javax.swing.JLabel();
+        numSteps = new javax.swing.JLabel();
         simControlsPanel = new javax.swing.JPanel();
         pauseSimToolbarButton = new javax.swing.JButton();
         doStepToolbarButton = new javax.swing.JButton();
@@ -282,7 +282,7 @@ public class Display extends JFrame {
         eID = new javax.swing.JRadioButtonMenuItem();
         eBC = new javax.swing.JRadioButtonMenuItem();
         eNone = new javax.swing.JRadioButtonMenuItem();
-        layout = new javax.swing.JMenu();
+        layoutMenu = new javax.swing.JMenu();
         kk = new javax.swing.JRadioButtonMenuItem();
         fr = new javax.swing.JRadioButtonMenuItem();
         isom = new javax.swing.JRadioButtonMenuItem();
@@ -372,7 +372,7 @@ public class Display extends JFrame {
         pane.setLayout(paneLayout);
         paneLayout.setHorizontalGroup(
             paneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 821, Short.MAX_VALUE)
+            .addGap(0, 1034, Short.MAX_VALUE)
         );
         paneLayout.setVerticalGroup(
             paneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -655,37 +655,42 @@ public class Display extends JFrame {
 
         totalA.setText("0");
 
+        stepsLabel.setText("Steps =");
+
+        numSteps.setText("0");
+
         javax.swing.GroupLayout graphStatsPanelLayout = new javax.swing.GroupLayout(graphStatsPanel);
         graphStatsPanel.setLayout(graphStatsPanelLayout);
         graphStatsPanelLayout.setHorizontalGroup(
             graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(graphStatsPanelLayout.createSequentialGroup()
-                .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(graphStatsPanelLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(graphStatsPanelLayout.createSequentialGroup()
-                                .addComponent(jLabel17)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(totalCC, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel10)))
-                    .addGroup(graphStatsPanelLayout.createSequentialGroup()
-                        .addGap(99, 99, 99)
-                        .addComponent(totalAD)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 111, Short.MAX_VALUE)
-                .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel16)
-                    .addGroup(graphStatsPanelLayout.createSequentialGroup()
-                        .addComponent(jLabel12)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(totalAPL)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(totalA)
-                .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, graphStatsPanelLayout.createSequentialGroup()
-                .addGap(0, 214, Short.MAX_VALUE)
-                .addComponent(showDDToolbar)
-                .addGap(117, 117, 117))
+                .addContainerGap()
+                .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(graphStatsPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel17)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(totalCC, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(graphStatsPanelLayout.createSequentialGroup()
+                        .addComponent(jLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(totalAD))
+                    .addGroup(graphStatsPanelLayout.createSequentialGroup()
+                        .addComponent(stepsLabel)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(numSteps)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 107, Short.MAX_VALUE)
+                .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(showDDToolbar)
+                    .addGroup(graphStatsPanelLayout.createSequentialGroup()
+                        .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel16)
+                            .addGroup(graphStatsPanelLayout.createSequentialGroup()
+                                .addComponent(jLabel12)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(totalAPL)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(totalA)))
+                .addContainerGap())
         );
         graphStatsPanelLayout.setVerticalGroup(
             graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -700,16 +705,20 @@ public class Display extends JFrame {
                 .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
                     .addComponent(jLabel16)
-                    .addComponent(totalAD)
-                    .addComponent(totalA))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
-                .addComponent(showDDToolbar)
-                .addContainerGap())
+                    .addComponent(totalA)
+                    .addComponent(totalAD))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(showDDToolbar)
+                    .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(stepsLabel)
+                        .addComponent(numSteps)))
+                .addContainerGap(72, Short.MAX_VALUE))
         );
 
         simControlsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Simulation controls"));
 
-        pauseSimToolbarButton.setMnemonic('P');
+        pauseSimToolbarButton.setMnemonic('R');
         pauseSimToolbarButton.setText("Resume");
         pauseSimToolbarButton.setFocusable(false);
         pauseSimToolbarButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -978,8 +987,8 @@ public class Display extends JFrame {
 
         jMenuBar1.add(label3);
 
-        layout.setText("Change layout");
-        layout.setToolTipText("Change the way vertices are positioned");
+        layoutMenu.setText("Change layout");
+        layoutMenu.setToolTipText("Change the way vertices are positioned");
 
         layouts.add(kk);
         kk.setMnemonic('0');
@@ -990,7 +999,7 @@ public class Display extends JFrame {
                 kkActionPerformed(evt);
             }
         });
-        layout.add(kk);
+        layoutMenu.add(kk);
 
         layouts.add(fr);
         fr.setMnemonic('1');
@@ -1002,7 +1011,7 @@ public class Display extends JFrame {
                 frActionPerformed(evt);
             }
         });
-        layout.add(fr);
+        layoutMenu.add(fr);
 
         layouts.add(isom);
         isom.setMnemonic('2');
@@ -1013,7 +1022,7 @@ public class Display extends JFrame {
                 isomActionPerformed(evt);
             }
         });
-        layout.add(isom);
+        layoutMenu.add(isom);
 
         layouts.add(spring);
         spring.setMnemonic('3');
@@ -1024,7 +1033,7 @@ public class Display extends JFrame {
                 springActionPerformed(evt);
             }
         });
-        layout.add(spring);
+        layoutMenu.add(spring);
 
         layouts.add(circleL);
         circleL.setMnemonic('4');
@@ -1035,13 +1044,13 @@ public class Display extends JFrame {
                 circleLActionPerformed(evt);
             }
         });
-        layout.add(circleL);
+        layoutMenu.add(circleL);
 
-        jMenuBar1.add(layout);
+        jMenuBar1.add(layoutMenu);
 
         menuSimulation.setText("Simulation");
 
-        simPauseMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, 0));
+        simPauseMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_R, 0));
         simPauseMenuItem.setText("Pause/ Resume");
         simPauseMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1579,9 +1588,10 @@ public class Display extends JFrame {
 
         pane.add(vv, BorderLayout.CENTER);
         pane.setVisible(true);
-        pane.validate();
-        vv.repaint();
-        pane.repaint();
+//        pane.validate();
+//        vv.repaint();
+//        pane.repaint();
+        redisplayPartially();
         parseSimulationParameters(null);
         //initially display nothing
         recalculateStats(null);
@@ -1595,6 +1605,7 @@ public class Display extends JFrame {
          */
         Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
                 new MouseEvent(pane, MouseEvent.MOUSE_MOVED, 0, 0, -1, -1, 2, false));
+        Simulator.stepNumber = 0;
 
     }
 
@@ -1602,6 +1613,7 @@ public class Display extends JFrame {
         pane.validate();
         vv.repaint();
         pane.repaint();
+        numSteps.setText(""+Simulator.stepNumber);
         //Generates an artificial mouse event to make the VisualizationViewer repaint
         Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
                 new MouseEvent(pane, MouseEvent.MOUSE_MOVED, 0, 0, -1, -1, 2, false));
@@ -1831,7 +1843,7 @@ public class Display extends JFrame {
     private javax.swing.JRadioButtonMenuItem kk;
     private static javax.swing.JMenu label2;
     private static javax.swing.JMenu label3;
-    private static javax.swing.JMenu layout;
+    private static javax.swing.JMenu layoutMenu;
     private static javax.swing.ButtonGroup layouts;
     private static javax.swing.JLabel localAPL;
     private static javax.swing.JLabel localBC;
@@ -1842,6 +1854,7 @@ public class Display extends JFrame {
     private static javax.swing.ButtonGroup mouseModeButtonGroup;
     static javax.swing.JToolBar mouseModeToolbar;
     private javax.swing.JMenuItem newDoc;
+    static javax.swing.JLabel numSteps;
     private static javax.swing.JLabel out;
     private static javax.swing.JPanel pane;
     static javax.swing.JButton pauseSimToolbarButton;
@@ -1853,6 +1866,7 @@ public class Display extends JFrame {
     private static javax.swing.JSlider speedSlider;
     private javax.swing.JRadioButtonMenuItem spring;
     private static javax.swing.JPanel statsPanel;
+    static javax.swing.JLabel stepsLabel;
     private static javax.swing.JTextField tau;
     static javax.swing.JLabel totalA;
     static javax.swing.JLabel totalAD;
