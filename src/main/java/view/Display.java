@@ -96,8 +96,6 @@ public class Display extends JFrame {
     static JToolBar annotationControlsToolbar;
     //the current layout
     private static PersistentLayoutImpl2<MyVertex, MyEdge> persistentLayout;
-    //whether this window is a standard free roam or inludes interactive controls
-    private Mode mode;
     //the stats display associated with this window
     StatsThread st;
 
@@ -109,36 +107,15 @@ public class Display extends JFrame {
      * @param n    initial number of vertices in the small-world tutorial, ignored
      *             in any other mode
      */
-    public Display(Mode mode, int n) {
-        boolean cancelled = false; //if the user fails to provide input
-        this.mode = mode;
+    public Display() {
         gatherer = InfoGatherer.getInstance();
         initComponents();
-        //assume
-        //todo these modes are obsolete, remove
-        if (mode.equals(Mode.SF_INTERACTIVE)) {
-            Generator.generateRectangularLattice(1, 2);
-            redisplayCompletely();
-            isom.setSelected(true);
-            transform.setSelected(true);
+        //display a graph
+        Controller.generateKleinbergSmallWorld(10, 2, 0);
+        circleL.setSelected(true);
+        layout.setVisible(false);
 
-        } else if (mode.equals(Mode.SW_INTERACTIVE)) {
-            Generator.generateKleinbergSmallWorld(n, 2, 0);
-            circleL.setSelected(true);
-            redisplayCompletely();
-            transform.setSelected(true);
-            layout.setVisible(false);
-
-        } else {
-            // normal mode
-            Generator.generateRectangularLattice(0, 0);
-        }
-        if (!cancelled) {
-            this.setExtendedState(Frame.MAXIMIZED_BOTH);
-            redisplayCompletely();
-        } else {
-            this.dispose();
-        }
+        //set shortcuts for controlling the simulation speed
         InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap actionMap = getRootPane().getActionMap();
 
@@ -147,12 +124,8 @@ public class Display extends JFrame {
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "-Action");
         actionMap.put("-Action", decrementWaitTime);
 
-        annotationControls =
-                new AnnotationControls<MyVertex, MyEdge>(graphMouse.getAnnotatingPlugin());
-
-        annotationControlsToolbar = annotationControls.getAnnotationsToolBar();
-        mouseModeToolbar.add(annotationControlsToolbar, BorderLayout.CENTER);
-        annotationControlsToolbar.setVisible(annotate.isSelected());
+        this.setExtendedState(Frame.MAXIMIZED_BOTH);
+        redisplayCompletely();
 
         parseSimulationParameters(null);//trigger parsing of default values for transmission params
     }
@@ -1467,12 +1440,6 @@ public class Display extends JFrame {
             }
 	}//GEN-LAST:event_jButton1ActionPerformed
 
-//	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {
-//		if (checkEmptyPopupError()) {
-//			checkEmptyPopupError();
-//			infectButton.doClick();
-//		}
-//	}
 	private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
             if (checkEmptyPopupError()) {
                 checkEmptyPopupError();
@@ -1560,7 +1527,6 @@ public class Display extends JFrame {
      * Initialises the display
      */
     public static void redisplayCompletely() {
-
 //        ObservableGraph g = new ObservableGraph(MyGraph.getInstance());
         //clear all previous content
         pane.removeAll();
@@ -1582,22 +1548,35 @@ public class Display extends JFrame {
         vv.getRenderer().getVertexLabelRenderer().setPositioner(new CenterLabelPositioner());
         vv.getRenderer().getVertexLabelRenderer().setPosition(Renderer.VertexLabel.Position.AUTO);
 
-
-        //#########  MOUSE  PLUGINS  ###############
+//#########  MOUSE  PLUGINS  ###############
         graphMouse =
                 new CustomGraphMouse(vv.getRenderContext(), Controller.getVertexFactory(), Controller.getEdgeFactory());
 
         vv.setGraphMouse(graphMouse);
-//        //put the mouse in the selected mode
-//        if (select.isSelected()) {
-//            graphMouse.setMode(ModalGraphMouse.Mode.PICKING);
-//        } else if (transform.isSelected()) {
-//            graphMouse.setMode(ModalGraphMouse.Mode.TRANSFORMING);
-//        } else if (annotate.isSelected()) {
-//            graphMouse.setMode(ModalGraphMouse.Mode.ANNOTATING);
-//        } else if (edit.isSelected()) {
-//            graphMouse.setMode(ModalGraphMouse.Mode.EDITING);
-//        }
+
+        annotationControls =
+                new AnnotationControls<MyVertex, MyEdge>(graphMouse.getAnnotatingPlugin());
+
+        annotationControlsToolbar = annotationControls.getAnnotationsToolBar();
+        annotationControlsToolbar.setFocusable(false);
+        annotationControlsToolbar.setFocusTraversalKeysEnabled(false);
+        for (int i = 0; i < annotationControlsToolbar.getComponents().length; i++) {
+            Component component = annotationControlsToolbar.getComponents()[i];
+            component.setFocusTraversalKeysEnabled(false);
+            component.setFocusable(false);
+        }
+
+        for (int i = 0; i < mouseModeToolbar.getComponents().length; i++) {
+            Component comp = mouseModeToolbar.getComponents()[i];
+            if (comp instanceof JToolBar) {
+                mouseModeToolbar.remove(comp);
+            }
+
+        }
+
+        mouseModeToolbar.add(annotationControlsToolbar, BorderLayout.SOUTH);
+        annotationControlsToolbar.setVisible(annotate.isSelected());
+
         pane.add(vv, BorderLayout.CENTER);
         pane.setVisible(true);
         pane.validate();
@@ -1607,6 +1586,8 @@ public class Display extends JFrame {
         //initially display nothing
         recalculateStats(null);
 
+        mouseModeButtonGroup.clearSelection();
+        select.doClick();
 
         /**
          * Generates an artificial mouse event to make the VisualizationViewer
@@ -1858,7 +1839,7 @@ public class Display extends JFrame {
     private static javax.swing.JMenu menuFile;
     private static javax.swing.JMenu menuHelp;
     private static javax.swing.JMenu menuSimulation;
-    private javax.swing.ButtonGroup mouseModeButtonGroup;
+    private static javax.swing.ButtonGroup mouseModeButtonGroup;
     static javax.swing.JToolBar mouseModeToolbar;
     private javax.swing.JMenuItem newDoc;
     private static javax.swing.JLabel out;

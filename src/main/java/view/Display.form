@@ -18,6 +18,9 @@
       </AuxValues>
     </Component>
     <Component class="javax.swing.ButtonGroup" name="mouseModeButtonGroup">
+      <AuxValues>
+        <AuxValue name="JavaCodeGenerator_VariableModifier" type="java.lang.Integer" value="10"/>
+      </AuxValues>
     </Component>
     <Menu class="javax.swing.JMenuBar" name="jMenuBar1">
       <AuxValues>
