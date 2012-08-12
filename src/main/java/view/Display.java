@@ -73,6 +73,7 @@ import view.CustomVisualization.CustomVertexRenderer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
@@ -138,8 +139,31 @@ public class Display extends JFrame {
         } else {
             this.dispose();
         }
+        InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap actionMap = getRootPane().getActionMap(); 
+
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "+Action");
+        actionMap.put("+Action", incrementWaitTime);
+        inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT,0), "-Action");
+        actionMap.put("-Action", decrementWaitTime);
+        
         parseSimulationParameters(null);//trigger parsing of default values for transmission params
     }
+    
+    private AbstractAction incrementWaitTime = new AbstractAction() {
+        public void actionPerformed(ActionEvent e) {
+            speedSlider.setValue(speedSlider.getValue()+50);
+            System.out.println("incrementing");
+        }
+    };
+    
+    private AbstractAction decrementWaitTime = new AbstractAction() {
+        public void actionPerformed(ActionEvent e) {
+            speedSlider.setValue(speedSlider.getValue()-50);
+        }
+    };
+    
+   
 
     /**
      * Sets the info gatherer this displays cooperates with. Must be explicitly
@@ -303,6 +327,11 @@ public class Display extends JFrame {
                 formWindowClosing(evt);
             }
         });
+        addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                formKeyPressed(evt);
+            }
+        });
 
         jToolBar1.setBorder(javax.swing.BorderFactory.createTitledBorder("Mouse mode"));
         jToolBar1.setRollover(true);
@@ -377,7 +406,7 @@ public class Display extends JFrame {
         );
         paneLayout.setVerticalGroup(
             paneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1000, Short.MAX_VALUE)
+            .addGap(0, 1051, Short.MAX_VALUE)
         );
 
         jToolBar4.setBorder(javax.swing.BorderFactory.createTitledBorder("Zoom level"));
@@ -703,13 +732,14 @@ public class Display extends JFrame {
                     .addComponent(jLabel16)
                     .addComponent(totalAD)
                     .addComponent(totalA))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
                 .addComponent(showDDToolbar)
                 .addContainerGap())
         );
 
         jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder("Simulation controls"));
 
+        pauseSimToolbarButton.setMnemonic('P');
         pauseSimToolbarButton.setText("Resume");
         pauseSimToolbarButton.setFocusable(false);
         pauseSimToolbarButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -721,6 +751,7 @@ public class Display extends JFrame {
             }
         });
 
+        doStepToolbarButton.setMnemonic('S');
         doStepToolbarButton.setText("Do step");
         doStepToolbarButton.setFocusable(false);
         doStepToolbarButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
@@ -731,6 +762,7 @@ public class Display extends JFrame {
             }
         });
 
+        jButton1.setMnemonic('I');
         jButton1.setText("Infect...");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -738,6 +770,7 @@ public class Display extends JFrame {
             }
         });
 
+        jButton2.setMnemonic('H');
         jButton2.setText("Heal all");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -773,8 +806,11 @@ public class Display extends JFrame {
                 .addContainerGap(144, Short.MAX_VALUE))
         );
 
+        menuFile.setMnemonic('F');
         menuFile.setText("File");
 
+        newDoc.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, java.awt.event.InputEvent.CTRL_MASK));
+        newDoc.setMnemonic('N');
         newDoc.setText("New document");
         newDoc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -783,6 +819,8 @@ public class Display extends JFrame {
         });
         menuFile.add(newDoc);
 
+        fileSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F, java.awt.event.InputEvent.CTRL_MASK));
+        fileSave.setMnemonic('S');
         fileSave.setText("Save...");
         fileSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -791,6 +829,8 @@ public class Display extends JFrame {
         });
         menuFile.add(fileSave);
 
+        fileLoad.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
+        fileLoad.setMnemonic('L');
         fileLoad.setText("Load...");
         fileLoad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -799,6 +839,8 @@ public class Display extends JFrame {
         });
         menuFile.add(fileLoad);
 
+        fileGenerate1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, java.awt.event.InputEvent.CTRL_MASK));
+        fileGenerate1.setMnemonic('G');
         fileGenerate1.setText("Generate...");
         fileGenerate1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -807,6 +849,8 @@ public class Display extends JFrame {
         });
         menuFile.add(fileGenerate1);
 
+        fileQuit1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
+        fileQuit1.setMnemonic('Q');
         fileQuit1.setText("Quit");
         fileQuit1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1027,8 +1071,8 @@ public class Display extends JFrame {
 
         menuSimulation.setText("Simulation");
 
+        simPauseMenuItem.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_P, 0));
         simPauseMenuItem.setText("Pause/ Resume");
-        simPauseMenuItem.setEnabled(false);
         simPauseMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 simPauseMenuItemActionPerformed(evt);
@@ -1036,6 +1080,7 @@ public class Display extends JFrame {
         });
         menuSimulation.add(simPauseMenuItem);
 
+        jMenuItem1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, 0));
         jMenuItem1.setText("Do step");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1045,6 +1090,7 @@ public class Display extends JFrame {
         menuSimulation.add(jMenuItem1);
         menuSimulation.add(jSeparator13);
 
+        infectButton.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_I, 0));
         infectButton.setText("Infect nodes...");
         infectButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1053,6 +1099,7 @@ public class Display extends JFrame {
         });
         menuSimulation.add(infectButton);
 
+        healAllButton.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, 0));
         healAllButton.setText("Heal all nodes");
         healAllButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -1365,7 +1412,7 @@ public class Display extends JFrame {
 	}//GEN-LAST:event_doStepToolbarButtonActionPerformed
 
 	private void simPauseMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_simPauseMenuItemActionPerformed
-            // TODO add your handling code here:
+            pauseSimToolbarButton.doClick();
 	}//GEN-LAST:event_simPauseMenuItemActionPerformed
 
 	private void speedSliderStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_speedSliderStateChanged
@@ -1465,6 +1512,9 @@ public class Display extends JFrame {
                 healAllButton.doClick();
             }
 	}//GEN-LAST:event_jButton2ActionPerformed
+
+    private void formKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_formKeyPressed
+    }//GEN-LAST:event_formKeyPressed
 
     public static JPanel getStatsPanel() {
         return statsPanel;

@@ -29,6 +29,7 @@
       <SubComponents>
         <Menu class="javax.swing.JMenu" name="menuFile">
           <Properties>
+            <Property name="mnemonic" type="int" value="70"/>
             <Property name="text" type="java.lang.String" value="File"/>
           </Properties>
           <AuxValues>
@@ -37,6 +38,10 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="newDoc">
               <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Ctrl+N"/>
+                </Property>
+                <Property name="mnemonic" type="int" value="78"/>
                 <Property name="text" type="java.lang.String" value="New document"/>
               </Properties>
               <Events>
@@ -45,6 +50,10 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="fileSave">
               <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Ctrl+F"/>
+                </Property>
+                <Property name="mnemonic" type="int" value="83"/>
                 <Property name="text" type="java.lang.String" value="Save..."/>
               </Properties>
               <Events>
@@ -53,6 +62,10 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="fileLoad">
               <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Ctrl+O"/>
+                </Property>
+                <Property name="mnemonic" type="int" value="76"/>
                 <Property name="text" type="java.lang.String" value="Load..."/>
               </Properties>
               <Events>
@@ -61,6 +74,10 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="fileGenerate1">
               <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Ctrl+G"/>
+                </Property>
+                <Property name="mnemonic" type="int" value="71"/>
                 <Property name="text" type="java.lang.String" value="Generate..."/>
               </Properties>
               <Events>
@@ -69,6 +86,10 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="fileQuit1">
               <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Ctrl+Q"/>
+                </Property>
+                <Property name="mnemonic" type="int" value="81"/>
                 <Property name="text" type="java.lang.String" value="Quit"/>
               </Properties>
               <Events>
@@ -356,8 +377,10 @@
           <SubComponents>
             <MenuItem class="javax.swing.JMenuItem" name="simPauseMenuItem">
               <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="P"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Pause/ Resume"/>
-                <Property name="enabled" type="boolean" value="false"/>
               </Properties>
               <Events>
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="simPauseMenuItemActionPerformed"/>
@@ -365,6 +388,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem1">
               <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="S"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Do step"/>
               </Properties>
               <Events>
@@ -375,6 +401,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="infectButton">
               <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="I"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Infect nodes..."/>
               </Properties>
               <Events>
@@ -383,6 +412,9 @@
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="healAllButton">
               <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="H"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Heal all nodes"/>
               </Properties>
               <Events>
@@ -430,6 +462,7 @@
   </SyntheticProperties>
   <Events>
     <EventHandler event="windowClosing" listener="java.awt.event.WindowListener" parameters="java.awt.event.WindowEvent" handler="formWindowClosing"/>
+    <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="formKeyPressed"/>
   </Events>
   <AuxValues>
     <AuxValue name="FormSettings_autoResourcing" type="java.lang.Integer" value="0"/>
@@ -636,7 +669,7 @@
         </DimensionLayout>
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="1000" max="32767" attributes="0"/>
+              <EmptySpace min="0" pref="1051" max="32767" attributes="0"/>
           </Group>
         </DimensionLayout>
       </Layout>
@@ -1140,7 +1173,7 @@
                       <Component id="totalAD" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="totalA" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace pref="18" max="32767" attributes="0"/>
+                  <EmptySpace pref="69" max="32767" attributes="0"/>
                   <Component id="showDDToolbar" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -1278,6 +1311,7 @@
       <SubComponents>
         <Component class="javax.swing.JButton" name="pauseSimToolbarButton">
           <Properties>
+            <Property name="mnemonic" type="int" value="80"/>
             <Property name="text" type="java.lang.String" value="Resume"/>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
@@ -1295,6 +1329,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="doStepToolbarButton">
           <Properties>
+            <Property name="mnemonic" type="int" value="83"/>
             <Property name="text" type="java.lang.String" value="Do step"/>
             <Property name="focusable" type="boolean" value="false"/>
             <Property name="horizontalTextPosition" type="int" value="0"/>
@@ -1309,6 +1344,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButton1">
           <Properties>
+            <Property name="mnemonic" type="int" value="73"/>
             <Property name="text" type="java.lang.String" value="Infect..."/>
           </Properties>
           <Events>
@@ -1317,6 +1353,7 @@
         </Component>
         <Component class="javax.swing.JButton" name="jButton2">
           <Properties>
+            <Property name="mnemonic" type="int" value="72"/>
             <Property name="text" type="java.lang.String" value="Heal all"/>
           </Properties>
           <Events>
