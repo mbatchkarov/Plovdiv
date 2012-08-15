@@ -244,6 +244,7 @@ public class Controller {
         try {
             MyGraph.setInstance(PajekParser.load(path));
             Controller.setAllSusceptible();
+//            Simulator.stepNumber =
         } catch (Exception ex) {
             Exceptions.showReadWriteErrorNotification(ex);
         }
@@ -347,7 +348,7 @@ public class Controller {
         Controller cont = new Controller();  //controller
 //        MyGraph g = MyGraph.getNewInstance();
         setAllSusceptible();
-        Controller.setActiveWindow(new Display(Mode.NORMAL, 0));
+        Controller.setActiveWindow(new Display());
         sim.updateStatisticsDisplay();
     }
 }

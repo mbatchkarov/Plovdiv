@@ -75,7 +75,7 @@ public class Simulator {
     private int sleepTime;
     private Dynamics d;
 //    private int numSteps;
-    private volatile int stepNumber;
+    public static volatile int stepNumber;
     private double beta;
     private CircularFifoBuffer<Integer> xValues;
     private CircularFifoBuffer<Integer> yValues;
