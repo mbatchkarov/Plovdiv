@@ -75,10 +75,10 @@ public class Simulator {
     private int sleepTime;
     private Dynamics d;
 //    private int numSteps;
-    public static volatile int stepNumber;
+    private static volatile int stepNumber;
     private double beta;
-    private CircularFifoBuffer<Integer> xValues;
-    private CircularFifoBuffer<Integer> yValues;
+    private static CircularFifoBuffer<Integer> xValues;
+    private static CircularFifoBuffer<Integer> yValues;
     private boolean doOneStepOnly;
     private static final int WINDOW_WIDTH = 50;
     public Simulator() {
@@ -96,8 +96,19 @@ public class Simulator {
         thread.start();
         thread.pause();
     }
-    
-    private void doStep(double beta, MyGraph<MyVertex, MyEdge> g, Double recProb, Double infProb) {
+	
+	public static void resetSimulation(){
+		stepNumber = 0;
+		xValues.clear();
+		yValues.clear();
+		updateStatisticsDisplay();
+	}
+
+	public static int getStepNumber() {
+		return stepNumber;
+	}
+
+	private void doStep(double beta, MyGraph<MyVertex, MyEdge> g, Double recProb, Double infProb) {
 //        System.out.println("Doing step " + stepNumber + " in thread " + Thread.currentThread().getName());
         Collection<MyEdge> edges = g.getEdges();
         Collection<MyVertex> vertices = g.getVertices();
@@ -146,7 +157,7 @@ public class Simulator {
      * @param y
      * @return
      */
-    private ChartPanel getPanelForDisplay(CircularFifoBuffer<Integer> x, CircularFifoBuffer<Integer> y) {
+    private static ChartPanel getPanelForDisplay(CircularFifoBuffer<Integer> x, CircularFifoBuffer<Integer> y) {
         
         Integer[] xarr = new Integer[x.size()];
         Integer[] yarr = new Integer[y.size()];
@@ -307,7 +318,7 @@ public class Simulator {
         }
     }
 
-    public void updateStatisticsDisplay() {
+    public static void updateStatisticsDisplay() {
         JPanel statsPanel = Display.getStatsPanel();
 //        System.out.println("updating stats frame in thread " + Thread.currentThread().getName());
         xValues.add(stepNumber);

@@ -1606,7 +1606,7 @@ public class Display extends JFrame {
          */
         Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
                 new MouseEvent(pane, MouseEvent.MOUSE_MOVED, 0, 0, -1, -1, 2, false));
-        Simulator.stepNumber = 0;
+        Simulator.resetSimulation();
 
     }
 
@@ -1614,7 +1614,7 @@ public class Display extends JFrame {
         pane.validate();
         vv.repaint();
         pane.repaint();
-        numSteps.setText(""+Simulator.stepNumber);
+        numSteps.setText(""+Simulator.getStepNumber());
         //Generates an artificial mouse event to make the VisualizationViewer repaint
         Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
                 new MouseEvent(pane, MouseEvent.MOUSE_MOVED, 0, 0, -1, -1, 2, false));
