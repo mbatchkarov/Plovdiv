@@ -1432,7 +1432,9 @@ public class Display extends JFrame {
 	private void showDDToolbarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showDDToolbarActionPerformed
             if (checkEmptyPopupError()) {
                 checkEmptyPopupError();
-                new StatsThread().start();
+	            final StatsThread statsThread = new StatsThread();
+	            MyGraph.getInstance().addGraphEventListener(statsThread);
+	            statsThread.start();
             }
 	}//GEN-LAST:event_showDDToolbarActionPerformed
 

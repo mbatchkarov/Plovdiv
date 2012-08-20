@@ -30,12 +30,17 @@
 
 package view;
 
+import edu.uci.ics.jung.graph.event.GraphEvent;
+import edu.uci.ics.jung.graph.event.GraphEventListener;
+import model.MyEdge;
+import model.MyVertex;
+
 /**
  * Starts a new thread for the StatsDisplay window, so that the
  * JFreeChart-based display can work
  * @author mb724
  */
-public class StatsThread extends Thread {
+public class StatsThread extends Thread implements GraphEventListener<MyVertex, MyEdge> {
 
     private StatsDisplay sd;
 
@@ -67,4 +72,9 @@ public class StatsThread extends Thread {
         sd.dispose();
         this.interrupt();
     }
+
+	@Override
+	public void handleGraphEvent(GraphEvent<MyVertex, MyEdge> evt) {
+		sd.handleGraphEvent(evt);
+	}
 }

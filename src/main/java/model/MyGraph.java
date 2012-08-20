@@ -30,144 +30,90 @@
 package model;
 
 /**
- * Provides a single instance of a Graph, which is then displayed and modified
- * by the program
- *
- * @author mb724
+ * A singleton graph decorator which is observable and provides a mechanism for adding user data to the graph.
+ * @author Miroslav Batchkarov
  */
+
 import controller.Controller;
+import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.ObservableGraph;
 import edu.uci.ics.jung.graph.OrderedSparseMultigraph;
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Iterator;
-import model.dynamics.SIDynamics;
-import model.dynamics.SIRDynamics;
 import model.dynamics.SISDynamics;
 
-/**
- *
- * @author mb724
- */
-public class MyGraph<V, E> extends OrderedSparseMultigraph<V, E> implements Serializable {
+import java.io.Serializable;
+import java.util.HashMap;
 
-    private static MyGraph INSTANCE;
-    private static HashMap userData;
+public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable {
 
-    /**
-     * Mutator
-     *
-     * @param newInstance
-     */
-    public static void setInstance(MyGraph newInstance) {
-        INSTANCE = newInstance;
-    }
+	private static MyGraph INSTANCE;
+	private static HashMap<Object, Object> userData;
 
-    public static void setDefaultSimulationSettings() {
-        MyGraph.setUserDatum("dynamics",
-                new SISDynamics(0.1, 0.1, 0.1, 0.1));
 
-        //attach the running time to the graph
-        MyGraph.setUserDatum("time",
-                new Integer(100));
+	public MyGraph(Graph<V, E> delegate) {
+		super(delegate);
+		userData = new HashMap<Object, Object>();
+	}
 
-        //attach the speed multiplier to the graph
-        MyGraph.setUserDatum("speed", 200);
-        //make sure the graphs is in a proper state
-        Controller.validateNodeStates();
-    }
+	/**
+	 * returns an empty graph instance (with no edges or vertices)
+	 * @return
+	 */
+	public static MyGraph<MyVertex, MyEdge> getNewInstance() {
+		setInstance(new MyGraph(new OrderedSparseMultigraph<MyVertex, MyEdge>()));
+		return getInstance();
+	}
 
-    protected MyGraph() {
-        userData = new HashMap<Object, Object>();
-    }
+	public static void setInstance(MyGraph newInstance) {
+		INSTANCE = newInstance;
+	}
 
-    /**
-     * returns a new instance, which can be used as a buffer...
-     *
-     * @return
-     */
-    public static MyGraph<MyVertex, MyEdge> getNewInstance() {
-        return new MyGraph();
-    }
+	public static void setDefaultSimulationSettings() {
+		MyGraph.setUserDatum("dynamics",
+		new SISDynamics(0.1, 0.1, 0.1, 0.1));
 
-    /**
-     * returns the signleton instance, which is to be displayed
-     *
-     * @return
-     */
-    public static MyGraph<MyVertex, MyEdge> getInstance() {
-        if (INSTANCE == null) {
-            setInstance(new MyGraph<Integer, Integer>());
-        }
+		//attach the running time to the graph
+		MyGraph.setUserDatum("time",
+		new Integer(100));
 
-        return INSTANCE;
-    }
+		//attach the speed multiplier to the graph
+		MyGraph.setUserDatum("speed", 200);
+		//make sure the graphs is in a proper state
+		Controller.validateNodeStates();
+	}
 
-//    public static MyGraph getBuffer() {
-//        if (BUFFER == null) {
-//            BUFFER = new MyGraph<Integer, Integer>();
-//        }
-//
-//        return BUFFER;
-//    }
-//
-//    public static void flushBuffer() {
-//        BUFFER = null; //the getter will create a new one when required
-//    }
-    public static void flushInstance() {
-        INSTANCE = null;
-    }
 
-//    /**
-//     * copies the contents of the memory to the buffer.
-//     * Since all modifications are made to the original, the user can cancel all changes
-//     * by clicking cancel (reverting to what's in the buffer)
-//     */
-//    public static void backupToBuffer() {
-//
-//        MyGraph.flushBuffer();
-//        MyGraph x = MyGraph.getInstance();
-//        MyGraph b = MyGraph.getBuffer();
-//
-//        //copy the vertices from x to b (instance to buffer)
-//        Iterator i = x.getVertices().iterator();
-//        while (i.hasNext()) {
-//            MyVertex v = (MyVertex) i.next();
-//            b.addVertex(v);
-//        }
-//        //copy the edges
-//        Iterator it = x.getEdges().iterator();
-//        while (it.hasNext()) {
-//            MyEdge e = (MyEdge) it.next();
-//            b.addEdge(e, INSTANCE.getEndpoints(e));
-//        }
-//
-//    }
-//
-//    /**
-//     * Replace the current graph with a new one, for example when the user loads or generates.
-//     * The old graph is not save automatically.
-//     */
-//    public static void replaceFromBuffer() {
-//        setInstance(null);
-//        System.gc();
-//        setInstance(BUFFER);
-////        BUFFER = null;
-//    }
-    public static void setUserDatum(Object key, Object value) {
-        if (key != null && value != null) {
-            userData.put(key, value);
-        }
-    }
+	/**
+	 * returns the signleton instance, which is to be displayed
+	 *
+	 * @return
+	 */
+	public static MyGraph<MyVertex, MyEdge> getInstance() {
+		if (INSTANCE == null) {
+			setInstance(getNewInstance());
+		}
 
-    public static Object getUserDatum(Object key) {
-        return userData.get(key);
-    }
+		return INSTANCE;
+	}
 
-    public static Object getUserDatum(Object key, Object defaultValue) {
-        if (userData.containsKey(key)) {
-            return userData.get(key);
-        } else {
-            return defaultValue;
-        }
-    }
+	public static void flushInstance() {
+		INSTANCE = null;
+	}
+
+	public static void setUserDatum(Object key, Object value) {
+		if (key != null && value != null) {
+			userData.put(key, value);
+		}
+	}
+
+	public static Object getUserDatum(Object key) {
+		return userData.get(key);
+	}
+
+	public static Object getUserDatum(Object key, Object defaultValue) {
+		if (userData.containsKey(key)) {
+			return userData.get(key);
+		} else {
+			return defaultValue;
+		}
+	}
 }

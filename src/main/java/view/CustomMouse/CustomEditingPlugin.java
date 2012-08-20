@@ -30,24 +30,11 @@
 
 package view.CustomMouse;
 
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
-import java.awt.geom.AffineTransform;
-import java.awt.geom.CubicCurve2D;
-import java.awt.geom.Point2D;
-
-import javax.swing.JComponent;
-
-import org.apache.commons.collections15.Factory;
-
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.algorithms.layout.util.Relaxer;
+import edu.uci.ics.jung.algorithms.layout.util.VisRunner;
+import edu.uci.ics.jung.algorithms.util.IterativeContext;
 import edu.uci.ics.jung.graph.DirectedGraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.UndirectedGraph;
@@ -55,15 +42,22 @@ import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.visualization.VisualizationServer;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.control.AbstractGraphMousePlugin;
-import edu.uci.ics.jung.visualization.util.ArrowFactory;
-import model.*;
-import controller.*;
-import edu.uci.ics.jung.algorithms.layout.util.*;
-import edu.uci.ics.jung.algorithms.util.IterativeContext;
 import edu.uci.ics.jung.visualization.layout.LayoutTransition;
 import edu.uci.ics.jung.visualization.picking.PickedState;
 import edu.uci.ics.jung.visualization.util.Animator;
+import edu.uci.ics.jung.visualization.util.ArrowFactory;
+import model.*;
+import org.apache.commons.collections15.Factory;
 import view.Display;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.geom.AffineTransform;
+import java.awt.geom.CubicCurve2D;
+import java.awt.geom.Point2D;
 
 /**
  * A plugin that can create vertices, undirected edges, and directed edges
@@ -85,8 +79,8 @@ public class CustomEditingPlugin extends AbstractGraphMousePlugin implements
     protected VisualizationServer.Paintable edgePaintable;
     protected VisualizationServer.Paintable arrowPaintable;
     protected EdgeType edgeIsDirected;
-    protected Factory vertexFactory;
-    protected Factory edgeFactory;
+    protected Factory<MyVertex> vertexFactory;
+    protected Factory<MyEdge> edgeFactory;
 
     public CustomEditingPlugin(Factory vertexFactory, Factory edgeFactory) {
         this(MouseEvent.BUTTON1_MASK, vertexFactory, edgeFactory);
@@ -162,7 +156,7 @@ public class CustomEditingPlugin extends AbstractGraphMousePlugin implements
                     }
                 } else { // make a new vertex
 
-                    final MyVertex newVertex = (MyVertex) vertexFactory.create();
+                    final MyVertex newVertex = vertexFactory.create();
                     newVertex.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
                     Layout layout = vv.getModel().getGraphLayout();
                     graph.addVertex(newVertex);
@@ -172,11 +166,11 @@ public class CustomEditingPlugin extends AbstractGraphMousePlugin implements
                     for (MyVertex v : pickedVertexState.getPicked()) {
                                 pickedVertexState.pick(v, false);
                             }
-                    Display.recalculateStats(null);
+                    Display.recalculateStats(null);//todo replace with notifyListeners()
                 }
             }
-            vv.repaint();
-            Display.recalculateStats(null);
+            vv.repaint();//todo replace with notifyListeners()
+            Display.recalculateStats(null);//todo replace with notifyListeners()
         }
     }
 
@@ -206,7 +200,7 @@ public class CustomEditingPlugin extends AbstractGraphMousePlugin implements
                     }
 //                    process(e);
                     vv.repaint();
-                    Display.recalculateStats(null);
+                    Display.recalculateStats(null);//todo replace with notifyListeners()
                 }
             }
             startVertex = null;
