@@ -51,7 +51,6 @@ import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.ObservableGraph;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.annotations.AnnotationControls;
-import edu.uci.ics.jung.visualization.control.CrossoverScalingControl;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ScalingControl;
 import edu.uci.ics.jung.visualization.layout.LayoutTransition;
@@ -80,6 +79,8 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+
+import static view.Utils.round;
 
 /**
  * @author mb724
@@ -160,24 +161,24 @@ public class Display extends JFrame {
     public static void recalculateStats(MyVertex v) {
         Stats.recalculateAll();
         //populate information labels accross the screen
-        totalCC.setText("" + Stats.getCC());
-        totalAPL.setText("" + Stats.getAPL());
-        totalAD.setText("" + Stats.getAvgDegree());
-        totalA.setText("" + Stats.getWeightedDegreeCorrelation());
+        totalCC.setText("" + round(Stats.getCC()));
+        totalAPL.setText("" + round(Stats.getAPL()));
+        totalAD.setText("" + round(Stats.getAvgDegree()));
+        totalA.setText("" + round(Stats.getWeightedDegreeCorrelation()));
         //information about a certain node
         if (v != null) {
-            localCC.setText("" + Stats.getCC(v));
-            localAPL.setText("" + Stats.getAPL(v));
-            localBC.setText("" + Stats.getBC(v));
-            in.setText("" + MyGraph.getInstance().inDegree(v));
-            out.setText("" + MyGraph.getInstance().outDegree(v));
+            localCC.setText("" + round(Stats.getCC(v)));
+            localAPL.setText("" + round(Stats.getAPL(v)));
+            localBC.setText("" + round(Stats.getBC(v)));
+            in.setText("" + round(MyGraph.getInstance().inDegree(v)));
+            out.setText("" + round(MyGraph.getInstance().outDegree(v)));
 
         } else {
-            localCC.setText("0.0");
-            localAPL.setText("0.0");
-            localBC.setText("0.0");
-            in.setText("0.0");
-            out.setText("0.0");
+            localCC.setText("N/A");
+            localAPL.setText("N/A");
+            localBC.setText("N/A");
+            in.setText("N/A");
+            out.setText("N/A");
         }
 //        repaint();
 //        validate();

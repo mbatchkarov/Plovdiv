@@ -39,6 +39,8 @@ import controller.Stats;
 import model.*;
 import org.apache.commons.collections15.Transformer;
 
+import static view.Utils.round;
+
 /**
  *
  * @author mb724
@@ -55,14 +57,14 @@ public class CustomEdgeLabeller implements Transformer<MyEdge, String> {
             String mode = "" + Display.getSelectedEdgeLabelingOption();
 //            System.out.println("Edge labelling option:" + mode);
             if (mode.equals("0")) {
-                label += e.getWeigth();
+                label += round(e.getWeigth());
             }
             if (mode.equals("1")) {
 //                System.out.println("Edge id: " + e.getId());
                 label += e.getId();
             }
             if (mode.equals("2")) {
-                label += Stats.getBC(e);
+                label += round(Stats.getBC(e));
             }
             if (mode.equals("3")) {
                 label = "";
