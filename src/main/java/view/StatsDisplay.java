@@ -71,8 +71,10 @@ public class StatsDisplay extends javax.swing.JFrame implements GraphEventListen
 	 */
 	public StatsDisplay() {
 		initComponents();
-		this.setExtendedState(Frame.MAXIMIZED_BOTH);
+//		this.setExtendedState(Frame.MAXIMIZED_BOTH);
 		updateContents();
+		setSize(500, 500);
+		setVisible(true);
 		plotButton.doClick();
 	}
 
@@ -465,6 +467,8 @@ public class StatsDisplay extends javax.swing.JFrame implements GraphEventListen
 	}//GEN-LAST:event_cumulativeActionPerformed
 
 	public void updateContents() {
+		System.out.println("updateng pane in " + Thread.currentThread().getName());
+		Stats.recalculateAll();
 		MyGraph g = MyGraph.getInstance();
 		avgDegree.setText("" + round(Stats.getAvgDegree()));
 		avgPathLength.setText("" + round(Stats.getAPL()));
@@ -474,6 +478,10 @@ public class StatsDisplay extends javax.swing.JFrame implements GraphEventListen
 		minDegree.setText("" + Stats.getMinDegree());
 		maxDegree.setText("" + Stats.getMaxDegree());
 		plotButton.doClick();
+		plotButton.doClick();
+		plotButton.doClick();
+		plotButton.doClick();
+		plotButton.doClick();
 		repaint();
 		repaint();
 		repaint();
@@ -481,26 +489,18 @@ public class StatsDisplay extends javax.swing.JFrame implements GraphEventListen
 	}
 
 	private void drawHistogram() {
+		System.out.println("drawing histogram in " + Thread.currentThread().getName());
 		final JFreeChart chart = prepareChartFromData();
 
 //        chart.setBackgroundPaint(Color.white);
 //        plot.setOutlinePaint(Color.black);
 		createPanelForChart(chart);
-	}
-
-	private void createPanelForChart(JFreeChart chart) {
-		final ChartPanel chartPanel = new ChartPanel(chart);
-
-		pane.setLayout(new BorderLayout());
-		pane.removeAll();
-		pane.add(chartPanel, BorderLayout.CENTER);
-		pane.validate();
 		pane.repaint();
-
 	}
 
 
 	public void drawLogLogHistogram() {
+		System.out.println("drawing log-log hist in " + Thread.currentThread().getName());
 		final JFreeChart chart = prepareChartFromData();
 
 		final NumberAxis domainAxis = new LogarithmicAxis("Log(Degree)");
@@ -513,6 +513,18 @@ public class StatsDisplay extends javax.swing.JFrame implements GraphEventListen
 //        plot.setOutlinePaint(Color.black);
 //        plot.setFixedDomainAxisSpace(new AxisSpace());
 		createPanelForChart(chart);
+		pane.repaint();
+	}
+
+	private void createPanelForChart(JFreeChart chart) {
+		final ChartPanel chartPanel = new ChartPanel(chart);
+
+		pane.setLayout(new BorderLayout());
+		pane.removeAll();
+		pane.add(chartPanel, BorderLayout.CENTER);
+		pane.validate();
+		pane.repaint();
+
 	}
 
 	private JFreeChart prepareChartFromData() {
@@ -555,6 +567,7 @@ public class StatsDisplay extends javax.swing.JFrame implements GraphEventListen
 
 		final XYSeriesCollection dataset = new XYSeriesCollection();
 		dataset.addSeries(s1);
+		System.out.println("data series items: " + s1.getItems());
 		return dataset;
 	}
 
@@ -587,6 +600,8 @@ public class StatsDisplay extends javax.swing.JFrame implements GraphEventListen
 
 	@Override
 	public void handleGraphEvent(GraphEvent<MyVertex, MyEdge> evt) {
+		System.out.println("Detailed stats handling event in thread " + Thread.currentThread().getName());
+		Stats.printStatistics();
 		updateContents();
 	}
 }

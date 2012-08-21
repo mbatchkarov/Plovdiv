@@ -215,7 +215,7 @@ public class CustomPickingPlugin extends AbstractGraphMousePlugin
                         //#######  SHOW STATISTICS FOR THIS VERTEX  ##########
                         Stats.setSelectedNode(vertex);
 //                        System.out.println("selected node: " + vertex);
-                        Display.recalculateStats(vertex);
+                        Display.updateStats(vertex);
 
                     }
                     // layout.getLocation applies the layout transformer so
@@ -236,7 +236,7 @@ public class CustomPickingPlugin extends AbstractGraphMousePlugin
                     pickedVertexState.clear();
                     //return stats back to zero
                     Stats.setSelectedNode(vertex);
-                    Display.recalculateStats(null);
+                    Display.updateStats(null);
                 }
 
             } else if (e.getModifiers() == addToSelectionModifiers) {

@@ -36,7 +36,6 @@ import model.factories.EdgeFactory;
 import model.factories.GraphFactory;
 import model.factories.VertexFactory;
 import view.Display;
-import view.Display.Mode;
 import view.Exceptions;
 
 import java.util.HashMap;
@@ -52,7 +51,6 @@ public class Controller {
     private static VertexFactory vf;
     private static GraphFactory gf;
     private static Display activeWindow;
-    //maps a graph against the simulation thread that operates on it to enable me to stop the right thread
     private static Simulator sim;
     private static Controller INSTANCE;
 
@@ -176,7 +174,6 @@ public class Controller {
      * Sets all undefined nodes to susceptible Sets all resistant nodes in a
      * non-SIR epidemic to susceptible
      *
-     * @param g
      */
     public static void validateNodeStates() {
         Iterator i = MyGraph.getInstance().getVertices().iterator();
@@ -192,46 +189,6 @@ public class Controller {
 
     }
 
-    /**
-     * Given a graph g that holds its own simulation settings, retrieves the sim
-     * object from the storage and run it in a new thread.
-     */
-    public static void runSim() {
-        sim = new Simulator();
-        sim.resumeSim();
-        sim.startSim();
-    }
-
-    public static void pauseSim() {
-        sim.pauseSim();
-
-    }
-
-    public static void resumeSim() {
-        sim.resumeSim();
-    }
-
-    public static void resumeSimForOneStep() {
-        sim.resumeSimForOneStep();
-    }
-
-    public static void doStepWithCurrentSettings() {
-//        sim.doStepWithCurrentSettings();
-        sim.doStepWithCurrentSettings();
-    }
-
-    /**
-     * Create a new sim object, tells it where to display the results, and puts
-     * it in the storage ready to be started
-     *
-     * @param g the graph for which the results are to be computed
-     */
-//    public static void initSim(MyGraph g) {
-//        Simulator sim = new Simulator(g);
-//    }
-    public static void stopSim() {
-        sim.stopSim();
-    }
 
     //------------SAVE/ LOAD FUNCTIONALITY--------------
     /**
@@ -348,7 +305,9 @@ public class Controller {
         Controller cont = new Controller();  //controller
 //        MyGraph g = MyGraph.getNewInstance();
         setAllSusceptible();
-        Controller.setActiveWindow(new Display());
-        sim.updateStatisticsDisplay();
+	    final Display d = new Display();
+	    Controller.setActiveWindow(d);
+	    MyGraph.getInstance().addGraphEventListener(d);
+        sim.updateInfectedCountGraph();
     }
 }

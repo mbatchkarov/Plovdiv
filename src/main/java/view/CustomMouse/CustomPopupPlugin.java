@@ -123,7 +123,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                                         graph.addEdge(Controller.getEdgeFactory().create(),
                                                 other, vertex, EdgeType.DIRECTED);
                                         vv.repaint();
-                                        Display.recalculateStats(null);
+                                        Display.updateStats(null);
                                     }
                                 });
                             }
@@ -138,7 +138,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                                         graph.addEdge(Controller.getEdgeFactory().create(),
                                                 other, vertex);
                                         vv.repaint();
-                                        Display.recalculateStats(null);
+                                        Display.updateStats(null);
                                     }
                                 });
                             }
@@ -153,7 +153,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             }
                             graph.removeVertex(vertex);
                             vv.repaint();
-                            Display.recalculateStats(null);
+                            Display.updateStats(null);
                         }
                     });
                     popup1.add(new AbstractAction("Set susceptible") {
@@ -162,7 +162,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             vertex.setUserDatum("state", EpiState.SUSCEPTIBLE);
                             vv.repaint();
                             Controller.updateCounts();
-                            Display.recalculateStats(vertex);
+                            Display.updateStats(vertex);
 
                         }
                     });
@@ -172,7 +172,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             vertex.setUserDatum("state", EpiState.INFECTED);
                             vv.repaint();
                             Controller.updateCounts();
-                            Display.recalculateStats(vertex);
+                            Display.updateStats(vertex);
 
                         }
                     });
@@ -182,7 +182,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             vertex.setUserDatum("state", EpiState.RESISTANT);
                             vv.repaint();
                             Controller.updateCounts();
-                            Display.recalculateStats(vertex);
+                            Display.updateStats(vertex);
                         }
                     });
                     vv.repaint();
@@ -195,7 +195,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             pickedEdgeState.pick(edge, false);
                             graph.removeEdge(edge);
                             vv.repaint();
-                            Display.recalculateStats(null);
+                            Display.updateStats(null);
                         }
                     });
 
@@ -214,7 +214,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                                     JOptionPane.showMessageDialog(Controller.getActiveWindow(), "Input is not a valid number!");
                                 }
                             }
-                            Display.recalculateStats(null);
+                            Display.updateStats(null);
                         }
                     });
                 } else {
@@ -226,7 +226,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             graph.addVertex(newV);
                             layout.setLocation(newV, vv.getRenderContext().getMultiLayerTransformer().inverseTransform(ivp));
                             vv.repaint();
-                            Display.recalculateStats(null);
+                            Display.updateStats(null);
                         }
                     });
                 }

@@ -69,7 +69,7 @@ public class Simulator {
 
 	private final MersenneTwister mt;
 	//    private boolean notPaused;
-	private final SimModelThread thread;
+	private static SimModelThread thread;
 	private Double recoveryProb;
 	private Double infectionProb;
 	private int sleepTime;
@@ -79,7 +79,7 @@ public class Simulator {
 	private double beta;
 	private static CircularFifoBuffer<Integer> xValues;
 	private static CircularFifoBuffer<Integer> yValues;
-	private boolean doOneStepOnly;
+	private static boolean doOneStepOnly;
 	private static final int WINDOW_WIDTH = 50;
 
 	public Simulator() {
@@ -102,7 +102,7 @@ public class Simulator {
 		stepNumber = 0;
 		xValues.clear();
 		yValues.clear();
-		updateStatisticsDisplay();
+		updateInfectedCountGraph();
 	}
 
 	public static int getStepNumber() {
@@ -192,24 +192,24 @@ public class Simulator {
 		return new ChartPanel(jfreechart, true, false, false, false, false);
 	}
 
-	public void stopSim() {
+	public static void stopSim() {
 		thread.die();
 	}
 
-	public void pauseSim() {
+	public static void pauseSim() {
 		thread.pause();
 	}
 
-	public void resumeSim() {
+	public static void resumeSim() {
 		thread.unpause();
 	}
 
-	public void resumeSimForOneStep() {
-		this.doOneStepOnly = true;
+	public static void resumeSimForOneStep() {
+		doOneStepOnly = true;
 		thread.unpause();
 	}
 
-	public void startSim() {
+	public static void startSim() {
 		thread.start();
 	}
 
@@ -313,7 +313,7 @@ public class Simulator {
 		}
 	}
 
-	public static void updateStatisticsDisplay() {
+	public static void updateInfectedCountGraph() {
 		JPanel statsPanel = Display.getStatsPanel();
 //        System.out.println("updating stats frame in thread " + Thread.currentThread().getName());
 		xValues.add(stepNumber);
@@ -348,31 +348,9 @@ public class Simulator {
 		 */
 		private volatile boolean alive;
 
-//<<<<<<< HEAD
-		/**
-		 * The simSleepTime in milliseconds this thread sleeps after a call to
-		 * doStep()
-		 */
-//        private int sleepTime;
-		/**
-		 * Returns the current sleep simSleepTime
-		 */
-//        public int getSleepTime() {
-//            return sleepTime;
-//        }
-//
-//        /**
-//         * Sets the sleep simSleepTime
-//         */
-//        public void setSleepTime(int s) {
-//            sleepTime = s;
-//        }
-
 		/**
 		 * Starts the thread.
 		 */
-//=======
-//>>>>>>> 68e7d4f27ad0fb0c2693f8d452f06029b1cedad2
 		public SimModelThread(String name) {
 			super(name);
 			alive = true;
@@ -414,24 +392,14 @@ public class Simulator {
 		 * Invokes Model.doStep() and sleeps for sleepTime milliseconds
 		 */
 		public void run() {
-//<<<<<<< HEAD
-//            statsPanel = new JFrame("Epidemics statistics");
-//            statsPanel.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-//            statsPanel.setVisible(true);
-
 			xValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
 			yValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
 
-//=======
-//>>>>>>> 68e7d4f27ad0fb0c2693f8d452f06029b1cedad2
-			//main loop
 			while (alive) {
 				try {
-//                    System.out.println("Thread " + Thread.currentThread().getName() + " sleeping");
 					sleep(sleepTime);
 					synchronized (this) {
 						while (suspended && alive && !doOneStepOnly) {
-//                            System.out.println("Thread " + Thread.currentThread().getName() + " waiting for resume signal");
 							wait();
 						}
 					}
@@ -467,21 +435,13 @@ public class Simulator {
 			//probability of recovery is constant, and in this case so is the infection probability
 			recoveryProb = 1d - Math.exp((-1 * (d.getGama() * d.getDeltaT())));
 			infectionProb = 1d - Math.exp((-1 * ((d.getTau() + beta) * d.getDeltaT())));
-//            System.out.println("tau " + d.getTau());
-//            System.out.println("deltaT" + d.getDeltaT());
-//            System.out.println("gama " + d.getGama());
-//            System.out.println("recovery prob " + recoveryProb);
-//            System.out.println("inf prob " + infectionProb);
-//            System.out.println("sleep time " + sleepTime);
-//            System.out.println("required steps " + numSteps);
-//            int numSteps = (int) ((double) simSleepTime / d.getDeltaT());
 		}
 	}
 
 	public void doStepWithCurrentSettings() {
 //        System.out.println("Doing step " + stepNumber + " in thread " + Thread.currentThread().getName());
 		doStep(beta, MyGraph.getInstance(), recoveryProb, infectionProb);
-		updateStatisticsDisplay();
+		updateInfectedCountGraph();
 		Display.redisplayPartially();
 		stepNumber++;
 	}

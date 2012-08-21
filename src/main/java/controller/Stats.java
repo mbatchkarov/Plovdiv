@@ -48,6 +48,8 @@ import java.math.MathContext;
 import java.util.Collection;
 import java.util.Map;
 
+import static view.Utils.round;
+
 /**
  * @author mb724
  */
@@ -412,4 +414,11 @@ public class Stats {
 	}
 
 
+	public static void printStatistics() {
+		System.out.println("Graph stats:\n-----------");
+		System.out.println("clustering: " + round(Stats.getCC()));
+		System.out.println("apl: " + round(Stats.getAPL()));
+		System.out.println("avg deg: " + round(Stats.getAvgDegree()));
+		System.out.println("deg  corr: " + round(Stats.getWeightedDegreeCorrelation()));
+	}
 }

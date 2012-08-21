@@ -56,6 +56,7 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
 
 	/**
 	 * returns an empty graph instance (with no edges or vertices)
+	 *
 	 * @return
 	 */
 	public static MyGraph<MyVertex, MyEdge> getNewInstance() {
@@ -65,6 +66,11 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
 
 	public static void setInstance(MyGraph newInstance) {
 		INSTANCE = newInstance;
+		fireNullEvent();
+	}
+	
+	public static void fireNullEvent(){
+		INSTANCE.fireGraphEvent(null);//indicate things have changed
 	}
 
 	public static void setDefaultSimulationSettings() {
