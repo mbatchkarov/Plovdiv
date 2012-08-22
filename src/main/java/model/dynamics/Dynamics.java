@@ -35,7 +35,9 @@
 
 package model.dynamics;
 
-import model.*;
+import edu.uci.ics.jung.graph.MyGraph;
+import model.EpiState;
+import model.MyVertex;
 
 /**
  *

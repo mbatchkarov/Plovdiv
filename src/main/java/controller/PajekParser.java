@@ -35,9 +35,10 @@
 
 package controller;
 
+import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.ObservableGraph;
 import edu.uci.ics.jung.io.PajekNetReader;
 import edu.uci.ics.jung.io.PajekNetWriter;
-import model.MyGraph;
 import model.factories.EdgeFactory;
 import model.factories.GraphFactory2;
 import model.factories.VertexFactory;
@@ -53,16 +54,16 @@ public class PajekParser {
         //only static methods
     }
 
-    public static MyGraph load(String path) throws IOException {
+    public static ObservableGraph load(String path) throws IOException {
         VertexFactory vf = Controller.getVertexFactory();
         vf.reset();
         EdgeFactory ef = Controller.getEdgeFactory();
         ef.reset();
         PajekNetReader reader = new PajekNetReader(vf, ef);
-        return (MyGraph) reader.load(path, new GraphFactory2());
+        return (ObservableGraph) reader.load(path, new GraphFactory2());
     }
 
-    public static void save(String path, MyGraph g) throws IOException {
+    public static void save(String path, Graph g) throws IOException {
         PajekNetWriter writer = new PajekNetWriter();
         writer.save(g, path);
     }

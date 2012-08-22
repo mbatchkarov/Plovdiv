@@ -59,7 +59,7 @@ import edu.uci.ics.jung.visualization.layout.LayoutTransition;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 import edu.uci.ics.jung.visualization.util.Animator;
 import model.MyEdge;
-import model.MyGraph;
+import edu.uci.ics.jung.graph.MyGraph;
 import model.MyVertex;
 import model.Strings;
 import model.dynamics.SIDynamics;
@@ -98,6 +98,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 	static AnnotationControls<MyVertex, MyEdge> annotationControls;
 	static JToolBar annotationControlsToolbar;
 	private static PersistentLayoutImpl2<MyVertex, MyEdge> persistentLayout;
+	
 
 	/**
 	 * Creates new form Display
@@ -106,8 +107,8 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 		gatherer = InfoGatherer.getInstance();
 		initComponents();
 		//display a graph
-		Controller.generateKleinbergSmallWorld(10, 2, 0);
-		circleL.setSelected(true);
+		Controller.generateScaleFree(30, 1, 1);
+//		circleL.setSelected(true);
 
 		//set shortcuts for controlling the simulation speed
 		InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -1428,20 +1429,11 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 	private void showDDToolbarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_showDDToolbarActionPerformed
 		if (checkEmptyPopupError()) {
 			checkEmptyPopupError();
-			final StatsDisplay statsWindow = new StatsDisplay();
-			MyGraph.getInstance().addGraphEventListener(statsWindow);
-			SwingUtilities.invokeLater(new Runnable() {
-				@Override
-				public void run() {
-					statsWindow.handleGraphEvent(null);
-				}
-			});
-
-
-//			statsWindow.dispose();
-//			statsWindow = new StatsDisplay();
-//			MyGraph.getInstance().addGraphEventListener(statsWindow);
-//			statsWindow.handleGraphEvent(null);
+			if (Stats.getStatsDisplay() != null) {
+				Stats.getStatsDisplay().kill();
+			}
+			Stats.createStatsDisplay();
+			MyGraph.getInstance().addGraphEventListener(Stats.getStatsDisplay());
 		}
 	}//GEN-LAST:event_showDDToolbarActionPerformed
 
@@ -1617,6 +1609,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 		new MouseEvent(pane, MouseEvent.MOUSE_MOVED, 0, 0, -1, -1, 2, false));
 		Simulator.resetSimulation();
 
+		Stats.updateStatsDisplayIfItExist();
 	}
 
 	public static void redisplayPartially() {

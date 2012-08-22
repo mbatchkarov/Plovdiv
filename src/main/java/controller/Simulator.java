@@ -35,8 +35,13 @@
 package controller;
 
 import cern.jet.random.engine.MersenneTwister;
+import edu.uci.ics.jung.graph.MyGraph;
+import edu.uci.ics.jung.graph.ObservableGraph;
 import edu.uci.ics.jung.graph.util.Pair;
-import model.*;
+import model.EpiState;
+import model.MyEdge;
+import model.MyVertex;
+import model.Strings;
 import model.dynamics.Dynamics;
 import model.dynamics.SISDynamics;
 import org.apache.commons.collections15.buffer.CircularFifoBuffer;
@@ -109,7 +114,7 @@ public class Simulator {
 		return stepNumber;
 	}
 
-	private void doStep(double beta, MyGraph<MyVertex, MyEdge> g, Double recProb, Double infProb) {
+	private void doStep(double beta, ObservableGraph<MyVertex, MyEdge> g, Double recProb, Double infProb) {
 //        System.out.println("Doing step " + stepNumber + " in thread " + Thread.currentThread().getName());
 		Collection<MyEdge> edges = g.getEdges();
 		Collection<MyVertex> vertices = g.getVertices();

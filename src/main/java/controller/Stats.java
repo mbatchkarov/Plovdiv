@@ -38,10 +38,12 @@ import edu.uci.ics.jung.algorithms.metrics.Metrics;
 import edu.uci.ics.jung.algorithms.scoring.BetweennessCentrality;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraDistance;
 import edu.uci.ics.jung.algorithms.shortestpath.DistanceStatistics;
+import edu.uci.ics.jung.graph.MyGraph;
+import edu.uci.ics.jung.graph.ObservableGraph;
 import model.MyEdge;
-import model.MyGraph;
 import model.MyVertex;
 import org.apache.commons.collections15.Transformer;
+import view.StatsDisplay;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -68,6 +70,19 @@ public class Stats {
 	private static BetweennessCentrality edgeBetweenness;
 	private static BetweennessCentrality vertexBetweenness;
 
+	private static StatsDisplay statsDisplay;
+
+	public static StatsDisplay getStatsDisplay() {
+		return statsDisplay;
+	}
+
+	public static void createStatsDisplay(){
+		statsDisplay = new StatsDisplay();
+	}
+
+	public static void killStatsDisplay(){
+		statsDisplay.kill();
+	}
 
 	public static void recalculateAll() {
 		//clustering coefficient
@@ -99,7 +114,7 @@ public class Stats {
 
 		//average degree
 		if (MyGraph.getInstance().getVertexCount() > 0) {
-			MyGraph g = MyGraph.getInstance();
+			ObservableGraph g = MyGraph.getInstance();
 			double res = 0d;
 			for (Object v : g.getVertices()) {
 				res += g.outDegree(v);
@@ -110,7 +125,7 @@ public class Stats {
 		}
 
 		//degree distribution
-		MyGraph g = MyGraph.getInstance();
+		ObservableGraph g = MyGraph.getInstance();
 		int max = getMaxDegree();
 		int numBuckets = max + 1;//if no edges exist, make the buckets array at least 1 element wide
 		degreeDistribution = new int[numBuckets];
@@ -259,7 +274,7 @@ public class Stats {
 
 	public static int getMaxDegree() {
 		int max = 0;
-		MyGraph g = MyGraph.getInstance();
+		ObservableGraph g = MyGraph.getInstance();
 		Collection<MyVertex> v = g.getVertices();
 		for (MyVertex x : v) {
 			if (g.degree(x) > max) {
@@ -272,7 +287,7 @@ public class Stats {
 
 	public static int getMinDegree() {
 		int min = Integer.MAX_VALUE;
-		MyGraph g = MyGraph.getInstance();
+		ObservableGraph g = MyGraph.getInstance();
 		Collection<MyVertex> v = g.getVertices();
 		for (MyVertex x : v) {
 			if (g.degree(x) < min) {
@@ -383,7 +398,7 @@ public class Stats {
 	}
 
 	public static double getDensity() {
-		MyGraph g = MyGraph.getInstance();
+		ObservableGraph g = MyGraph.getInstance();
 		if (g.getVertexCount() > 1) {
 			return ((2 * g.getEdgeCount()) / (g.getVertexCount() * (g.getVertexCount() - 1)));
 		} else {
@@ -420,5 +435,11 @@ public class Stats {
 		System.out.println("apl: " + round(Stats.getAPL()));
 		System.out.println("avg deg: " + round(Stats.getAvgDegree()));
 		System.out.println("deg  corr: " + round(Stats.getWeightedDegreeCorrelation()));
+	}
+
+	public static void updateStatsDisplayIfItExist() {
+		StatsDisplay sd = getStatsDisplay();
+		if (sd != null)
+			sd.handleGraphEvent(null);
 	}
 }

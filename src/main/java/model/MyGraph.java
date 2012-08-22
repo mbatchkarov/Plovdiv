@@ -27,7 +27,7 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package model;
+package edu.uci.ics.jung.graph;
 
 /**
  * A singleton graph decorator which is observable and provides a mechanism for adding user data to the graph.
@@ -35,9 +35,8 @@ package model;
  */
 
 import controller.Controller;
-import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.graph.ObservableGraph;
-import edu.uci.ics.jung.graph.OrderedSparseMultigraph;
+import model.MyEdge;
+import model.MyVertex;
 import model.dynamics.SISDynamics;
 
 import java.io.Serializable;
@@ -45,7 +44,7 @@ import java.util.HashMap;
 
 public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable {
 
-	private static MyGraph INSTANCE;
+	private static ObservableGraph INSTANCE;
 	private static HashMap<Object, Object> userData;
 
 
@@ -59,17 +58,18 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
 	 *
 	 * @return
 	 */
-	public static MyGraph<MyVertex, MyEdge> getNewInstance() {
+	public static ObservableGraph getNewInstance() {
 		setInstance(new MyGraph(new OrderedSparseMultigraph<MyVertex, MyEdge>()));
 		return getInstance();
 	}
 
-	public static void setInstance(MyGraph newInstance) {
+	public static void setInstance(ObservableGraph newInstance) {
+		ObservableGraph OLD_INSTANCE = INSTANCE;
 		INSTANCE = newInstance;
-		fireNullEvent();
+		Controller.setAllSusceptible();
 	}
-	
-	public static void fireNullEvent(){
+
+	public static void fireNullEvent() {
 		INSTANCE.fireGraphEvent(null);//indicate things have changed
 	}
 
@@ -93,7 +93,7 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
 	 *
 	 * @return
 	 */
-	public static MyGraph<MyVertex, MyEdge> getInstance() {
+	public static ObservableGraph getInstance() {
 		if (INSTANCE == null) {
 			setInstance(getNewInstance());
 		}

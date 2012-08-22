@@ -259,7 +259,7 @@ public class GeneratorSettings extends javax.swing.JFrame {
                     break;
                 }
             }
-            Display.redisplayCompletely();
+//            Display.redisplayCompletely();
             dispose();
         } catch (IllegalArgumentException e) {
             //do nothing until the input verifier says so

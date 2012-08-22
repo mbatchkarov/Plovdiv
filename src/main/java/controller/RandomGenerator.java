@@ -34,13 +34,15 @@
  */
 package controller;
 
+import edu.uci.ics.jung.graph.MyGraph;
+import edu.uci.ics.jung.graph.ObservableGraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
-import java.util.Random;
 import model.MyEdge;
-import model.MyGraph;
 import model.MyVertex;
 import model.Strings;
 import org.apache.commons.collections15.Factory;
+
+import java.util.Random;
 
 /**
  * Generates random graphs, where each two vertices are equally likely to be
@@ -68,8 +70,8 @@ public class RandomGenerator {
         numE = edges;
     }
 
-    public MyGraph create() {
-        MyGraph<MyVertex, MyEdge> g = gf.create();
+    public ObservableGraph create() {
+        ObservableGraph g = gf.create();
         for (int i = 0; i < numV; i++) {
             MyVertex v = vf.create();
 //            v.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);

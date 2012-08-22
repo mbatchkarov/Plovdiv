@@ -41,7 +41,8 @@
 package view;
 
 import controller.Controller;
-import model.MyGraph;
+import edu.uci.ics.jung.graph.MyGraph;
+import edu.uci.ics.jung.graph.ObservableGraph;
 import model.Strings;
 
 import java.awt.event.KeyEvent;
@@ -51,15 +52,14 @@ import java.awt.event.KeyEvent;
  */
 public class InfectDisp extends javax.swing.JFrame {
 
-    private MyGraph g; //the graph this window will infect
+    private ObservableGraph g; //the graph this window will infect
 
     /**
      * Creates new form InfectDisp
      *
      * @param g
-     * @param c
      */
-    public InfectDisp(MyGraph g) {
+    public InfectDisp(ObservableGraph g) {
         this.g = g;
         initComponents();
         int numInf = Integer.parseInt(MyGraph.getUserDatum(Strings.numInfected, 0).toString());

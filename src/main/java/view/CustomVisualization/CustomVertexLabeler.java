@@ -34,11 +34,11 @@
  */
 package view.CustomVisualization;
 
-import view.*;
 import controller.Stats;
-import model.MyGraph;
+import edu.uci.ics.jung.graph.MyGraph;
 import model.MyVertex;
 import org.apache.commons.collections15.Transformer;
+import view.Display;
 
 /**
  *

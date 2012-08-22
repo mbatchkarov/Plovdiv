@@ -41,14 +41,14 @@
 package view;
 
 import controller.Controller;
-import java.awt.event.ItemEvent;
-import java.awt.event.KeyEvent;
-import javax.swing.JComboBox;
-import javax.swing.JSlider;
-import model.MyGraph;
+import edu.uci.ics.jung.graph.MyGraph;
 import model.dynamics.SIDynamics;
 import model.dynamics.SIRDynamics;
 import model.dynamics.SISDynamics;
+
+import javax.swing.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.KeyEvent;
 
 /**
  * @author reseter

@@ -30,7 +30,8 @@
 
 package model.factories;
 
-import model.MyGraph;
+import edu.uci.ics.jung.graph.MyGraph;
+import edu.uci.ics.jung.graph.ObservableGraph;
 import org.apache.commons.collections15.Factory;
 
 /**
@@ -43,7 +44,7 @@ public class GraphFactory implements Factory{
      * Returns the graph currently in memory (not in buffer)
      * @return
      */
-    public MyGraph create() {
+    public ObservableGraph create() {
         return MyGraph.getInstance();
     }
 

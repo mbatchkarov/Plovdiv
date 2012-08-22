@@ -30,12 +30,15 @@
 
 package controller;
 
+import edu.uci.ics.jung.graph.MyGraph;
+import edu.uci.ics.jung.graph.ObservableGraph;
 import edu.uci.ics.jung.graph.util.Pair;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Random;
-import model.*;
+import model.MyEdge;
+import model.MyVertex;
 import org.apache.commons.collections15.Factory;
+
+import java.util.HashMap;
+import java.util.Random;
 
 /**
  * Generates a small world network, starting with a ring lattice with
@@ -68,8 +71,8 @@ public class SmallWorldGenerator {
         this.p = p;
     }
 
-    public MyGraph create() {
-        MyGraph g = gf.create();
+    public ObservableGraph create() {
+        ObservableGraph g = gf.create();
         for (int i = 0; i < n; i++) {
             g.addVertex(vf.create());
         }

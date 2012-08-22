@@ -35,8 +35,9 @@ package controller;
 
 import edu.uci.ics.jung.algorithms.generators.random.BarabasiAlbertGenerator;
 import edu.uci.ics.jung.algorithms.generators.random.EppsteinPowerLawGenerator;
+import edu.uci.ics.jung.graph.MyGraph;
+import edu.uci.ics.jung.graph.ObservableGraph;
 import model.MyEdge;
-import model.MyGraph;
 import model.MyVertex;
 import model.factories.*;
 
@@ -54,13 +55,13 @@ public class Generator {
     public Generator() {
     }
 
-    public static MyGraph generateRandom(int v, int e) {
+    public static ObservableGraph generateRandom(int v, int e) {
         VertexFactory vf = Controller.getVertexFactory();
         vf.reset();
         EdgeFactory ef = Controller.getEdgeFactory();
         ef.reset();
         RandomGenerator r = new RandomGenerator(new GraphFactory2(), vf, ef, v, e);
-        MyGraph g = r.create();
+        ObservableGraph g = r.create();
         System.out.println("Generator has created: " + g);
         return g;
     }
@@ -77,9 +78,9 @@ public class Generator {
      * @param m
      * @param n
      */
-    public static MyGraph generateRectangularLattice(int m, int n) {
+    public static ObservableGraph generateRectangularLattice(int m, int n) {
         //@see notes 17 JUL 2009
-        MyGraph g = MyGraph.getNewInstance();
+        ObservableGraph g = MyGraph.getNewInstance();
         VertexFactory vf = Controller.getVertexFactory();
         vf.reset();
         EdgeFactory ef = Controller.getEdgeFactory();
@@ -125,9 +126,9 @@ public class Generator {
      * @param m
      * @param n
      */
-    public static MyGraph generateHexagonalLattice(int m, int n) {
+    public static ObservableGraph generateHexagonalLattice(int m, int n) {
         //@see notes 17 JUL 2009
-        MyGraph g = MyGraph.getNewInstance();
+        ObservableGraph g = MyGraph.getNewInstance();
         VertexFactory vf = Controller.getVertexFactory();
         vf.reset();
         EdgeFactory ef = Controller.getEdgeFactory();
@@ -184,7 +185,7 @@ public class Generator {
         return g;
     }
 
-    public static MyGraph generateKleinbergSmallWorld(int m, int n, double clusteringExponent) {
+    public static ObservableGraph generateKleinbergSmallWorld(int m, int n, double clusteringExponent) {
 //        VertexFactory vf = Controller.getVertexFactory();
 //        vf.reset();
 //        EdgeFactory ef = Controller.getEdgeFactory();
@@ -202,7 +203,7 @@ public class Generator {
         return gen.create();
     }
 
-    public static MyGraph generateEppsteinPowerLaw(int numVert, int numEdges, int r) {
+    public static ObservableGraph generateEppsteinPowerLaw(int numVert, int numEdges, int r) {
         VertexFactory2 vf = new VertexFactory2();
         EdgeFactory2 ef = new EdgeFactory2();
         EppsteinPowerLawGenerator<MyVertex, MyEdge> gen = new EppsteinPowerLawGenerator(new GraphFactory2(), vf, ef, numVert, numEdges, r);
@@ -219,7 +220,7 @@ public class Generator {
      * @param numVertices
      * @param numEdgesToAttach
      */
-    public static MyGraph generateScaleFree(int evolveSteps, int numVertices, int numEdgesToAttach) {
+    public static ObservableGraph generateScaleFree(int evolveSteps, int numVertices, int numEdgesToAttach) {
         VertexFactory vf = Controller.getVertexFactory();
         vf.reset();
         EdgeFactory ef = Controller.getEdgeFactory();

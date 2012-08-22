@@ -31,7 +31,8 @@
 package view;
 
 import controller.Controller;
-import model.MyGraph;
+import edu.uci.ics.jung.graph.MyGraph;
+import edu.uci.ics.jung.graph.ObservableGraph;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -68,7 +69,7 @@ public class InfoGatherer {
      * @param parent the window that this dialog was evoked from
      * @param g      the graph to save
      */
-    public void showSave(Frame parent, MyGraph g) {
+    public void showSave(Frame parent, ObservableGraph g) {
         FileDialog window = new FileDialog(parent, "Save", FileDialog.SAVE);
         window.setSize(500, 500);
         window.setVisible(true);
@@ -112,9 +113,9 @@ public class InfoGatherer {
 
     private static class EpiCurve extends Thread {
 
-        private final MyGraph g;
+        private final ObservableGraph g;
 
-        public EpiCurve(MyGraph g) {
+        public EpiCurve(ObservableGraph g) {
             this.g = g;
         }
 
