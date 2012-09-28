@@ -32,7 +32,6 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
 package controller;
 
 import edu.uci.ics.jung.graph.Graph;
@@ -44,6 +43,8 @@ import model.factories.GraphFactory2;
 import model.factories.VertexFactory;
 
 import java.io.IOException;
+import model.MyEdge;
+import org.apache.commons.collections15.Transformer;
 
 /**
  * @author reseter
@@ -65,6 +66,18 @@ public class PajekParser {
 
     public static void save(String path, Graph g) throws IOException {
         PajekNetWriter writer = new PajekNetWriter();
-        writer.save(g, path);
+        writer.save(g, path, new Transformer<Object, String>() {
+
+            @Override
+            public String transform(Object graphElement) {
+                return graphElement.toString();  //no vertex labels
+            }
+        }, new Transformer<MyEdge, Number>() {
+
+            @Override
+            public Number transform(MyEdge o) {
+                return o.getWeigth();
+            }
+        });
     }
 }

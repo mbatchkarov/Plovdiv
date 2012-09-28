@@ -87,7 +87,7 @@ public class RandomGenerator {
             int second = r.nextInt(numV);
             if (first != second && !g.isNeighbor((MyVertex) v[first], (MyVertex) v[second])) {
                 MyEdge e = ef.create();
-                e.setWeigth(1.0);
+                e.setWeigth(r.nextDouble());
                 e.setUserDatum(Strings.infected, false);
                 g.addEdge(e, (MyVertex) v[first], (MyVertex) v[second], EdgeType.UNDIRECTED);
                 i++;
