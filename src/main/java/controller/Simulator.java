@@ -189,7 +189,7 @@ public class Simulator {
         yAxis.setTickUnit(new NumberTickUnit(5));
 
         int maxHeight = (int) maxSize.getHeight() - 15;
-        int maxWidth = (int) maxSize.getWidth() - 5;
+        int maxWidth = (int) maxSize.getWidth() - 15;
 
         return new ChartPanel(jfreechart, maxWidth, maxHeight, 50, 50, maxWidth, maxHeight,
                 true, true, false, false, false, false, true);
