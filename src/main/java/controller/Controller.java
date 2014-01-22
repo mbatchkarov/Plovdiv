@@ -152,7 +152,7 @@ public class Controller {
 	 * graphs
 	 */
 	public static void updateCounts() {
-		System.out.println("updating counts in thread " + Thread.currentThread().getName());
+//		System.out.println("updating counts in thread " + Thread.currentThread().getName());
 		ObservableGraph g = MyGraph.getInstance();
 		int ns = 0, ni = 0, nr = 0;
 		for (Object xx : g.getVertices()) {//count how many nodes are in each state

@@ -326,7 +326,7 @@ public class Simulator {
         statsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         statsPanel.removeAll();
         statsPanel.add(panel);
-        System.out.println("After adding " + statsPanel.getSize());
+//        System.out.println("After adding " + statsPanel.getSize());
 //        statsPanel.setPreferredSize(statsPanel.getPreferredSize());
         statsPanel.validate();
         statsPanel.revalidate();

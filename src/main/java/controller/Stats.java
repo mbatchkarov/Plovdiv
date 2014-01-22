@@ -48,6 +48,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.LogarithmicAxis;
 import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.ValueAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.chart.renderer.xy.XYSplineRenderer;
@@ -141,13 +142,17 @@ public class Stats {
             degreeDistribution[g.degree(x)]++;
         }
         //cumulative degree distribution
-        int[] temp = degreeDistribution();
-        cumulativeDegreeDistribution = new int[temp.length];
-        // todo this looks wrong
-        cumulativeDegreeDistribution[cumulativeDegreeDistribution.length - 1] = 0;
-        for (int i = temp.length - 2; i > -1; i--) {
-            cumulativeDegreeDistribution[i] = cumulativeDegreeDistribution[i + 1] + temp[i + 1];
+        int sum = 0;
+        for (int i = 0; i < degreeDistribution.length; i++) {
+            sum += degreeDistribution[i];
         }
+        cumulativeDegreeDistribution = new int[degreeDistribution.length];
+        cumulativeDegreeDistribution[0] = degreeDistribution[0];
+        for (int i = 1; i < cumulativeDegreeDistribution.length; i++) {
+            cumulativeDegreeDistribution[i] = cumulativeDegreeDistribution[i-1] + degreeDistribution[i];
+
+        }
+
 
         //assortativity
         int m = MyGraph.getInstance().getEdgeCount();
@@ -442,13 +447,13 @@ public class Stats {
         System.out.println("deg  corr: " + round(Stats.getWeightedDegreeCorrelation()));
     }
 
-    public static ChartPanel getDegreeDistributionChart(boolean cumulative, boolean loglog, Dimension maxSize) {
+    public static ChartPanel getDegreeDistributionChart(boolean cumulative, boolean logy, Dimension maxSize) {
         // todo the logic of this is broken, the plot comes out wrong
         final JFreeChart chart = ChartFactory.createXYLineChart(
                 "", // chart title
                 "", // domain axis label
                 "", // range axis label
-                prepareData(cumulative, loglog), // data
+                prepareData(cumulative, logy), // data
                 PlotOrientation.VERTICAL,
                 false, // include legend
                 true,
@@ -458,19 +463,18 @@ public class Stats {
 
         plot.setRenderer(0, new XYSplineRenderer(1));
 
-        if (loglog) {
-            final NumberAxis domainAxis = new LogarithmicAxis("Log(Degree)");
-            final NumberAxis rangeAxis = new LogarithmicAxis("Log(Number of vertices)");
-            plot = (XYPlot) chart.getPlot();
-            plot.setDomainAxis(domainAxis);
-            plot.setRangeAxis(rangeAxis);
+        ValueAxis rangeAxis = null;
+        if (logy) {
+            rangeAxis = new LogarithmicAxis("Log(Count)");
         } else {
-            final NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
-            final NumberAxis rangeAxis = (NumberAxis) plot.getRangeAxis();
-            domainAxis.setRange(Stats.getMinDegree(), Stats.getMaxDegree());
-            domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
-            rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+            rangeAxis = new NumberAxis("Count");
+        // todo the labels of this axis are out of whack
         }
+        plot.setRangeAxis(rangeAxis);
+
+        final NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
+        domainAxis.setRange(Stats.getMinDegree(), Stats.getMaxDegree());
+        domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
         int maxHeight = (int) maxSize.getHeight() - 24;
         int maxWidth = (int) maxSize.getWidth() - 12;
@@ -479,7 +483,7 @@ public class Stats {
                 true, true, false, false, false, false, true);
     }
 
-    private static XYSeriesCollection prepareData(boolean cumulative, boolean loglog) {
+    private static XYSeriesCollection prepareData(boolean cumulative, boolean logy) {
         final XYSeries s1 = new XYSeries("Degree");
         int[] buckets;
         if (!cumulative) {
@@ -487,10 +491,11 @@ public class Stats {
         } else {
             buckets = Stats.cumulativeDegreeDistribution();
         }
-
-        for (int i = loglog ? 1 : 0; i < buckets.length; i++) {
+        for (int i = 0; i < buckets.length; i++) {
             if (buckets[i] > 0) {
-                s1.add(i, buckets[i]); //0s not ok for log-log plotting
+                final double yValue = logy ? Math.log(buckets[i]) : buckets[i];
+                if (yValue > 0)
+                    s1.add(i, yValue); //0s not ok for log plotting
             }
         }
 
