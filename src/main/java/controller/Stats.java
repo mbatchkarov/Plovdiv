@@ -446,8 +446,8 @@ public class Stats {
         // todo the logic of this is broken, the plot comes out wrong
         final JFreeChart chart = ChartFactory.createXYLineChart(
                 "", // chart title
-                "Degree", // domain axis label
-                "Number of vertices", // range axis label
+                "", // domain axis label
+                "", // range axis label
                 prepareData(cumulative, loglog), // data
                 PlotOrientation.VERTICAL,
                 false, // include legend
@@ -472,8 +472,8 @@ public class Stats {
             rangeAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
         }
 
-        int maxHeight = (int) maxSize.getHeight() - 15;
-        int maxWidth = (int) maxSize.getWidth() - 15;
+        int maxHeight = (int) maxSize.getHeight() - 24;
+        int maxWidth = (int) maxSize.getWidth() - 12;
 
         return new ChartPanel(chart, maxWidth, maxHeight, 50, 50, maxWidth, maxHeight,
                 true, true, false, false, false, false, true);

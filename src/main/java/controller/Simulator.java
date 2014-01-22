@@ -164,9 +164,9 @@ public class Simulator {
      * @param y
      * @return
      */
-    private static ChartPanel getPanelForDisplay(CircularFifoBuffer<Integer> x,
-                                                 CircularFifoBuffer<Integer> y,
-                                                 Dimension maxSize) {
+    private static ChartPanel getInfectedCountChart(CircularFifoBuffer<Integer> x,
+                                                    CircularFifoBuffer<Integer> y,
+                                                    Dimension maxSize) {
 
         Integer[] xarr = new Integer[x.size()];
         Integer[] yarr = new Integer[y.size()];
@@ -181,15 +181,15 @@ public class Simulator {
         dataset.addSeries(series1);
 
         // create the chart
-        JFreeChart jfreechart = ChartFactory.createXYLineChart("", "Time steps", "Infected",
+        JFreeChart jfreechart = ChartFactory.createXYLineChart("", "", "Infected",
                 dataset, PlotOrientation.VERTICAL, false, false, false);
         XYPlot xyPlot = (XYPlot) jfreechart.getPlot();
         NumberAxis yAxis = (NumberAxis) xyPlot.getRangeAxis();
         yAxis.setRange(0, MyGraph.getInstance().getVertexCount());
         yAxis.setTickUnit(new NumberTickUnit(5));
 
-        int maxHeight = (int) maxSize.getHeight() - 15;
-        int maxWidth = (int) maxSize.getWidth() - 15;
+        int maxHeight = (int) maxSize.getHeight() - 34;
+        int maxWidth = (int) maxSize.getWidth() - 34;
 
         return new ChartPanel(jfreechart, maxWidth, maxHeight, 50, 50, maxWidth, maxHeight,
                 true, true, false, false, false, false, true);
@@ -322,11 +322,12 @@ public class Simulator {
         xValues.add(stepNumber);
         yValues.add((Integer) MyGraph.getUserDatum(Strings.numInfected, 0));
         Dimension maxChartSize = statsPanel.getSize();
-        ChartPanel panel = getPanelForDisplay(xValues, yValues, maxChartSize);
-        statsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        ChartPanel panel = getInfectedCountChart(xValues, yValues, maxChartSize);
+        statsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         statsPanel.removeAll();
         statsPanel.add(panel);
-        statsPanel.setPreferredSize(statsPanel.getPreferredSize());
+        System.out.println("After adding " + statsPanel.getSize());
+//        statsPanel.setPreferredSize(statsPanel.getPreferredSize());
         statsPanel.validate();
         statsPanel.revalidate();
         panel.repaint();
@@ -455,11 +456,11 @@ public class Simulator {
 //        System.out.println("updating stats frame in thread " + Thread.currentThread().getName());
         xValues.add(stepNumber);
         yValues.add((Integer) MyGraph.getUserDatum(Strings.numInfected));
-        ChartPanel panel = getPanelForDisplay(xValues, yValues, statsPanel.getSize());
+        ChartPanel panel = getInfectedCountChart(xValues, yValues, statsPanel.getSize());
         statsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         statsPanel.removeAll();
         statsPanel.add(panel);
-        statsPanel.setPreferredSize(statsPanel.getPreferredSize());
+//        statsPanel.setPreferredSize(statsPanel.getPreferredSize());
         statsPanel.validate();
         statsPanel.revalidate();
         panel.repaint();

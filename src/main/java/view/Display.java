@@ -195,17 +195,22 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     }
 
     private static void updateDegreeDistributionChart() {
+        System.out.println("-----------------");
+        System.out.println("Before adding " + degreeDistPanel.getSize());
         JPanel degreeChart = Stats.getDegreeDistributionChart(
                 degDistLogScale.isSelected(),
                 degDistCumulative.isSelected(),
                 degreeDistPanel.getSize());
 
-        degreeDistPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        System.out.println("composnent size " + degreeChart.getSize());
+        degreeDistPanel.setLayout(new BorderLayout(0, 0));
         degreeDistPanel.removeAll();
-        degreeDistPanel.add(degreeChart);
-        degreeDistPanel.setPreferredSize(statsPanel.getPreferredSize());
+        degreeDistPanel.add(degreeChart, BorderLayout.SOUTH);
+        System.out.println("After adding " + degreeDistPanel.getSize());
+//        degreeDistPanel.setPreferredSize(statsPanel.getPreferredSize());
         degreeDistPanel.validate();
         degreeDistPanel.revalidate();
+        System.out.println("After repaint" + degreeDistPanel.getSize());
     }
 
     public VisualizationViewer getVV() {
@@ -328,6 +333,8 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Free Roam Mode");
+        setMaximumSize(new java.awt.Dimension(2560, 1440));
+        setMinimumSize(new java.awt.Dimension(1024, 768));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowClosing(java.awt.event.WindowEvent evt) {
                 formWindowClosing(evt);
@@ -625,6 +632,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         );
 
         graphStatsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Graph statistics"));
+        graphStatsPanel.setMaximumSize(new java.awt.Dimension(367, 269));
 
         jLabel10.setText("Avg degree = ");
 
@@ -659,16 +667,19 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         jLabel21.setText("Max degree = ");
 
         degreeDistPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Degree distribution"));
+        degreeDistPanel.setMaximumSize(new java.awt.Dimension(349, 117));
+        degreeDistPanel.setMinimumSize(new java.awt.Dimension(349, 117));
+        degreeDistPanel.setSize(new java.awt.Dimension(349, 0));
 
         javax.swing.GroupLayout degreeDistPanelLayout = new javax.swing.GroupLayout(degreeDistPanel);
         degreeDistPanel.setLayout(degreeDistPanelLayout);
         degreeDistPanelLayout.setHorizontalGroup(
                 degreeDistPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGap(0, 337, Short.MAX_VALUE)
         );
         degreeDistPanelLayout.setVerticalGroup(
                 degreeDistPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 105, Short.MAX_VALUE)
+                        .addGap(0, 93, Short.MAX_VALUE)
         );
 
         degDistLogScale.setText("Log scale");
@@ -692,9 +703,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                         .addGroup(graphStatsPanelLayout.createSequentialGroup()
                                 .addContainerGap()
                                 .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(graphStatsPanelLayout.createSequentialGroup()
-                                                .addComponent(degreeDistPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addGap(5, 5, 5))
                                         .addGroup(graphStatsPanelLayout.createSequentialGroup()
                                                 .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                         .addGroup(graphStatsPanelLayout.createSequentialGroup()
@@ -737,7 +745,10 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                                 .addComponent(degDistLogScale)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                 .addComponent(degDistCumulative, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addContainerGap())))
+                                                .addContainerGap())
+                                        .addGroup(graphStatsPanelLayout.createSequentialGroup()
+                                                .addComponent(degreeDistPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(0, 0, Short.MAX_VALUE))))
         );
         graphStatsPanelLayout.setVerticalGroup(
                 graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -769,9 +780,9 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(degreeDistPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(degDistLogScale)
-                                        .addComponent(degDistCumulative))
+                                .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(degDistCumulative)
+                                        .addComponent(degDistLogScale))
                                 .addGap(5, 5, 5))
         );
 
@@ -825,7 +836,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                 .addGroup(simControlsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(doStepToolbarButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 95, Short.MAX_VALUE)
+                                        .addComponent(doStepToolbarButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(pauseSimToolbarButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(5, 5, 5))
         );
@@ -1214,7 +1225,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                                 .addComponent(mouseModeToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(jToolBar4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(0, 725, Short.MAX_VALUE))
+                                                .addGap(0, 0, Short.MAX_VALUE))
                                         .addComponent(pane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
@@ -1224,7 +1235,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                         .addComponent(statsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(graphStatsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(graphStatsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(5, 5, 5))
         );
@@ -1236,7 +1247,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                         .addGroup(layout.createSequentialGroup()
                                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                                         .addComponent(mouseModeToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                         .addComponent(simControlsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -1245,8 +1256,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                 .addComponent(graphStatsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 177, Short.MAX_VALUE))
+                                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                         .addGroup(layout.createSequentialGroup()
                                                 .addComponent(jToolBar4, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
