@@ -100,6 +100,8 @@ public class CustomPickingPlugin extends AbstractGraphMousePlugin
      * selection
      */
     protected int addToSelectionModifiers;
+    private Stats stats;
+    private Display gui;
 
     /**
      * used to draw a rectangle to contain picked vertices
@@ -123,8 +125,8 @@ public class CustomPickingPlugin extends AbstractGraphMousePlugin
     /**
      * create an instance with default settings
      */
-    public CustomPickingPlugin() {
-        this(InputEvent.BUTTON1_MASK, InputEvent.BUTTON1_MASK | InputEvent.SHIFT_MASK);
+    public CustomPickingPlugin(Stats stats, Display gui) {
+        this(InputEvent.BUTTON1_MASK, InputEvent.BUTTON1_MASK | InputEvent.SHIFT_MASK, stats, gui);
     }
 
     /**
@@ -133,9 +135,11 @@ public class CustomPickingPlugin extends AbstractGraphMousePlugin
      * @param selectionModifiers      for primary selection
      * @param addToSelectionModifiers for additional selection
      */
-    public CustomPickingPlugin(int selectionModifiers, int addToSelectionModifiers) {
+    public CustomPickingPlugin(int selectionModifiers, int addToSelectionModifiers, Stats stats, Display gui) {
         super(selectionModifiers);
         this.addToSelectionModifiers = addToSelectionModifiers;
+        this.stats = stats;
+        this.gui = gui;
         this.lensPaintable = new LensPaintable();
         this.cursor = Cursor.getPredefinedCursor(Cursor.HAND_CURSOR);
     }
@@ -213,9 +217,9 @@ public class CustomPickingPlugin extends AbstractGraphMousePlugin
 
 
                         //#######  SHOW STATISTICS FOR THIS VERTEX  ##########
-                        Stats.setSelectedNode(vertex);
+                        stats.setSelectedNode(vertex);
 //                        System.out.println("selected node: " + vertex);
-                        Display.updateStats(vertex);
+                        this.gui.updateStatsDisplay(vertex);
 
                     }
                     // layout.getLocation applies the layout transformer so
@@ -229,14 +233,14 @@ public class CustomPickingPlugin extends AbstractGraphMousePlugin
                 } else if ((edge = (MyEdge) pickSupport.getEdge(layout, ip.getX(), ip.getY())) != null) {
                     pickedEdgeState.clear();
                     pickedEdgeState.pick(edge, true);
-                    Stats.setSelectedNode(vertex);
+                    stats.setSelectedNode(vertex);
                 } else {
                     vv.addPostRenderPaintable(lensPaintable);
                     pickedEdgeState.clear();
                     pickedVertexState.clear();
                     //return stats back to zero
-                    Stats.setSelectedNode(vertex);
-                    Display.updateStats(null);
+                    stats.setSelectedNode(vertex);
+                    this.gui.updateStatsDisplay(null);
                 }
 
             } else if (e.getModifiers() == addToSelectionModifiers) {

@@ -10,9 +10,13 @@ import java.text.DecimalFormat;
  */
 public class Utils {
 
-	private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
+    private static final DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
-	public static Double round(double res) {
-		return Double.valueOf(decimalFormat.format(res));
-	}
+    public static String round(double res) {
+        try {
+            return "" + Double.valueOf(decimalFormat.format(res));
+        } catch (NumberFormatException ex) {
+            return "N/A";
+        }
+    }
 }

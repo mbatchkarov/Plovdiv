@@ -46,7 +46,10 @@ import view.Display;
  */
 public class CustomVertexLabeler implements Transformer<MyVertex, String> {
 
-    public CustomVertexLabeler() {
+    private Stats stats;
+
+    public CustomVertexLabeler(Stats stats) {
+        this.stats = stats;
     }
 
     public String transform(MyVertex v) {
@@ -60,14 +63,14 @@ public class CustomVertexLabeler implements Transformer<MyVertex, String> {
                 label += MyGraph.getInstance().degree(v);
             }
             if (mode.startsWith("1")) {
-                label += Stats.getCC(v);
+                label += stats.getCC(v);
             }
             if (mode.startsWith("2")) {
-                label += Stats.getBetweennessCentrality(v);
+                label += stats.getBetweennessCentrality(v);
             }
             
             if (mode.startsWith("4")) {//distance from selected node
-                String d = Stats.getDistFromSelectedTo(v);
+                String d = stats.getDistFromSelectedTo(v);
                 if (d == null) {
                     label += "unreachable";
                 } else {

@@ -41,13 +41,17 @@ import org.apache.commons.collections15.Transformer;
 
 import static view.Utils.round;
 
+
 /**
  *
  * @author mb724
  */
 public class CustomEdgeLabeller implements Transformer<MyEdge, String> {
 
-    public CustomEdgeLabeller() {
+    private Stats stats;
+
+    public CustomEdgeLabeller(Stats stats) {
+        this.stats = stats;
     }
 
     public String transform(MyEdge e) {
@@ -64,7 +68,7 @@ public class CustomEdgeLabeller implements Transformer<MyEdge, String> {
                 label += e.getId();
             }
             if (mode.equals("2")) {
-                label += round(Stats.getBetweennessCentrality(e));
+                label += round(stats.getBetweennessCentrality(e));
             }
             if (mode.equals("3")) {
                 label = "";

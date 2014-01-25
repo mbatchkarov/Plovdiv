@@ -86,9 +86,10 @@ public class Simulator {
     private static CircularFifoBuffer<Integer> yValues;
     private static boolean doOneStepOnly;
     private static final int WINDOW_WIDTH = 50;
+    private Stats stats;
 
-    public Simulator() {
-//        this.g = g;
+    public Simulator(Stats stats) {
+        this.stats = stats;
         stepNumber = 0;//TODO this must not be set here
         mt = new MersenneTwister();
         sleepTime = 200;
@@ -107,7 +108,7 @@ public class Simulator {
         stepNumber = 0;
         xValues.clear();
         yValues.clear();
-        updateInfectedCountGraph();
+
     }
 
     public static int getStepNumber() {
@@ -154,7 +155,7 @@ public class Simulator {
         }
         //record changes in number of inf/sus/res nodes
         Controller.updateCounts();
-        Stats.recalculateAll();
+        this.stats.recalculateAll();
     }
 
     /**
@@ -316,9 +317,7 @@ public class Simulator {
         }
     }
 
-    public static void updateInfectedCountGraph() {
-        JPanel statsPanel = Display.getStatsPanel();
-//        System.out.println("updating stats frame in thread " + Thread.currentThread().getName());
+    public static void updateInfectedCountGraph(JPanel statsPanel) {
         xValues.add(stepNumber);
         yValues.add((Integer) MyGraph.getUserDatum(Strings.numInfected, 0));
         Dimension maxChartSize = statsPanel.getSize();
@@ -326,8 +325,6 @@ public class Simulator {
         statsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         statsPanel.removeAll();
         statsPanel.add(panel);
-//        System.out.println("After adding " + statsPanel.getSize());
-//        statsPanel.setPreferredSize(statsPanel.getPreferredSize());
         statsPanel.validate();
         statsPanel.revalidate();
         panel.repaint();
@@ -447,7 +444,8 @@ public class Simulator {
     public void doStepWithCurrentSettings() {
 //        System.out.println("Doing step " + stepNumber + " in thread " + Thread.currentThread().getName());
         doStep(beta, MyGraph.getInstance(), recoveryProb, infectionProb);
-        updateInfectedCountGraph();
+//        updateInfectedCountGraph();
+        MyGraph.fireInfectionEvent();//todo
         Display.redisplayPartially();
         stepNumber++;
     }

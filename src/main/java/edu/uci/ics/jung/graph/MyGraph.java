@@ -35,6 +35,7 @@ package edu.uci.ics.jung.graph;
  */
 
 import controller.Controller;
+import edu.uci.ics.jung.graph.event.GraphEventListener;
 import model.MyEdge;
 import model.MyVertex;
 import model.dynamics.SISDynamics;
@@ -72,6 +73,12 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
 	public static void fireNullEvent() {
 		INSTANCE.fireGraphEvent(null);//indicate things have changed
 	}
+
+    public static void fireInfectionEvent(){
+//        for(InfectionEventListener<V,E> listener : listenerList) {
+//            listener.handleGraphEvent(evt);
+//        }
+    }
 
 	public static void setDefaultSimulationSettings() {
 		MyGraph.setUserDatum("dynamics",

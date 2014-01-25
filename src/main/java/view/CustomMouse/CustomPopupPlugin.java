@@ -69,6 +69,7 @@ import java.util.Set;
  */
 public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements MouseListener, MouseMotionListener {
 
+    protected Display d; // to trigger GUI updates when needed
     protected MyVertex startVertex;
     protected CubicCurve2D rawEdge = new CubicCurve2D.Float();
     protected Shape edgeShape;
@@ -78,9 +79,9 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
     protected VisualizationServer.Paintable arrowPaintable;
     protected EdgeType edgeIsDirected;
 
-    public CustomPopupPlugin() {
+    public CustomPopupPlugin(Display d) {
         super(Controller.getVertexFactory(), Controller.getEdgeFactory());
-//        this(MouseEvent.BUTTON3_MASK);
+        this.d = d;
         rawEdge.setCurve(0.0f, 0.0f, 0.33f, 100, .66f, -50,
                 1.0f, 0.0f);
         rawArrowShape = ArrowFactory.getNotchedArrow(20, 16, 8);
@@ -123,7 +124,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                                         graph.addEdge(Controller.getEdgeFactory().create(),
                                                 other, vertex, EdgeType.DIRECTED);
                                         vv.repaint();
-                                        Display.updateStats(null);
+                                        CustomPopupPlugin.this.d.updateStatsDisplay(null);
                                     }
                                 });
                             }
@@ -138,7 +139,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                                         graph.addEdge(Controller.getEdgeFactory().create(),
                                                 other, vertex);
                                         vv.repaint();
-                                        Display.updateStats(null);
+                                        CustomPopupPlugin.this.d.updateStatsDisplay(null);
                                     }
                                 });
                             }
@@ -153,7 +154,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             }
                             graph.removeVertex(vertex);
                             vv.repaint();
-                            Display.updateStats(null);
+                            CustomPopupPlugin.this.d.updateStatsDisplay(null);
                         }
                     });
                     popup1.add(new AbstractAction("Set susceptible") {
@@ -162,7 +163,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             vertex.setUserDatum("state", EpiState.SUSCEPTIBLE);
                             vv.repaint();
                             Controller.updateCounts();
-                            Display.updateStats(vertex);
+                            CustomPopupPlugin.this.d.updateStatsDisplay(vertex);
 
                         }
                     });
@@ -172,7 +173,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             vertex.setUserDatum("state", EpiState.INFECTED);
                             vv.repaint();
                             Controller.updateCounts();
-                            Display.updateStats(vertex);
+                            CustomPopupPlugin.this.d.updateStatsDisplay(vertex);
 
                         }
                     });
@@ -182,7 +183,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             vertex.setUserDatum("state", EpiState.RESISTANT);
                             vv.repaint();
                             Controller.updateCounts();
-                            Display.updateStats(vertex);
+                            CustomPopupPlugin.this.d.updateStatsDisplay(vertex);
                         }
                     });
                     vv.repaint();
@@ -195,7 +196,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             pickedEdgeState.pick(edge, false);
                             graph.removeEdge(edge);
                             vv.repaint();
-                            Display.updateStats(null);
+                            CustomPopupPlugin.this.d.updateStatsDisplay(null);
                         }
                     });
 
@@ -211,10 +212,10 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                                     vv.repaint();
                                 } catch (NumberFormatException ex) {
                                     //input is not a valid double
-                                    JOptionPane.showMessageDialog(Controller.getActiveWindow(), "Input is not a valid number!");
+                                    JOptionPane.showMessageDialog(Controller.getGui(), "Input is not a valid number!");
                                 }
                             }
-                            Display.updateStats(null);
+                            CustomPopupPlugin.this.d.updateStatsDisplay(null);
                         }
                     });
                 } else {
@@ -226,7 +227,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             graph.addVertex(newV);
                             layout.setLocation(newV, vv.getRenderContext().getMultiLayerTransformer().inverseTransform(ivp));
                             vv.repaint();
-                            Display.updateStats(null);
+                            CustomPopupPlugin.this.d.updateStatsDisplay(null);
                         }
                     });
                 }

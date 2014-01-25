@@ -41,6 +41,8 @@ import edu.uci.ics.jung.algorithms.shortestpath.DistanceStatistics;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.graph.ObservableGraph;
+import edu.uci.ics.jung.graph.event.GraphEvent;
+import edu.uci.ics.jung.graph.event.GraphEventListener;
 import model.MyEdge;
 import model.MyVertex;
 import org.apache.commons.collections15.Transformer;
@@ -60,28 +62,47 @@ import java.awt.*;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author mb724
  */
-public class Stats {
+public class Stats implements GraphEventListener<MyVertex, MyEdge> {
 
-    private static MyVertex selectedNode;
-    private static Map<MyVertex, Double> ccMap;
-    private static double avgCC;
-    private static Transformer<MyVertex, Double> aplMap;
-    private static double apl;
-    private static double avgDegree;
-    private static int[] degreeDistribution;
-    private static int[] cumulativeDegreeDistribution;
-    private static double assortativity;
-    private static double degreeCorrelation;
-    private static BetweennessCentrality edgeBetweenness;
-    private static BetweennessCentrality vertexBetweenness;
+    private MyVertex selectedNode;
+    private Map<MyVertex, Double> ccMap;
+    private double avgCC;
+    private Transformer<MyVertex, Double> aplMap;
+    private double apl;
+    private double avgDegree;
+    private int[] degreeDistribution;
+    private int[] cumulativeDegreeDistribution;
+    private double assortativity;
+    private double degreeCorrelation;
+    private BetweennessCentrality edgeBetweenness;
+    private BetweennessCentrality vertexBetweenness;
+
+
+    public Stats() {
+        this.selectedNode = null;
+        this.ccMap = new HashMap<MyVertex, Double>();
+        this.avgCC = -1d;
+//        this.aplMap = aplMap;
+        this.apl = -1;
+        this.avgDegree = -1;
+        this.degreeDistribution = new int[1];
+        this.cumulativeDegreeDistribution = new int[1];
+        this.assortativity = -1d;
+        this.degreeCorrelation = -1d;
+        this.edgeBetweenness = null;
+        this.vertexBetweenness = null;
+
+        this.recalculateAll();
+    }
 
     // WORKER METHODS
-    public static void recalculateAll() {
+    public void recalculateAll() {
         calculateClusteringCoefficient();
         calculateAveragePathLength();
         calculateAverageDegree();
@@ -92,7 +113,7 @@ public class Stats {
 
     }
 
-    private static void calculateDegreeCorrelation() {
+    private void calculateDegreeCorrelation() {
         //degree correlation
         // this is just the Pearson product-moment correlation coefficient averaged over each connection
         Graph<MyVertex, MyEdge> g = MyGraph.getInstance();
@@ -137,7 +158,7 @@ public class Stats {
         }
     }
 
-    private static void calculateAssortativity() {
+    private void calculateAssortativity() {
         //assortativity
         Graph g = MyGraph.getInstance();
         int m = MyGraph.getInstance().getEdgeCount();
@@ -174,7 +195,7 @@ public class Stats {
         }
     }
 
-    private static void calculateDegreeDistribution() {
+    private void calculateDegreeDistribution() {
         //degree distribution
         ObservableGraph g = MyGraph.getInstance();
         int max = getMaxDegree();
@@ -200,7 +221,7 @@ public class Stats {
         }
     }
 
-    private static void calculateAverageDegree() {
+    private void calculateAverageDegree() {
         //average degree
         if (MyGraph.getInstance().getVertexCount() > 0) {
             ObservableGraph g = MyGraph.getInstance();
@@ -214,13 +235,13 @@ public class Stats {
         }
     }
 
-    private static void calculateAveragePathLength() {
+    private void calculateAveragePathLength() {
         //average path length
         if (MyGraph.getInstance().getVertexCount() > 0) {
             aplMap = DistanceStatistics.averageDistances(MyGraph.getInstance(), new DijkstraDistance(MyGraph.getInstance()));
             double sum = 0;
             for (Object x : MyGraph.getInstance().getVertices()) {
-                sum += Stats.getAPL((MyVertex) x);
+                sum += getAPL((MyVertex) x);
             }
             BigDecimal total = new BigDecimal(sum);
             BigDecimal res = total.divide(new BigDecimal(MyGraph.getInstance().getVertexCount()), MathContext.DECIMAL32);
@@ -230,7 +251,7 @@ public class Stats {
         }
     }
 
-    private static void calculateClusteringCoefficient() {
+    private void calculateClusteringCoefficient() {
         //clustering coefficient
         ccMap = Metrics.clusteringCoefficients(MyGraph.getInstance());
         if (MyGraph.getInstance().getVertexCount() > 0) {
@@ -246,19 +267,19 @@ public class Stats {
     }
 
     // accessors
-    public static int getEdgeCount() {
+    public int getEdgeCount() {
         return MyGraph.getInstance().getEdgeCount();
     }
 
-    public static int getVertexCount() {
+    public int getVertexCount() {
         return MyGraph.getInstance().getVertexCount();
     }
 
-    public static double getCC() {
+    public double getCC() {
         return avgCC;
     }
 
-    public static double getCC(MyVertex vertex) {
+    public double getCC(MyVertex vertex) {
         double res = ccMap.get(vertex);
         return (res);
     }
@@ -268,7 +289,7 @@ public class Stats {
      *
      * @return
      */
-    public static double getAPL() {
+    public double getAPL() {
         return apl;
     }
 
@@ -278,7 +299,7 @@ public class Stats {
      * @param vertex
      * @return
      */
-    public static double getAPL(MyVertex vertex) {
+    public double getAPL(MyVertex vertex) {
         Double result = aplMap.transform(vertex);
         //aplMap may return NaN if a node is disconnected from the rest of the graph
         if (result.isNaN() || result.isInfinite()) {
@@ -287,7 +308,7 @@ public class Stats {
         return (result);
     }
 
-    public static double getAvgDegree() {
+    public double getAvgDegree() {
         return avgDegree;
     }
 
@@ -297,37 +318,41 @@ public class Stats {
      *
      * @return
      */
-    public static int[] getDegreeDistribution() {
+    public int[] getDegreeDistribution() {
         return degreeDistribution;
     }
 
-    public static int[] getCumulativeDegreeDistribution() {
+    public int[] getCumulativeDegreeDistribution() {
         return cumulativeDegreeDistribution;
     }
 
-    public static int getMaxDegree() {
+    public int getMaxDegree() {
         int max = 0;
         ObservableGraph g = MyGraph.getInstance();
         Collection<MyVertex> v = g.getVertices();
-        for (MyVertex x : v) {
-            if (g.degree(x) > max) {
-                max = g.degree(x);
+        if (v.size() > 0) {
+            for (MyVertex x : v) {
+                if (g.degree(x) > max) {
+                    max = g.degree(x);
+                }
             }
-        }
-        return max;
+            return max;
+        } else return 0;
 
     }
 
-    public static int getMinDegree() {
+    public int getMinDegree() {
         int min = Integer.MAX_VALUE;
         ObservableGraph g = MyGraph.getInstance();
         Collection<MyVertex> v = g.getVertices();
-        for (MyVertex x : v) {
-            if (g.degree(x) < min) {
-                min = g.degree(x);
+        if (v.size() > 0) {
+            for (MyVertex x : v) {
+                if (g.degree(x) < min) {
+                    min = g.degree(x);
+                }
             }
-        }
-        return min;
+            return min;
+        } else return 0;
 
     }
 
@@ -336,7 +361,7 @@ public class Stats {
      *
      * @return
      */
-    public static double getAssortativity() {
+    public double getAssortativity() {
         return assortativity;
     }
 
@@ -345,7 +370,7 @@ public class Stats {
      *
      * @return
      */
-    public static double getWeightedDegreeCorrelation() {
+    public double getWeightedDegreeCorrelation() {
         return degreeCorrelation;
     }
 
@@ -356,7 +381,7 @@ public class Stats {
      * @param v
      * @return
      */
-    private static double getWeightedDegree(MyVertex v) {
+    private double getWeightedDegree(MyVertex v) {
         double res = 0;
         for (Object e : MyGraph.getInstance().getOutEdges(v)) {
             res += ((MyEdge) e).getWeigth();
@@ -370,7 +395,7 @@ public class Stats {
      * @param vertex
      * @return
      */
-    public static double getBetweennessCentrality(MyVertex vertex) {
+    public double getBetweennessCentrality(MyVertex vertex) {
         BetweennessCentrality bc = new BetweennessCentrality(MyGraph.getInstance(), new Transformer<MyEdge, Double>() {
             public Double transform(MyEdge arg0) {
                 return arg0.getWeigth();
@@ -380,7 +405,7 @@ public class Stats {
         return ((2 * bc.getVertexScore(vertex)) / ((n - 1) * (n - 2)));
     }
 
-    public static double getBetweennessCentrality(MyEdge edge) {
+    public double getBetweennessCentrality(MyEdge edge) {
         BetweennessCentrality bc = new BetweennessCentrality(MyGraph.getInstance(), new Transformer<MyEdge, Double>() {
             public Double transform(MyEdge arg0) {
                 return arg0.getWeigth();
@@ -397,7 +422,7 @@ public class Stats {
      * @param target
      * @return
      */
-    public static String getDistFromSelectedTo(MyVertex target) {
+    public String getDistFromSelectedTo(MyVertex target) {
         if (selectedNode != null && target != null) {
             DijkstraDistance d = new DijkstraDistance(MyGraph.getInstance());
             Double dist = (Double) d.getDistance(getSelectedNode(), target);
@@ -414,14 +439,14 @@ public class Stats {
     /**
      * @return the selectedNode
      */
-    public static MyVertex getSelectedNode() {
+    public MyVertex getSelectedNode() {
         return selectedNode;
     }
 
     /**
      * @param aSelectedNode the selectedNode to set
      */
-    public static void setSelectedNode(MyVertex aSelectedNode) {
+    public void setSelectedNode(MyVertex aSelectedNode) {
         selectedNode = aSelectedNode;
     }
 
@@ -430,7 +455,7 @@ public class Stats {
      *
      * @return
      */
-    public static double getDensity() {
+    public double getDensity() {
         ObservableGraph g = MyGraph.getInstance();
         if (g.getVertexCount() > 1) {
             return ((2 * g.getEdgeCount()) / (g.getVertexCount() * (g.getVertexCount() - 1)));
@@ -445,7 +470,7 @@ public class Stats {
      *
      * @return
      */
-    public static double[] getExtremaOfEdgeWeights() {
+    public double[] getExtremaOfEdgeWeights() {
         double[] res = new double[2];
         double min = Double.MAX_VALUE, max = Double.MIN_VALUE;
         for (Object x : MyGraph.getInstance().getEdges()) {
@@ -470,7 +495,7 @@ public class Stats {
      * @param maxSize
      * @return
      */
-    public static ChartPanel getDegreeDistributionChart(boolean cumulative, boolean logy, Dimension maxSize) {
+    public ChartPanel getDegreeDistributionChart(boolean cumulative, boolean logy, Dimension maxSize) {
         final JFreeChart chart = ChartFactory.createXYLineChart(
                 "", // chart title
                 "", // domain axis label
@@ -495,7 +520,9 @@ public class Stats {
         plot.setRangeAxis(rangeAxis);
 
         final NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
-        domainAxis.setRange(Stats.getMinDegree(), Stats.getMaxDegree());
+        System.out.println(getMaxDegree());
+        System.out.println(getMinDegree());
+        domainAxis.setRange(getMinDegree(), getMaxDegree());
         domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
         int maxHeight = (int) maxSize.getHeight() - 24;
@@ -513,13 +540,13 @@ public class Stats {
      * @param logy
      * @return
      */
-    private static XYSeriesCollection prepareData(boolean cumulative, boolean logy) {
+    private XYSeriesCollection prepareData(boolean cumulative, boolean logy) {
         final XYSeries s1 = new XYSeries("Degree");
         int[] buckets;
         if (!cumulative) {
-            buckets = Stats.getDegreeDistribution();
+            buckets = getDegreeDistribution();
         } else {
-            buckets = Stats.getCumulativeDegreeDistribution();
+            buckets = getCumulativeDegreeDistribution();
         }
         for (int i = 0; i < buckets.length; i++) {
             if (buckets[i] > 0) {
@@ -532,5 +559,11 @@ public class Stats {
         final XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(s1);
         return dataset;
+    }
+
+    // HANDLE GRAPH EVENTS APPROPRIATELY (AND EFFICIENTLY)
+    @Override
+    public void handleGraphEvent(GraphEvent<MyVertex, MyEdge> evt) {
+
     }
 }

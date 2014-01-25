@@ -55,33 +55,33 @@ public class Controller {
 	private static EdgeFactory ef;
 	private static VertexFactory vf;
 	private static GraphFactory gf;
-	private static Display activeWindow;
+	private static Display gui;
 	private static Simulator sim;
 	private static Controller INSTANCE;
 
-	private Controller() {
+    private Controller(Stats stats) {
 		Graph g = MyGraph.getInstance();//initializes the instance
 		MyGraph.setDefaultSimulationSettings();
-		sim = new Simulator();
+		sim = new Simulator(stats);
 	}
 
-	public static Controller getInstance() {
-		if (INSTANCE == null) {
-			INSTANCE = new Controller();
-		}
-		return INSTANCE;
-	}
+//	public static Controller getInstance() {
+//		if (INSTANCE == null) {
+//			INSTANCE = new Controller();
+//		}
+//		return INSTANCE;
+//	}
 
-	public static void setActiveWindow(Display w) {
-		activeWindow = w;
+	public static void setGui(Display w) {
+		gui = w;
 		w.setVisible(true);
 	}
 
 	/**
-	 * @return the activeWindow
+	 * @return the gui
 	 */
-	public static Display getActiveWindow() {
-		return activeWindow;
+	public static Display getGui() {
+		return gui;
 	}
 
 	//auto-generated getters
@@ -211,7 +211,7 @@ public class Controller {
 		} catch (Exception ex) {
 			Exceptions.showReadWriteErrorNotification(ex);
 		}
-		Display.redisplayCompletely();
+		gui.redisplayCompletely();
 	}
 
 	public static void save(String path, ObservableGraph g) {
@@ -226,33 +226,34 @@ public class Controller {
 	//-----------GENERATION FUNCTIONALITY-------------------
 	public static void generateRandom(int a, int b) {
 		MyGraph.setInstance(Generator.generateRandom(a, b));
-		Display.redisplayCompletely();
+        //todo these methods should not trigger a redisplay manually, but should fire a graphchanged event
+//		gui.redisplayCompletely();
 	}
 
 	public static void generate4Lattice(int a, int b) {
 		MyGraph.setInstance(Generator.generateRectangularLattice(a, b));
-		Display.redisplayCompletely();
+//        gui.redisplayCompletely();
 
 	}
 
 	public static void generate6Lattice(int a, int b) {
 		MyGraph.setInstance(Generator.generateHexagonalLattice(a, b));
-		Display.redisplayCompletely();
+//        gui.redisplayCompletely();
 	}
 
 	public static void generateKleinbergSmallWorld(int m, int n, double c) {
 		MyGraph.setInstance(Generator.generateKleinbergSmallWorld(m, n, c));
-		Display.redisplayCompletely();
+//        gui.redisplayCompletely();
 	}
 
 	public static void generateScaleFree(int a, int b, int c) {
 		MyGraph.setInstance(Generator.generateScaleFree(a, 1, c));
-		Display.redisplayCompletely();
+//        gui.redisplayCompletely();
 	}
 
 	public static void generateEppsteinPowerLaw(int numVert, int numEdges, int r) {
 		MyGraph.setInstance(Generator.generateEppsteinPowerLaw(numVert, numEdges, r));
-		Display.redisplayCompletely();
+//        gui.redisplayCompletely();
 	}
 
 	//------------OPENING NEW DOCUMENTS--------------------
@@ -298,12 +299,19 @@ public class Controller {
 	}
 
 	public static void main(String[] args) {
-		Controller cont = new Controller();  //controller
-//        MyGraph g = MyGraph.getNewInstance();
-		setAllSusceptible();
-		final Display d = new Display();
-		Controller.setActiveWindow(d);
-		MyGraph.getInstance().addGraphEventListener(d);
-		sim.updateInfectedCountGraph();
+        setAllSusceptible();//this will implicitly create a graph instance
+        Stats stats = new Stats();
+
+        Controller cont = new Controller(stats);  //controller
+
+        final Display d = new Display(stats, cont); // display uses stats
+        Controller.setGui(d); // so that controller can trigger updates
+
+        MyGraph.getInstance().addGraphEventListener(d); // so that gui will update when graph changes
+        MyGraph.getInstance().addGraphEventListener(stats); // so that stats will update on graph events
+
+        //display a graph
+        Controller.generateScaleFree(30, 1, 1); //todo this should trigger a stats recalculation and a gui update
+        sim.updateInfectedCountGraph(d.getStatsPanel());
 	}
 }
