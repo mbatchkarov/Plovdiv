@@ -64,7 +64,7 @@ public class CustomEdgeLabeller implements Transformer<MyEdge, String> {
                 label += e.getId();
             }
             if (mode.equals("2")) {
-                label += round(Stats.getBC(e));
+                label += round(Stats.getBetweennessCentrality(e));
             }
             if (mode.equals("3")) {
                 label = "";

@@ -175,7 +175,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         if (selectedVertex != null) {
             localCC.setText("" + round(Stats.getCC(selectedVertex)));
             localAPL.setText("" + round(Stats.getAPL(selectedVertex)));
-            localBC.setText("" + round(Stats.getBC(selectedVertex)));
+            localBC.setText("" + round(Stats.getBetweennessCentrality(selectedVertex)));
             in.setText("" + round(MyGraph.getInstance().inDegree(selectedVertex)));
             out.setText("" + round(MyGraph.getInstance().outDegree(selectedVertex)));
 

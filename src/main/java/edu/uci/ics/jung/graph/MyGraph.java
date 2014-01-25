@@ -44,7 +44,7 @@ import java.util.HashMap;
 
 public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable {
 
-	private static ObservableGraph INSTANCE;
+	private static ObservableGraph<MyVertex, MyEdge> INSTANCE;
 	private static HashMap<Object, Object> userData;
 
 
@@ -93,7 +93,7 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
 	 *
 	 * @return
 	 */
-	public static ObservableGraph getInstance() {
+	public static ObservableGraph<MyVertex, MyEdge> getInstance() {
 		if (INSTANCE == null) {
 			setInstance(getNewInstance());
 		}

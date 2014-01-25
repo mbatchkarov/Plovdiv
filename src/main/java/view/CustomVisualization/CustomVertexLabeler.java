@@ -63,7 +63,7 @@ public class CustomVertexLabeler implements Transformer<MyVertex, String> {
                 label += Stats.getCC(v);
             }
             if (mode.startsWith("2")) {
-                label += Stats.getBC(v);
+                label += Stats.getBetweennessCentrality(v);
             }
             
             if (mode.startsWith("4")) {//distance from selected node
