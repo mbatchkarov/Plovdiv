@@ -31,7 +31,9 @@
 package model.factories;
 
 import edu.uci.ics.jung.graph.MyGraph;
-import edu.uci.ics.jung.graph.ObservableGraph;
+import edu.uci.ics.jung.graph.OrderedSparseMultigraph;
+import model.MyEdge;
+import model.MyVertex;
 import org.apache.commons.collections15.Factory;
 
 /**
@@ -44,8 +46,8 @@ public class GraphFactory implements Factory{
      * Returns the graph currently in memory (not in buffer)
      * @return
      */
-    public ObservableGraph create() {
-        return MyGraph.getInstance();
+    public MyGraph create() {
+        return new MyGraph(new OrderedSparseMultigraph<MyVertex, MyEdge>());
     }
 
 }

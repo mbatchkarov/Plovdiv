@@ -60,7 +60,7 @@ public class CustomVertexLabeler implements Transformer<MyVertex, String> {
             String mode = "" + Display.getSelectedVertexLabelingOption();
 
             if (mode.startsWith("0")) {
-                label += MyGraph.getInstance().degree(v);
+                label += stats.getGraph().degree(v);
             }
             if (mode.startsWith("1")) {
                 label += stats.getCC(v);

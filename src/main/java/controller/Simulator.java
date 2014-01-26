@@ -35,6 +35,7 @@
 package controller;
 
 import cern.jet.random.engine.MersenneTwister;
+import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.graph.ObservableGraph;
 import edu.uci.ics.jung.graph.util.Pair;
@@ -69,27 +70,31 @@ import java.util.Random;
 public class Simulator {
     //    private int speed;
 //    private boolean notStopped;
-    //    private Controller controller; //replaced with static access
+    //    private Controller controller; //replaced with  access
 //    private final MyGraph<MyVertex, MyEdge> g; //each simulator can run on only one graph
 
     private final MersenneTwister mt;
     //    private boolean notPaused;
-    private static SimModelThread thread;
+    private  SimModelThread thread;
     private Double recoveryProb;
     private Double infectionProb;
     private int sleepTime;
     private Dynamics d;
     //    private int numSteps;
-    private static volatile int stepNumber;
+    private  volatile int stepNumber;
     private double beta;
-    private static CircularFifoBuffer<Integer> xValues;
-    private static CircularFifoBuffer<Integer> yValues;
-    private static boolean doOneStepOnly;
-    private static final int WINDOW_WIDTH = 50;
+    private  CircularFifoBuffer<Integer> xValues;
+    private  CircularFifoBuffer<Integer> yValues;
+    private  boolean doOneStepOnly;
+    private  final int WINDOW_WIDTH = 50;
+    private MyGraph g;
     private Stats stats;
+    private Controller controller;
 
-    public Simulator(Stats stats) {
+    public Simulator(MyGraph g, Stats stats, Controller controller) {
+        this.g = g;
         this.stats = stats;
+        this.controller = controller;
         stepNumber = 0;//TODO this must not be set here
         mt = new MersenneTwister();
         sleepTime = 200;
@@ -104,14 +109,14 @@ public class Simulator {
         thread.pause();
     }
 
-    public static void resetSimulation() {
+    public  void resetSimulation() {
         stepNumber = 0;
         xValues.clear();
         yValues.clear();
 
     }
 
-    public static int getStepNumber() {
+    public  int getStepNumber() {
         return stepNumber;
     }
 
@@ -154,7 +159,7 @@ public class Simulator {
             ssv.setUserDatum(Strings.state, ssv.getUserDatum(Strings.next));
         }
         //record changes in number of inf/sus/res nodes
-        Controller.updateCounts();
+        controller.updateCounts();
         this.stats.recalculateAll();
     }
 
@@ -165,7 +170,7 @@ public class Simulator {
      * @param y
      * @return
      */
-    private static ChartPanel getInfectedCountChart(CircularFifoBuffer<Integer> x,
+    private  ChartPanel getInfectedCountChart(CircularFifoBuffer<Integer> x,
                                                     CircularFifoBuffer<Integer> y,
                                                     Dimension maxSize) {
 
@@ -186,7 +191,7 @@ public class Simulator {
                 dataset, PlotOrientation.VERTICAL, false, false, false);
         XYPlot xyPlot = (XYPlot) jfreechart.getPlot();
         NumberAxis yAxis = (NumberAxis) xyPlot.getRangeAxis();
-        yAxis.setRange(0, MyGraph.getInstance().getVertexCount());
+        yAxis.setRange(0, g.getVertexCount());
         yAxis.setTickUnit(new NumberTickUnit(5));
 
         int maxHeight = (int) maxSize.getHeight() - 34;
@@ -196,24 +201,24 @@ public class Simulator {
                 true, true, false, false, false, false, true);
     }
 
-    public static void stopSim() {
+    public  void stopSim() {
         thread.die();
     }
 
-    public static void pauseSim() {
+    public  void pauseSim() {
         thread.pause();
     }
 
-    public static void resumeSim() {
+    public  void resumeSim() {
         thread.unpause();
     }
 
-    public static void resumeSimForOneStep() {
+    public  void resumeSimForOneStep() {
         doOneStepOnly = true;
         thread.unpause();
     }
 
-    public static void startSim() {
+    public  void startSim() {
         thread.start();
     }
 
@@ -225,7 +230,7 @@ public class Simulator {
      */
     private int numInfectedNeighbours(MyVertex v) {
         int ans = 0;
-        for (Object o : MyGraph.getInstance().getNeighbors(v)) {
+        for (Object o : g.getNeighbors(v)) {
             MyVertex current = (MyVertex) o;
 
             if (current.getUserDatum(Strings.state).equals(EpiState.INFECTED)) {
@@ -262,10 +267,10 @@ public class Simulator {
                 currentEdge.setUserDatum(Strings.infected, true);
             } else {
                 //break current connection and try to reconnect to another susceptible node
-                int numSus = (Integer) MyGraph.getUserDatum(Strings.numSus);
+                int numSus = (Integer) g.getUserDatum(Strings.numSus);
                 if (numSus > 0) {
                     ArrayList<MyVertex> sus = new ArrayList<MyVertex>(numSus);
-                    for (Object x : MyGraph.getInstance().getVertices()) {
+                    for (Object x : g.getVertices()) {
                         MyVertex v = (MyVertex) x;
                         if (v.getUserDatum(Strings.state).equals(EpiState.SUSCEPTIBLE)) {
                             sus.add(v);
@@ -278,16 +283,16 @@ public class Simulator {
                     int first = sus.indexOf(vertex);
                     while (!done) {
                         int second = r.nextInt(numSus);
-                        if (first != second && !MyGraph.getInstance().isNeighbor(v[first], v[second])) {
-                            MyEdge e = Controller.getEdgeFactory().create();//new MyEdge(g.getEdgeCount() + 3);   //todo wtf is the +3 for
+                        if (first != second && !g.isNeighbor(v[first], v[second])) {
+                            MyEdge e = controller.getEdgeFactory().create();//new MyEdge(g.getEdgeCount() + 3);   //todo wtf is the +3 for
                             e.setWeigth(1.0);
                             e.setUserDatum(Strings.infected, false);
 //                            g.addEdge(e, (MyVertex) v[first], (MyVertex) v[second], EdgeType.UNDIRECTED);
 //                            g.removeEdge(currentEdge);
                             //noinspection RedundantCast
                             edgesToAdd.put(currentEdge, new Pair(v[first], v[second]));
-                            Controller.updateDisplay();
-                            Controller.updateCounts();
+                            controller.updateDisplay();
+                            controller.updateCounts();
 //                            System.out.println("Rewiring");
                             done = true;
                         }
@@ -317,9 +322,9 @@ public class Simulator {
         }
     }
 
-    public static void updateInfectedCountGraph(JPanel statsPanel) {
+    public  void updateInfectedCountGraph(JPanel statsPanel) {
         xValues.add(stepNumber);
-        yValues.add((Integer) MyGraph.getUserDatum(Strings.numInfected, 0));
+        yValues.add((Integer) g.getUserDatum(Strings.numInfected, 0));
         Dimension maxChartSize = statsPanel.getSize();
         ChartPanel panel = getInfectedCountChart(xValues, yValues, maxChartSize);
         statsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -339,7 +344,7 @@ public class Simulator {
      */
     class SimModelThread extends Thread {
 
-        private static final int WINDOW_WIDTH = 50;
+        private  final int WINDOW_WIDTH = 50;
 
         /**
          * Is the thread suspended?
@@ -426,13 +431,13 @@ public class Simulator {
         }
 
         private void readSimSettingsFromGraph() {
-            d = (Dynamics) MyGraph.getUserDatum(Strings.dynamics);
+            d = (Dynamics) g.getUserDatum(Strings.dynamics);
 
             beta = 0;
             if (d instanceof SISDynamics) {
                 beta = ((SISDynamics) d).getEdgeBreakingRate();
             }
-            sleepTime = (Integer) MyGraph.getUserDatum(Strings.simSleepTime);
+            sleepTime = (Integer) g.getUserDatum(Strings.simSleepTime);
 
             //probabilities based on per-link traversal of the graph
             //probability of recovery is constant, and in this case so is the infection probability
@@ -443,9 +448,9 @@ public class Simulator {
 
     public void doStepWithCurrentSettings() {
 //        System.out.println("Doing step " + stepNumber + " in thread " + Thread.currentThread().getName());
-        doStep(beta, MyGraph.getInstance(), recoveryProb, infectionProb);
+        doStep(beta, g, recoveryProb, infectionProb);
 //        updateInfectedCountGraph();
-        MyGraph.fireInfectionEvent();//todo
+        g.fireEvent(null);//todo fire event at the end of each sim step
         Display.redisplayPartially();
         stepNumber++;
     }
@@ -453,7 +458,7 @@ public class Simulator {
     private void updateStatisticsDisplay(JPanel statsPanel) {
 //        System.out.println("updating stats frame in thread " + Thread.currentThread().getName());
         xValues.add(stepNumber);
-        yValues.add((Integer) MyGraph.getUserDatum(Strings.numInfected));
+        yValues.add((Integer) g.getUserDatum(Strings.numInfected));
         ChartPanel panel = getInfectedCountChart(xValues, yValues, statsPanel.getSize());
         statsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         statsPanel.removeAll();

@@ -44,8 +44,9 @@ public class GraphFactory2 implements Factory{
      * Returns a new empty MyGraph
      * @return
      */
+    //todo wtf is this class needed
     public ObservableGraph create() {
-       return MyGraph.getNewInstance();
+       return new GraphFactory().create();
     }
 
 }

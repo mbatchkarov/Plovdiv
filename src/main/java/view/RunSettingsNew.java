@@ -55,6 +55,7 @@ import java.awt.event.KeyEvent;
  */
 public class RunSettingsNew extends javax.swing.JFrame {
 
+    private Controller controller;
     //available dynamics
 //    private static final String[] availableTypes = {"SI", "SIS", "SIR"};
     private MyGraph g; //the graph these settings are for
@@ -67,7 +68,8 @@ public class RunSettingsNew extends javax.swing.JFrame {
      * @param g           the graph to which the info will be attached
      * @param requestTime whether to show a text field asking for time or run for MAX_INT cycles
      */
-    public RunSettingsNew(MyGraph g, boolean requestTime) {
+    public RunSettingsNew(Controller controller, MyGraph g, boolean requestTime) {
+        this.controller = controller;
 //        this.c = c;
         this.g = g;
         initComponents();
@@ -330,27 +332,27 @@ public class RunSettingsNew extends javax.swing.JFrame {
         try {
             //attach the dynamics setting to the graph
             if (dynamics.getSelectedItem().toString().equals("SIR")) {
-                MyGraph.setUserDatum("dynamics",
+                g.setUserDatum("dynamics",
                         new SIRDynamics(Double.parseDouble(tau.getText()),
                                 Double.parseDouble(deltaT.getText()), Double.parseDouble(gama.getText())));
             } else if (dynamics.getSelectedItem().toString().equals("SIS")) {
-                MyGraph.setUserDatum("dynamics",
+                g.setUserDatum("dynamics",
                         new SISDynamics(Double.parseDouble(tau.getText()),
                                 Double.parseDouble(deltaT.getText()), Double.parseDouble(gama.getText()),
                                 Double.parseDouble(breakingRate.getText())));
             } else {
-                MyGraph.setUserDatum("dynamics",
+                g.setUserDatum("dynamics",
                         new SIDynamics(Double.parseDouble(tau.getText()),
                                 Double.parseDouble(deltaT.getText())));
             }
             //attach the running time to the graph
-            MyGraph.setUserDatum("time",
+            g.setUserDatum("time",
                     new Integer(Integer.parseInt(runTime.getText())));
 
             //attach the speed multiplier to the graph
-            MyGraph.setUserDatum("speed", waitTime);
+            g.setUserDatum("speed", waitTime);
             //make sure the graphs is in a proper state
-            Controller.validateNodeStates();
+            controller.validateNodeStates();
             dispose();
 //            Controller.initSim(g);
 //            Controller.runSim();

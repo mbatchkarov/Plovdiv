@@ -35,98 +35,118 @@ package edu.uci.ics.jung.graph;
  */
 
 import controller.Controller;
+import controller.ExtraGraphEvent;
+import controller.ExtraGraphEventListener;
+import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
 import model.MyEdge;
 import model.MyVertex;
 import model.dynamics.SISDynamics;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable {
 
-	private static ObservableGraph<MyVertex, MyEdge> INSTANCE;
-	private static HashMap<Object, Object> userData;
+    private ObservableGraph<V, E> INSTANCE;
+    List<ExtraGraphEventListener<V, E>> extraListenerList;
 
 
-	public MyGraph(Graph<V, E> delegate) {
-		super(delegate);
-		userData = new HashMap<Object, Object>();
-	}
+    private HashMap<Object, Object> userData;
 
-	/**
-	 * returns an empty graph instance (with no edges or vertices)
-	 *
-	 * @return
-	 */
-	public static ObservableGraph getNewInstance() {
-		setInstance(new MyGraph(new OrderedSparseMultigraph<MyVertex, MyEdge>()));
-		return getInstance();
-	}
-
-	public static void setInstance(ObservableGraph newInstance) {
-		ObservableGraph OLD_INSTANCE = INSTANCE;
-		INSTANCE = newInstance;
-		Controller.setAllSusceptible();
-	}
-
-	public static void fireNullEvent() {
-		INSTANCE.fireGraphEvent(null);//indicate things have changed
-	}
-
-    public static void fireInfectionEvent(){
-//        for(InfectionEventListener<V,E> listener : listenerList) {
-//            listener.handleGraphEvent(evt);
-//        }
+    public MyGraph(Graph<V, E> delegate) {
+        super(delegate);
+        userData = new HashMap<Object, Object>();
+        extraListenerList = Collections.synchronizedList(
+                new LinkedList<ExtraGraphEventListener<V, E>>());
     }
 
-	public static void setDefaultSimulationSettings() {
-		MyGraph.setUserDatum("dynamics",
-		new SISDynamics(0.1, 0.1, 0.1, 0.1));
+    public void addExtraGraphEventListener(ExtraGraphEventListener<V, E> l) {
+        extraListenerList.add(l);
+    }
 
-		//attach the running time to the graph
-		MyGraph.setUserDatum("time",
-		new Integer(100));
+    /**
+     * Removes {@code l} as a listener to this graph.
+     */
+    public void removeExtraGraphEventListener(GraphEventListener<V, E> l) {
+        extraListenerList.remove(l);
+    }
 
-		//attach the speed multiplier to the graph
-		MyGraph.setUserDatum("speed", 200);
-		//make sure the graphs is in a proper state
-		Controller.validateNodeStates();
-	}
+    /**
+     * returns an empty graph instance (with no edges or vertices)
+     *
+     * @return
+     */
+    public ObservableGraph getNewInstance() {
+        setInstance(new MyGraph(new OrderedSparseMultigraph<MyVertex, MyEdge>()));
+        return getInstance();
+    }
+
+    public void setInstance(ObservableGraph newInstance) {
+        INSTANCE = newInstance;
+        fireExtraEvent(new ExtraGraphEvent.GraphReplacedEvent<V, E>(INSTANCE));
+    }
+
+    public void fireEvent(GraphEvent evt) {
+        for (GraphEventListener<V, E> listener : super.listenerList) {
+            listener.handleGraphEvent(evt);
+        }
+    }
+
+    public void fireExtraEvent(ExtraGraphEvent evt) {
+        for (ExtraGraphEventListener<V, E> listener : extraListenerList) {
+            listener.handleExtraGraphEvent(evt);
+        }
+    }
+
+    public void setDefaultSimulationSettings() {
+        setUserDatum("dynamics",
+                new SISDynamics(0.1, 0.1, 0.1, 0.1));
+
+        //attach the running time to the graph
+        setUserDatum("time", new Integer(100));
+
+        //attach the speed multiplier to the graph
+        setUserDatum("speed", 200);
+        //make sure the graphs is in a proper state
+    }
 
 
-	/**
-	 * returns the signleton instance, which is to be displayed
-	 *
-	 * @return
-	 */
-	public static ObservableGraph<MyVertex, MyEdge> getInstance() {
-		if (INSTANCE == null) {
-			setInstance(getNewInstance());
-		}
+    /**
+     * returns the signleton instance, which is to be displayed
+     *
+     * @return
+     */
+    public ObservableGraph<V, E> getInstance() {
+        if (INSTANCE == null) {
+            setInstance(getNewInstance());
+        }
 
-		return INSTANCE;
-	}
+        return INSTANCE;
+    }
 
-	public static void flushInstance() {
-		INSTANCE = null;
-	}
+    public void flushInstance() {
+        INSTANCE = null;
+    }
 
-	public static void setUserDatum(Object key, Object value) {
-		if (key != null && value != null) {
-			userData.put(key, value);
-		}
-	}
+    public void setUserDatum(Object key, Object value) {
+        if (key != null && value != null) {
+            userData.put(key, value);
+        }
+    }
 
-	public static Object getUserDatum(Object key) {
-		return userData.get(key);
-	}
+    public Object getUserDatum(Object key) {
+        return userData.get(key);
+    }
 
-	public static Object getUserDatum(Object key, Object defaultValue) {
-		if (userData.containsKey(key)) {
-			return userData.get(key);
-		} else {
-			return defaultValue;
-		}
-	}
+    public Object getUserDatum(Object key, Object defaultValue) {
+        if (userData.containsKey(key)) {
+            return userData.get(key);
+        } else {
+            return defaultValue;
+        }
+    }
 }

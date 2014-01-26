@@ -87,7 +87,8 @@ import static view.Utils.round;
 /**
  * @author mb724
  */
-public class Display extends JFrame implements GraphEventListener<MyVertex, MyEdge> {
+public class Display extends JFrame implements GraphEventListener<MyVertex, MyEdge>,
+        ExtraGraphEventListener<MyVertex, MyEdge> {
 
     private static InfoGatherer gatherer;
     //declared as fields rather than as local variables so that their value can be altered by listeners
@@ -100,15 +101,17 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     private static PersistentLayoutImpl2<MyVertex, MyEdge> persistentLayout;
     private Stats stats;
     private Controller controller;
+    private MyGraph g;
 
     /**
      * Creates new form Display
      */
-    public Display(Stats stats, Controller cont) {
+    public Display(Stats stats, Controller cont, MyGraph g) {
         this.stats = stats;
         this.controller = cont;
+        this.g = g;
 
-        gatherer = InfoGatherer.getInstance();
+        gatherer = new InfoGatherer(controller);
         initComponents();
 //		circleL.setSelected(true);
 
@@ -179,8 +182,8 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
             localCC.setText(round(stats.getCC(selectedVertex)));
             localAPL.setText(round(stats.getAPL(selectedVertex)));
             localBC.setText(round(stats.getBetweennessCentrality(selectedVertex)));
-            in.setText(round(MyGraph.getInstance().inDegree(selectedVertex)));
-            out.setText(round(MyGraph.getInstance().outDegree(selectedVertex)));
+            in.setText(round(g.inDegree(selectedVertex)));
+            out.setText(round(g.outDegree(selectedVertex)));
 
         } else {
             localCC.setText("N/A");
@@ -410,11 +413,11 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         pane.setLayout(paneLayout);
         paneLayout.setHorizontalGroup(
                 paneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 0, Short.MAX_VALUE)
+                          .addGap(0, 0, Short.MAX_VALUE)
         );
         paneLayout.setVerticalGroup(
                 paneLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 0, Short.MAX_VALUE)
+                          .addGap(0, 0, Short.MAX_VALUE)
         );
 
         jToolBar4.setBorder(javax.swing.BorderFactory.createTitledBorder("Zoom level"));
@@ -500,50 +503,50 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                        .addComponent(gamaLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                        .addComponent(edgeBreakingLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
-                                                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                        .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                                .addGap(5, 5, 5)
-                                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(breakingRate, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                                .addComponent(dynamics, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                                .addComponent(gama)
-                                                                .addComponent(tau, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                        .addComponent(deltaT, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addContainerGap(14, Short.MAX_VALUE))
+                             .addGroup(jPanel1Layout.createSequentialGroup()
+                                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                           .addGroup(jPanel1Layout.createSequentialGroup()
+                                                                                                  .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                                                                                         .addComponent(gamaLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                                                                         .addComponent(edgeBreakingLabel, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 123, Short.MAX_VALUE)
+                                                                                                                         .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                                                                         .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                                                                  .addGap(5, 5, 5)
+                                                                                                  .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                                         .addComponent(breakingRate, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                                                                                                                .addComponent(dynamics, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                                                                                                .addComponent(gama)
+                                                                                                                                                .addComponent(tau, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                                                                         .addComponent(deltaT, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                                           .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                    .addContainerGap(14, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addComponent(dynamics, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(tau, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(jPanel1Layout.createSequentialGroup()
-                                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(gama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(gamaLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(edgeBreakingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(breakingRate))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(deltaT))
-                                .addGap(5, 5, 5))
+                             .addGroup(jPanel1Layout.createSequentialGroup()
+                                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                                           .addGroup(jPanel1Layout.createSequentialGroup()
+                                                                                                  .addComponent(dynamics, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                  .addComponent(tau, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                           .addGroup(jPanel1Layout.createSequentialGroup()
+                                                                                                  .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 27, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                  .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                           .addComponent(gama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                           .addComponent(gamaLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                           .addComponent(edgeBreakingLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                           .addComponent(breakingRate))
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                    .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                           .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                           .addComponent(deltaT))
+                                                    .addGap(5, 5, 5))
         );
 
         statsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Disease statistics"));
@@ -552,11 +555,11 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         statsPanel.setLayout(statsPanelLayout);
         statsPanelLayout.setHorizontalGroup(
                 statsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 0, Short.MAX_VALUE)
+                                .addGap(0, 0, Short.MAX_VALUE)
         );
         statsPanelLayout.setVerticalGroup(
                 statsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 194, Short.MAX_VALUE)
+                                .addGap(0, 194, Short.MAX_VALUE)
         );
 
         jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Selected node statistics"));
@@ -587,51 +590,51 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
                 jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGap(5, 5, 5)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                                .addComponent(jLabel11)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(localAPL))
-                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                                .addComponent(jLabel15)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(out))
-                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                                .addComponent(jLabel14)
-                                                .addGap(29, 29, 29)
-                                                .addComponent(in)))
-                                .addGap(18, 18, 18)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                                .addComponent(jLabel9)
-                                                .addGap(18, 18, 18)
-                                                .addComponent(localCC))
-                                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                                .addComponent(jLabel13)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                                .addComponent(localBC)))
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                             .addGroup(jPanel2Layout.createSequentialGroup()
+                                                    .addGap(5, 5, 5)
+                                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                                           .addGroup(jPanel2Layout.createSequentialGroup()
+                                                                                                  .addComponent(jLabel11)
+                                                                                                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                                                  .addComponent(localAPL))
+                                                                           .addGroup(jPanel2Layout.createSequentialGroup()
+                                                                                                  .addComponent(jLabel15)
+                                                                                                  .addGap(18, 18, 18)
+                                                                                                  .addComponent(out))
+                                                                           .addGroup(jPanel2Layout.createSequentialGroup()
+                                                                                                  .addComponent(jLabel14)
+                                                                                                  .addGap(29, 29, 29)
+                                                                                                  .addComponent(in)))
+                                                    .addGap(18, 18, 18)
+                                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                           .addGroup(jPanel2Layout.createSequentialGroup()
+                                                                                                  .addComponent(jLabel9)
+                                                                                                  .addGap(18, 18, 18)
+                                                                                                  .addComponent(localCC))
+                                                                           .addGroup(jPanel2Layout.createSequentialGroup()
+                                                                                                  .addComponent(jLabel13)
+                                                                                                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                                                  .addComponent(localBC)))
+                                                    .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
                 jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel15)
-                                        .addComponent(jLabel13)
-                                        .addComponent(out)
-                                        .addComponent(localBC))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel14)
-                                        .addComponent(jLabel9)
-                                        .addComponent(in)
-                                        .addComponent(localCC))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel11)
-                                        .addComponent(localAPL)))
+                             .addGroup(jPanel2Layout.createSequentialGroup()
+                                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                           .addComponent(jLabel15)
+                                                                           .addComponent(jLabel13)
+                                                                           .addComponent(out)
+                                                                           .addComponent(localBC))
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                           .addComponent(jLabel14)
+                                                                           .addComponent(jLabel9)
+                                                                           .addComponent(in)
+                                                                           .addComponent(localCC))
+                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                           .addComponent(jLabel11)
+                                                                           .addComponent(localAPL)))
         );
 
         graphstatsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Graph statistics"));
@@ -678,11 +681,11 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         degreeDistPanel.setLayout(degreeDistPanelLayout);
         degreeDistPanelLayout.setHorizontalGroup(
                 degreeDistPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 337, Short.MAX_VALUE)
+                                     .addGap(0, 337, Short.MAX_VALUE)
         );
         degreeDistPanelLayout.setVerticalGroup(
                 degreeDistPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 93, Short.MAX_VALUE)
+                                     .addGap(0, 93, Short.MAX_VALUE)
         );
 
         degDistLogScale.setText("Log scale");
@@ -703,90 +706,90 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         graphstatsPanel.setLayout(graphstatsPanelLayout);
         graphstatsPanelLayout.setHorizontalGroup(
                 graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(graphstatsPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(graphstatsPanelLayout.createSequentialGroup()
-                                                .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addGroup(graphstatsPanelLayout.createSequentialGroup()
-                                                                .addComponent(jLabel17)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(globalCC, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                        .addGroup(graphstatsPanelLayout.createSequentialGroup()
-                                                                .addComponent(jLabel10)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(globalAvgDegree))
-                                                        .addGroup(graphstatsPanelLayout.createSequentialGroup()
-                                                                .addComponent(jLabel18)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(globalVertexCount))
-                                                        .addGroup(graphstatsPanelLayout.createSequentialGroup()
-                                                                .addComponent(jLabel20)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(globalMinDegree)))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addGroup(graphstatsPanelLayout.createSequentialGroup()
-                                                                .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                                        .addComponent(jLabel16)
-                                                                        .addGroup(graphstatsPanelLayout.createSequentialGroup()
-                                                                                .addComponent(jLabel12)
-                                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                                .addComponent(globalAPL)))
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(globalDegreeCorrelation))
-                                                        .addGroup(graphstatsPanelLayout.createSequentialGroup()
-                                                                .addComponent(jLabel19)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(globalEdgeCount))
-                                                        .addGroup(graphstatsPanelLayout.createSequentialGroup()
-                                                                .addComponent(jLabel21)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                .addComponent(globalMaxDegree)))
-                                                .addGap(5, 5, 5))
-                                        .addGroup(graphstatsPanelLayout.createSequentialGroup()
-                                                .addComponent(degDistLogScale)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addComponent(degDistCumulative, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addContainerGap())
-                                        .addGroup(graphstatsPanelLayout.createSequentialGroup()
-                                                .addComponent(degreeDistPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(0, 0, Short.MAX_VALUE))))
+                                     .addGroup(graphstatsPanelLayout.createSequentialGroup()
+                                                                    .addContainerGap()
+                                                                    .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                   .addGroup(graphstatsPanelLayout.createSequentialGroup()
+                                                                                                                                  .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                                                                                 .addGroup(graphstatsPanelLayout.createSequentialGroup()
+                                                                                                                                                                                                .addComponent(jLabel17)
+                                                                                                                                                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                                                                                                                .addComponent(globalCC, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                                                                                                                 .addGroup(graphstatsPanelLayout.createSequentialGroup()
+                                                                                                                                                                                                .addComponent(jLabel10)
+                                                                                                                                                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                                                                                                                .addComponent(globalAvgDegree))
+                                                                                                                                                                 .addGroup(graphstatsPanelLayout.createSequentialGroup()
+                                                                                                                                                                                                .addComponent(jLabel18)
+                                                                                                                                                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                                                                                                                .addComponent(globalVertexCount))
+                                                                                                                                                                 .addGroup(graphstatsPanelLayout.createSequentialGroup()
+                                                                                                                                                                                                .addComponent(jLabel20)
+                                                                                                                                                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                                                                                                                .addComponent(globalMinDegree)))
+                                                                                                                                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                                                                                  .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                                                                                 .addGroup(graphstatsPanelLayout.createSequentialGroup()
+                                                                                                                                                                                                .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                                                                                                                                               .addComponent(jLabel16)
+                                                                                                                                                                                                                               .addGroup(graphstatsPanelLayout.createSequentialGroup()
+                                                                                                                                                                                                                                                              .addComponent(jLabel12)
+                                                                                                                                                                                                                                                              .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                                                                                                                                                                              .addComponent(globalAPL)))
+                                                                                                                                                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                                                                                                                .addComponent(globalDegreeCorrelation))
+                                                                                                                                                                 .addGroup(graphstatsPanelLayout.createSequentialGroup()
+                                                                                                                                                                                                .addComponent(jLabel19)
+                                                                                                                                                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                                                                                                                .addComponent(globalEdgeCount))
+                                                                                                                                                                 .addGroup(graphstatsPanelLayout.createSequentialGroup()
+                                                                                                                                                                                                .addComponent(jLabel21)
+                                                                                                                                                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                                                                                                                                                .addComponent(globalMaxDegree)))
+                                                                                                                                  .addGap(5, 5, 5))
+                                                                                                   .addGroup(graphstatsPanelLayout.createSequentialGroup()
+                                                                                                                                  .addComponent(degDistLogScale)
+                                                                                                                                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                                                                                  .addComponent(degDistCumulative, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                                  .addContainerGap())
+                                                                                                   .addGroup(graphstatsPanelLayout.createSequentialGroup()
+                                                                                                                                  .addComponent(degreeDistPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                                                  .addGap(0, 0, Short.MAX_VALUE))))
         );
         graphstatsPanelLayout.setVerticalGroup(
                 graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(graphstatsPanelLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel17)
-                                        .addComponent(jLabel12)
-                                        .addComponent(globalCC)
-                                        .addComponent(globalAPL))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel10)
-                                        .addComponent(jLabel16)
-                                        .addComponent(globalDegreeCorrelation)
-                                        .addComponent(globalAvgDegree))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel18)
-                                        .addComponent(globalVertexCount)
-                                        .addComponent(jLabel19)
-                                        .addComponent(globalEdgeCount))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel20)
-                                        .addComponent(globalMinDegree)
-                                        .addComponent(jLabel21)
-                                        .addComponent(globalMaxDegree))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(degreeDistPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(degDistCumulative)
-                                        .addComponent(degDistLogScale))
-                                .addGap(5, 5, 5))
+                                     .addGroup(graphstatsPanelLayout.createSequentialGroup()
+                                                                    .addContainerGap()
+                                                                    .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                                                   .addComponent(jLabel17)
+                                                                                                   .addComponent(jLabel12)
+                                                                                                   .addComponent(globalCC)
+                                                                                                   .addComponent(globalAPL))
+                                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                    .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                                                   .addComponent(jLabel10)
+                                                                                                   .addComponent(jLabel16)
+                                                                                                   .addComponent(globalDegreeCorrelation)
+                                                                                                   .addComponent(globalAvgDegree))
+                                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                    .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                                                   .addComponent(jLabel18)
+                                                                                                   .addComponent(globalVertexCount)
+                                                                                                   .addComponent(jLabel19)
+                                                                                                   .addComponent(globalEdgeCount))
+                                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                    .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                                                   .addComponent(jLabel20)
+                                                                                                   .addComponent(globalMinDegree)
+                                                                                                   .addComponent(jLabel21)
+                                                                                                   .addComponent(globalMaxDegree))
+                                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                    .addComponent(degreeDistPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                    .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                   .addComponent(degDistCumulative)
+                                                                                                   .addComponent(degDistLogScale))
+                                                                    .addGap(5, 5, 5))
         );
 
         simControlsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Simulation"));
@@ -834,26 +837,26 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         simControlsPanel.setLayout(simControlsPanelLayout);
         simControlsPanelLayout.setHorizontalGroup(
                 simControlsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(simControlsPanelLayout.createSequentialGroup()
-                                .addGap(5, 5, 5)
-                                .addGroup(simControlsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(doStepToolbarButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(pauseSimToolbarButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(5, 5, 5))
+                                      .addGroup(simControlsPanelLayout.createSequentialGroup()
+                                                                      .addGap(5, 5, 5)
+                                                                      .addGroup(simControlsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                      .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                                                      .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                                                      .addComponent(doStepToolbarButton, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                                                      .addComponent(pauseSimToolbarButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                                      .addGap(5, 5, 5))
         );
         simControlsPanelLayout.setVerticalGroup(
                 simControlsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(simControlsPanelLayout.createSequentialGroup()
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(pauseSimToolbarButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(doStepToolbarButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jButton1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton2))
+                                      .addGroup(simControlsPanelLayout.createSequentialGroup()
+                                                                      .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                      .addComponent(pauseSimToolbarButton)
+                                                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                      .addComponent(doStepToolbarButton)
+                                                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                      .addComponent(jButton1)
+                                                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                                                      .addComponent(jButton2))
         );
 
         jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder("Time between steps, ms"));
@@ -878,17 +881,17 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
                 jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(speedSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addContainerGap())
+                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                                                                                                .addContainerGap()
+                                                                                                .addComponent(speedSlider, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                                                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
                 jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(jPanel3Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(speedSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(5, 5, 5))
+                             .addGroup(jPanel3Layout.createSequentialGroup()
+                                                    .addContainerGap()
+                                                    .addComponent(speedSlider, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                    .addGap(5, 5, 5))
         );
 
         menuFile.setMnemonic('F');
@@ -1221,50 +1224,50 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addComponent(mouseModeToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jToolBar4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addGap(0, 0, Short.MAX_VALUE))
-                                        .addComponent(pane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addComponent(simControlsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addGap(5, 5, 5)
-                                                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(statsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                        .addComponent(graphstatsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                .addGap(5, 5, 5))
+                      .addGroup(layout.createSequentialGroup()
+                                      .addContainerGap()
+                                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                      .addGroup(layout.createSequentialGroup()
+                                                                      .addComponent(mouseModeToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                      .addComponent(jToolBar4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                      .addGap(0, 0, Short.MAX_VALUE))
+                                                      .addComponent(pane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                                      .addGroup(layout.createSequentialGroup()
+                                                                      .addComponent(simControlsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                      .addGap(5, 5, 5)
+                                                                      .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                      .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                      .addComponent(statsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                      .addComponent(graphstatsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                      .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                      .addGap(5, 5, 5))
         );
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                        .addComponent(mouseModeToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(simControlsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(statsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(graphstatsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jToolBar4, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                .addComponent(pane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                                .addContainerGap())
+                      .addGroup(layout.createSequentialGroup()
+                                      .addContainerGap()
+                                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                      .addGroup(layout.createSequentialGroup()
+                                                                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                                                                      .addComponent(mouseModeToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                      .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                      .addComponent(simControlsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                      .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                      .addComponent(statsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                      .addComponent(graphstatsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                      .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                      .addGroup(layout.createSequentialGroup()
+                                                                      .addComponent(jToolBar4, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                                      .addComponent(pane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                      .addContainerGap())
         );
 
         pack();
@@ -1343,15 +1346,15 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 
     private void infectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_infectButtonActionPerformed
 //        try {
-        InfectDisp d = new InfectDisp(MyGraph.getInstance());
+        InfectDisp d = new InfectDisp(g, controller);
 //        } catch (NullPointerException e) {
 //            Exceptions.showNoGraphWarning();
 //        }
     }//GEN-LAST:event_infectButtonActionPerformed
 
     private void healAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_healAllButtonActionPerformed
-        if (MyGraph.getInstance() != null) {
-            Controller.setAllSusceptible();
+        if (g != null) {
+            controller.setAllSusceptible(g);
             vv.repaint();
         } else {
             Exceptions.showNoGraphWarning();
@@ -1367,12 +1370,12 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     }//GEN-LAST:event_helpAboutActionPerformed
 
     private void newDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newDocActionPerformed
-        MyGraph.flushInstance();
+        g.flushInstance();
         redisplayCompletely();
     }//GEN-LAST:event_newDocActionPerformed
 
     private void fileSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileSaveActionPerformed
-        gatherer.showSave(this, MyGraph.getInstance());
+        gatherer.showSave(this, g);
     }//GEN-LAST:event_fileSaveActionPerformed
 
     private void fileLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fileLoadActionPerformed
@@ -1389,27 +1392,27 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     }//GEN-LAST:event_fileQuit1ActionPerformed
 
     private void vDEgreeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vDEgreeActionPerformed
-//        vertexLabelIndex.put(MyGraph.getInstance(), vertexLabel.getSelection().getMnemonic() - 65);
+//        vertexLabelIndex.put(g, vertexLabel.getSelection().getMnemonic() - 65);
         repaint();
     }//GEN-LAST:event_vDEgreeActionPerformed
 
     private void vCCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vCCActionPerformed
-//        vertexLabelIndex.put(MyGraph.getInstance(), vertexLabel.getSelection().getMnemonic() - 65);
+//        vertexLabelIndex.put(g, vertexLabel.getSelection().getMnemonic() - 65);
         repaint();
     }//GEN-LAST:event_vCCActionPerformed
 
     private void vBCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vBCActionPerformed
-//        vertexLabelIndex.put(MyGraph.getInstance(), vertexLabel.getSelection().getMnemonic() - 65);
+//        vertexLabelIndex.put(g, vertexLabel.getSelection().getMnemonic() - 65);
         repaint();
     }//GEN-LAST:event_vBCActionPerformed
 
     private void vDistActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vDistActionPerformed
-//        vertexLabelIndex.put(MyGraph.getInstance(), vertexLabel.getSelection().getMnemonic() - 65);
+//        vertexLabelIndex.put(g, vertexLabel.getSelection().getMnemonic() - 65);
         repaint();
     }//GEN-LAST:event_vDistActionPerformed
 
     private void vGenerationActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vGenerationActionPerformed
-//        vertexLabelIndex.put(MyGraph.getInstance(), vertexLabel.getSelection().getMnemonic() - 65);
+//        vertexLabelIndex.put(g, vertexLabel.getSelection().getMnemonic() - 65);
         repaint();
     }//GEN-LAST:event_vGenerationActionPerformed
 
@@ -1418,27 +1421,27 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     }//GEN-LAST:event_vIDActionPerformed
 
     private void vNoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_vNoneActionPerformed
-//        vertexLabelIndex.put(MyGraph.getInstance(), vertexLabel.getSelection().getMnemonic() - 65);
+//        vertexLabelIndex.put(g, vertexLabel.getSelection().getMnemonic() - 65);
         repaint();
     }//GEN-LAST:event_vNoneActionPerformed
 
     private void eWeightActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eWeightActionPerformed
-//        edgeLabelIndex.put(MyGraph.getInstance(), edgeLabel.getSelection().getMnemonic() - 72);
+//        edgeLabelIndex.put(g, edgeLabel.getSelection().getMnemonic() - 72);
         repaint();
     }//GEN-LAST:event_eWeightActionPerformed
 
     private void eIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eIDActionPerformed
-//        edgeLabelIndex.put(MyGraph.getInstance(), edgeLabel.getSelection().getMnemonic() - 72);
+//        edgeLabelIndex.put(g, edgeLabel.getSelection().getMnemonic() - 72);
         repaint();
     }//GEN-LAST:event_eIDActionPerformed
 
     private void eBCActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eBCActionPerformed
-//        edgeLabelIndex.put(MyGraph.getInstance(), edgeLabel.getSelection().getMnemonic() - 72);
+//        edgeLabelIndex.put(g, edgeLabel.getSelection().getMnemonic() - 72);
         repaint();
     }//GEN-LAST:event_eBCActionPerformed
 
     private void eNoneActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_eNoneActionPerformed
-//        edgeLabelIndex.put(MyGraph.getInstance(), edgeLabel.getSelection().getMnemonic() - 72);
+//        edgeLabelIndex.put(g, edgeLabel.getSelection().getMnemonic() - 72);
         repaint();
     }//GEN-LAST:event_eNoneActionPerformed
 
@@ -1447,16 +1450,16 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
             String currText = pauseSimToolbarButton.getText().toLowerCase();
             if (currText.trim().equals("pause")) {
                 pauseSimToolbarButton.setText("Resume");
-                Simulator.pauseSim();
+                controller.getSimulator().pauseSim();
             } else {
                 pauseSimToolbarButton.setText("Pause   ");
-                Simulator.resumeSim();
+                controller.getSimulator().resumeSim();
             }
         }
     }//GEN-LAST:event_pauseSimToolbarButtonActionPerformed
 
     public boolean checkEmptyPopupError() {
-        if (MyGraph.getInstance().getVertexCount() < 1) {
+        if (g.getVertexCount() < 1) {
             JOptionPane.showMessageDialog(this, "That makes no sense whan the graph is empty!");
             return false;
         } else {
@@ -1467,7 +1470,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     private void doStepToolbarButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_doStepToolbarButtonActionPerformed
         if (checkEmptyPopupError()) {
             checkEmptyPopupError();
-            Simulator.resumeSimForOneStep();
+            controller.getSimulator().resumeSimForOneStep();
         }
     }//GEN-LAST:event_doStepToolbarButtonActionPerformed
 
@@ -1597,7 +1600,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
      *
      * @return
      */
-    private static double parseValueOrColourComponentOnError(JTextField textField) {
+    private double parseValueOrColourComponentOnError(JTextField textField) {
         double value = 0;
         try {
             value = Double.parseDouble(textField.getText());
@@ -1611,7 +1614,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     }
 
     //TODO convert this from a keylistener to a keybinding, http://docs.oracle.com/javase/tutorial/uiswing/misc/keybinding.html
-    private static void parseSimulationParameters(KeyEvent evt) {
+    private void parseSimulationParameters(KeyEvent evt) {
         //check the current state of the fields
         //parse the contents of the text field that should be active (based on the combos)
         //and attach them to the graph as a Dynamics object
@@ -1622,40 +1625,37 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         double brakingRateValue = parseValueOrColourComponentOnError(breakingRate);
 
         if (dynamics.getSelectedItem().toString().equals("SIR")) {
-            MyGraph.setUserDatum("dynamics",
-                    new SIRDynamics(tauValue, deltaTValue, gamaValue));
+            g.setUserDatum("dynamics",
+                           new SIRDynamics(tauValue, deltaTValue, gamaValue));
         } else if (dynamics.getSelectedItem().toString().equals("SIS")) {
-            MyGraph.setUserDatum("dynamics",
-                    new SISDynamics(tauValue, deltaTValue, gamaValue, brakingRateValue));
+            g.setUserDatum("dynamics",
+                           new SISDynamics(tauValue, deltaTValue, gamaValue, brakingRateValue));
         } else {
-            MyGraph.setUserDatum("dynamics", new SIDynamics(tauValue, deltaTValue));
+            g.setUserDatum("dynamics", new SIDynamics(tauValue, deltaTValue));
         }
         //attach the running simSleepTime to the graph
 //            MyGraph.setUserDatum("simSleepTime",
 //                    new Integer(Integer.parseInt(runTime.getText())));
 
         //attach the speed multiplier to the graph
-        MyGraph.setUserDatum(Strings.simSleepTime, speedSlider.getValue());
+        g.setUserDatum(Strings.simSleepTime, speedSlider.getValue());
         //make sure the graphs is in a proper state
-        Controller.validateNodeStates();
+        controller.validateNodeStates();
     }
 
     /**
      * Initialises the display
      */
     public void redisplayCompletely() {
-//        ObservableGraph g = new ObservableGraph(MyGraph.getInstance());
         //clear all previous content
         pane.removeAll();
         pane.setLayout(new BorderLayout());
 
-        persistentLayout
-                = new PersistentLayoutImpl2<MyVertex, MyEdge>(getSelectedGraphLayout(MyGraph.getInstance()));
-        vv
-                = new VisualizationViewer<MyVertex, MyEdge>(persistentLayout, pane.getSize());
-        vv.setPreferredSize(new Dimension(350, 350));
-        vv.getRenderer().setVertexRenderer(
-                new CustomVertexRenderer(vv.getPickedVertexState(), false));
+        persistentLayout = new PersistentLayoutImpl2<MyVertex, MyEdge>(getSelectedGraphLayout(g));
+        vv = new VisualizationViewer<MyVertex, MyEdge>(persistentLayout, pane.getSize());
+//        vv.setPreferredSize(new Dimension(350, 350));
+        vv.getRenderer().setVertexRenderer(new CustomVertexRenderer(
+                vv.getPickedVertexState(), false));
         vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(Color.black));
         vv.getRenderContext().setArrowFillPaintTransformer(new ConstantTransformer(Color.black));
         vv.getRenderContext().setArrowDrawPaintTransformer(new ConstantTransformer(Color.black));
@@ -1666,17 +1666,13 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         vv.getRenderer().getVertexLabelRenderer().setPosition(Renderer.VertexLabel.Position.AUTO);
 
 //#########  MOUSE  PLUGINS  ###############
-        graphMouse = new CustomGraphMouse(this,
-                this.stats,
-                vv.getRenderContext(),
-                Controller.getVertexFactory(),
-                Controller.getEdgeFactory());
-
+        graphMouse = new CustomGraphMouse(this, this.controller, this.stats, vv.getRenderContext(),
+                                          controller.getVertexFactory(), controller.getEdgeFactory());
+        graphMouse.loadPlugins();
         vv.setGraphMouse(graphMouse);
 
-        annotationControls
-                = new AnnotationControls<MyVertex, MyEdge>(graphMouse.getAnnotatingPlugin());
-
+        annotationControls = new AnnotationControls<MyVertex, MyEdge>(
+                graphMouse.getAnnotatingPlugin());
         annotationControlsToolbar = annotationControls.getAnnotationsToolBar();
         annotationControlsToolbar.setFocusable(false);
         annotationControlsToolbar.setFocusTraversalKeysEnabled(false);
@@ -1716,8 +1712,8 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
          */
         Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
                 new MouseEvent(pane, MouseEvent.MOUSE_MOVED, 0, 0, -1, -1, 2, false));
-        Simulator.resetSimulation();
-        Simulator.updateInfectedCountGraph(this.getStatsPanel());
+        controller.getSimulator().resetSimulation();
+        controller.getSimulator().updateInfectedCountGraph(this.getStatsPanel());
     }
 
     public static void redisplayPartially() {
@@ -1735,7 +1731,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
      *
      * @return
      */
-    public static Layout<MyVertex, MyEdge> getSelectedGraphLayout(Graph g) {
+    private Layout<MyVertex, MyEdge> getSelectedGraphLayout(Graph g) {
         //ascii code of 0 is 48, 1 is 49, etc, and the menus have been assigned mnemonics from 0-5
         int type = layouts.getSelection().getMnemonic() - 48;
 //        System.out.println("layout is: " + type);
@@ -1780,7 +1776,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
      */
     public void changeLayout() {
         try {
-            ObservableGraph g = new ObservableGraph(MyGraph.getInstance());
+//            ObservableGraph g = g;
             Layout oldLayout = vv.getGraphLayout();
             Layout newLayout = getSelectedGraphLayout(g);
             newLayout.setSize(oldLayout.getSize());
@@ -1987,5 +1983,15 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         //invoked when a vertex/edge is added/deleted
         System.out.println("display handling graph event");
         updateStatsDisplay(null);
+    }
+
+    @Override
+    public void handleExtraGraphEvent(ExtraGraphEvent<MyVertex, MyEdge> evt) {
+        System.out.println("display handling extra graph event");
+        //todo handle this event
+    }
+
+    public Controller getController() {
+        return controller;
     }
 }

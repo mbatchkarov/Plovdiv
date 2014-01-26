@@ -52,15 +52,10 @@ import java.awt.*;
  */
 public class InfoGatherer {
 
-    //    private Controller c;
-//    private Display d;
-    private static InfoGatherer INSTANCE;
+    private Controller controller;
 
-    public static InfoGatherer getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new InfoGatherer();
-        }
-        return INSTANCE;
+    public InfoGatherer(Controller controller) {
+        this.controller = controller;
     }
 
     /**
@@ -73,7 +68,7 @@ public class InfoGatherer {
         FileDialog window = new FileDialog(parent, "Save", FileDialog.SAVE);
         window.setSize(500, 500);
         window.setVisible(true);
-        Controller.save(window.getDirectory() + window.getFile(), g);
+        controller.save(window.getDirectory() + window.getFile(), g);
     }
 
     /**
@@ -87,7 +82,7 @@ public class InfoGatherer {
         window.setVisible(true);
         String path = window.getDirectory() + window.getFile();
         if (!path.equals("nullnull")) {//if the user clicks CANCEL path will be set to "nullnull"
-            Controller.load(path);
+            controller.load(path);
         }
 
     }
@@ -99,82 +94,78 @@ public class InfoGatherer {
      * @param parent
      */
     public void showGenerate(Display parent) {
-//        GenerateGraphSettings window = new GenerateGraphSettings(Controller.getInstance());
+//        GenerateGraphSettings window = new GenerateGraphSettings(controller.getInstance());
         GeneratorSettings window = new GeneratorSettings(parent);
         window.setVisible(true);
 
 
     }
 
-    public static void showEpiStats() {
-        EpiCurve e = new EpiCurve(MyGraph.getInstance());
-        e.start();
-    }
-
-    private static class EpiCurve extends Thread {
-
-        private final ObservableGraph g;
-
-        public EpiCurve(ObservableGraph g) {
-            this.g = g;
-        }
-
-        @Override
-        /**
-         * displays the data
-         */
-        public void run() {
-            ApplicationFrame t = new ApplicationFrame("Miro");
-            t.setDefaultCloseOperation(ApplicationFrame.DISPOSE_ON_CLOSE);
-            t.setVisible(true);
-            int[] x = {1, 2, 3, 4, 5, 6, 7, 8, 9};
-            int[] y = {0, 1, 2, 3, 4, 5, 6, 7, 8};
-
-            synchronized (g) {
-                while (x[0] < 500) {//number of steps of the simulation
-                    //time flows, y mutates
-                    for (int i = 0; i < y.length; i++) {
-                        x[i]++;
-                        y[i] = x[i];
-                    }
-
-                    t.setContentPane(updateData(x, y));
-                    t.pack();
-                    t.validate();
-
-                    try {
-                        Thread.sleep(100); //waiting time of the simulation or yield
-                        yield();
-                    } catch (InterruptedException ex) {
-                        //nothing
-                    }
-                    g.notifyAll();
-                }
-            }
-        }
-
-        /**
-         * prepares the data
-         *
-         * @param x
-         * @param y
-         * @return
-         */
-        private ChartPanel updateData(int[] x, int[] y) {
-            XYSeries series1 = new XYSeries("Half");
-            for (int i = 0; i < x.length; i++) {
-                series1.add(y[i], x[i]);
-            }
-
-            XYSeriesCollection dataset = new XYSeriesCollection();
-            dataset.addSeries(series1);
-
-            // create the chart...
-            JFreeChart chart = ChartFactory.createXYLineChart("Test", "Individuals", "Time steps",
-                    dataset, PlotOrientation.HORIZONTAL, true, true, true);
-
-            //optional customization
-            return new ChartPanel(chart);
-        }
-    }
+//
+//    private class EpiCurve extends Thread {
+//
+//        private final ObservableGraph g;
+//
+//        public EpiCurve(ObservableGraph g) {
+//            this.g = g;
+//        }
+//
+//        @Override
+//        /**
+//         * displays the data
+//         */
+//        public void run() {
+//            ApplicationFrame t = new ApplicationFrame("Miro");
+//            t.setDefaultCloseOperation(ApplicationFrame.DISPOSE_ON_CLOSE);
+//            t.setVisible(true);
+//            int[] x = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+//            int[] y = {0, 1, 2, 3, 4, 5, 6, 7, 8};
+//
+//            synchronized (g) {
+//                while (x[0] < 500) {//number of steps of the simulation
+//                    //time flows, y mutates
+//                    for (int i = 0; i < y.length; i++) {
+//                        x[i]++;
+//                        y[i] = x[i];
+//                    }
+//
+//                    t.setContentPane(updateData(x, y));
+//                    t.pack();
+//                    t.validate();
+//
+//                    try {
+//                        Thread.sleep(100); //waiting time of the simulation or yield
+//                        yield();
+//                    } catch (InterruptedException ex) {
+//                        //nothing
+//                    }
+//                    g.notifyAll();
+//                }
+//            }
+//        }
+//
+//        /**
+//         * prepares the data
+//         *
+//         * @param x
+//         * @param y
+//         * @return
+//         */
+//        private ChartPanel updateData(int[] x, int[] y) {
+//            XYSeries series1 = new XYSeries("Half");
+//            for (int i = 0; i < x.length; i++) {
+//                series1.add(y[i], x[i]);
+//            }
+//
+//            XYSeriesCollection dataset = new XYSeriesCollection();
+//            dataset.addSeries(series1);
+//
+//            // create the chart...
+//            JFreeChart chart = ChartFactory.createXYLineChart("Test", "Individuals", "Time steps",
+//                    dataset, PlotOrientation.HORIZONTAL, true, true, true);
+//
+//            //optional customization
+//            return new ChartPanel(chart);
+//        }
+//    }
 }

@@ -52,17 +52,19 @@ import java.awt.event.KeyEvent;
  */
 public class InfectDisp extends javax.swing.JFrame {
 
-    private ObservableGraph g; //the graph this window will infect
+    private MyGraph g; //the graph this window will infect
+    private Controller controller;
 
     /**
      * Creates new form InfectDisp
      *
      * @param g
      */
-    public InfectDisp(ObservableGraph g) {
+    public InfectDisp(MyGraph g, Controller controller) {
         this.g = g;
+        this.controller = controller;
         initComponents();
-        int numInf = Integer.parseInt(MyGraph.getUserDatum(Strings.numInfected, 0).toString());
+        int numInf = Integer.parseInt(g.getUserDatum(Strings.numInfected, 0).toString());
         max.setText("Value should be between 0 and " + (g.getVertexCount() - numInf));
         setVisible(true);
     }
@@ -244,8 +246,9 @@ public class InfectDisp extends javax.swing.JFrame {
                     throw new NumberFormatException();
                 }
                 //infect the number the user specified or as many as possible
-                int x = (Integer.parseInt(MyGraph.getUserDatum(Strings.numSus).toString()));
-                Controller.infectNodes(g, Math.min(n, Integer.parseInt(MyGraph.getUserDatum(Strings.numSus).toString())));
+                int x = (Integer.parseInt(g.getUserDatum(Strings.numSus).toString()));
+                controller.infectNodes(g, Math.min(n, Integer.parseInt(g.getUserDatum
+                        (Strings.numSus).toString())));
             } catch (NumberFormatException nfe) {
                 System.out.println("Negative number entered!");
             }
@@ -258,8 +261,8 @@ public class InfectDisp extends javax.swing.JFrame {
 //                }
             //infect the number the user specified or as many as possible
             int n = Math.min(slider.getValue() * g.getVertexCount() / 100,
-                    Integer.parseInt(MyGraph.getUserDatum(Strings.numSus).toString()));
-            Controller.infectNodes(g, n);
+                    Integer.parseInt(g.getUserDatum(Strings.numSus).toString()));
+            controller.infectNodes(g, n);
 //                System.out.println("Will infect: " + n);
 
 //            }

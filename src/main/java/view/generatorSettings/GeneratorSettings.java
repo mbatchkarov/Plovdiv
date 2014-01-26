@@ -51,6 +51,7 @@ import java.awt.event.KeyEvent;
  */
 public class GeneratorSettings extends javax.swing.JFrame {
 
+    private final Controller controller;
     private Display parent;
 
     /**
@@ -64,8 +65,7 @@ public class GeneratorSettings extends javax.swing.JFrame {
         setVisible(true);
         pane.setLayout(new FlowLayout());
         type.setSelectedIndex(0);
-//        type.validate();
-//        validate();
+        this.controller = parent.getController();
     }
 
     /**
@@ -229,31 +229,31 @@ public class GeneratorSettings extends javax.swing.JFrame {
         try {
             switch (type.getSelectedIndex()) {
                 case 0: {
-                    Controller.generate4Lattice(
+                    controller.generate4Lattice(
                             Integer.parseInt(((LatticeSettings) pane.getComponent(0)).getM().getText()),
                             Integer.parseInt(((LatticeSettings) pane.getComponent(0)).getN().getText()));
                     break;
                 }
                 case 1: {
-                    Controller.generate6Lattice(
+                    controller.generate6Lattice(
                             Integer.parseInt(((LatticeSettings) pane.getComponent(0)).getM().getText()),
                             Integer.parseInt(((LatticeSettings) pane.getComponent(0)).getN().getText()));
                     break;
                 }
                 case 2: {
-                    Controller.generateScaleFree(
+                    controller.generateScaleFree(
                             Integer.parseInt(((BASettings) pane.getComponent(0)).getS().getText()), 1, 1);
                     break;
                 }
                 case 3: {
-                    Controller.generateKleinbergSmallWorld(
+                    controller.generateKleinbergSmallWorld(
                             Integer.parseInt(((SmallWorldSettings) pane.getComponent(0)).getM().getText()),
                             Integer.parseInt(((SmallWorldSettings) pane.getComponent(0)).getN().getText()),
                             Double.parseDouble(((SmallWorldSettings) pane.getComponent(0)).getE().getText()));
                     break;
                 }
                 case 4: {
-                    Controller.generateRandom(
+                    controller.generateRandom(
                             Integer.parseInt(((RandomSettings) pane.getComponent(0)).getV().getText()),
                             Integer.parseInt(((RandomSettings) pane.getComponent(0)).getE().getText()));
                     break;

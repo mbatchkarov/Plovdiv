@@ -47,6 +47,7 @@ import javax.swing.JMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.plaf.basic.BasicIconFactory;
 
+import controller.Controller;
 import controller.Stats;
 import org.apache.commons.collections15.Factory;
 
@@ -66,6 +67,7 @@ public class CustomGraphMouse extends AbstractModalGraphMouse
 	implements ModalGraphMouse, ItemSelectable {
 
     protected Display d;
+    private Controller cont;
     private Stats stats;
     protected Factory vertexFactory;
 	protected Factory edgeFactory;
@@ -83,10 +85,11 @@ public class CustomGraphMouse extends AbstractModalGraphMouse
 	 * create an instance with default values
 	 *
 	 */
-	public CustomGraphMouse(Display d, Stats stats, RenderContext rc,
+	public CustomGraphMouse(Display d, Controller cont, Stats stats, RenderContext rc,
 			Factory vertexFactory, Factory edgeFactory) {
 		this(rc, vertexFactory, edgeFactory, 1.1f, 1/1.1f);
         this.d = d;
+        this.cont = cont;
         this.stats = stats;
     }
 
@@ -102,7 +105,7 @@ public class CustomGraphMouse extends AbstractModalGraphMouse
 		this.edgeFactory = edgeFactory;
 		this.rc = rc;
 		this.basicTransformer = rc.getMultiLayerTransformer();
-		loadPlugins();
+//		loadPlugins();
 		setModeKeyListener(new ModeKeyAdapter(this));
 	}
 
@@ -111,17 +114,17 @@ public class CustomGraphMouse extends AbstractModalGraphMouse
 	 *
 	 */
 	@Override
-    protected void loadPlugins() {
+    public void loadPlugins() {
 		pickingPlugin = new CustomPickingPlugin(this.stats, this.d);
 		animatedPickingPlugin = new AnimatedPickingGraphMousePlugin();
 		translatingPlugin = new TranslatingGraphMousePlugin(InputEvent.BUTTON1_MASK);
 		scalingPlugin = new ScalingGraphMousePlugin(new CrossoverScalingControl(), 0, in, out);
 		rotatingPlugin = new RotatingGraphMousePlugin();
 		shearingPlugin = new ShearingGraphMousePlugin();
-		editingPlugin = new CustomEditingPlugin(vertexFactory, edgeFactory);
+		editingPlugin = new CustomEditingPlugin(this.cont.getGraph(), vertexFactory, edgeFactory);
 		labelEditingPlugin = new LabelEditingGraphMousePlugin();
 		annotatingPlugin = new AnnotatingGraphMousePlugin(rc);
-		popupEditingPlugin = new CustomPopupPlugin(this.d);
+		popupEditingPlugin = new CustomPopupPlugin(this.cont, this.d);
 		add(scalingPlugin);
 		setMode(Mode.EDITING);
 	}

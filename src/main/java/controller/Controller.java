@@ -52,266 +52,281 @@ import java.util.Random;
  */
 public class Controller {
 
-	private static EdgeFactory ef;
-	private static VertexFactory vf;
-	private static GraphFactory gf;
-	private static Display gui;
-	private static Simulator sim;
-	private static Controller INSTANCE;
+    private static EdgeFactory ef;
+    private static VertexFactory vf;
+    private static GraphFactory gf;
+    private static Display gui;
+    private Simulator sim;
 
-    private Controller(Stats stats) {
-		Graph g = MyGraph.getInstance();//initializes the instance
-		MyGraph.setDefaultSimulationSettings();
-		sim = new Simulator(stats);
-	}
+    private MyGraph g;
 
-//	public static Controller getInstance() {
-//		if (INSTANCE == null) {
-//			INSTANCE = new Controller();
-//		}
-//		return INSTANCE;
-//	}
+    private Controller(Stats stats, MyGraph g) {
+        this.g = g;
+        g.setDefaultSimulationSettings();
+        sim = new Simulator(g, stats, this);
+        validateNodeStates();
+    }
 
-	public static void setGui(Display w) {
-		gui = w;
-		w.setVisible(true);
-	}
 
-	/**
-	 * @return the gui
-	 */
-	public static Display getGui() {
-		return gui;
-	}
+    public void setGui(Display w) {
+        gui = w;
+        w.setVisible(true);
+    }
 
-	//auto-generated getters
-	public static EdgeFactory getEdgeFactory() {
-		if (ef == null) {
-			ef = new EdgeFactory();
-		}
-		return ef;
-	}
+    /**
+     * @return the gui
+     */
+    public Display getGui() {
+        return gui;
+    }
 
-	public static GraphFactory getGraphFactory() {
-		if (gf == null) {
-			gf = new GraphFactory();
-		}
-		return gf;
-	}
+    //auto-generated getters
+    public static EdgeFactory getEdgeFactory() {
+        if (ef == null) {
+            ef = new EdgeFactory();
+        }
+        return ef;
+    }
 
-	public static VertexFactory getVertexFactory() {
-		if (vf == null) {
-			vf = new VertexFactory();
-		}
-		return vf;
-	}
+    public static GraphFactory getGraphFactory() {
+        if (gf == null) {
+            gf = new GraphFactory();
+        }
+        return gf;
+    }
 
-	/**
-	 * returns a mapping of edges agains their weigths
-	 *
-	 * @return
-	 */
-	public static HashMap getEdgeWeigths() {
-		HashMap<MyEdge, Double> m = new HashMap<MyEdge, Double>();
-		Iterator i = MyGraph.getInstance().getEdges().iterator();
-		while (i.hasNext()) {
-			MyEdge e = (MyEdge) i.next();
-			m.put(e, e.getWeigth());
-		}
+    public static VertexFactory getVertexFactory() {
+        if (vf == null) {
+            vf = new VertexFactory();
+        }
+        return vf;
+    }
 
-		return m;
-	}
+    /**
+     * returns a mapping of edges agains their weigths
+     *
+     * @return
+     */
+    public HashMap getEdgeWeigths() {
+        HashMap<MyEdge, Double> m = new HashMap<MyEdge, Double>();
+        Iterator i = this.g.getEdges().iterator();
+        while (i.hasNext()) {
+            MyEdge e = (MyEdge) i.next();
+            m.put(e, e.getWeigth());
+        }
 
-	//----------SIMULATION CONTROLS
+        return m;
+    }
 
-	/**
-	 * sets all vertices to susceptible state and gives them a generation index
-	 * 0 (ie. not yet infected).
-	 */
-	public static void setAllSusceptible() {
+    //----------SIMULATION CONTROLS
+
+    /**
+     * sets all vertices to susceptible state and gives them a generation index
+     * 0 (ie. not yet infected).
+     */
+    public void setAllSusceptible(MyGraph g) {
 //        g.setUserDatum(Strings.steps, 0);
-		ObservableGraph g = MyGraph.getInstance();
-		Iterator i = g.getVertices().iterator();
-		MyVertex x;
-		while (i.hasNext()) {
-			x = (MyVertex) i.next();
-			x.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
+        Iterator i = g.getVertices().iterator();
+        MyVertex x;
+        while (i.hasNext()) {
+            x = (MyVertex) i.next();
+            x.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
 //            x.setUserDatum(Strings.generation, new Integer(0));
-		}
-		Iterator j = g.getEdges().iterator();
-		MyEdge e;
-		while (j.hasNext()) {
-			e = (MyEdge) j.next();
-			e.setUserDatum(Strings.infected, false);
-		}
-		updateCounts();
-	}
+        }
+        Iterator j = g.getEdges().iterator();
+        MyEdge e;
+        while (j.hasNext()) {
+            e = (MyEdge) j.next();
+            e.setUserDatum(Strings.infected, false);
+        }
+        updateCounts();
+    }
 
-	/**
-	 * Attaches counters of the numbers of infected/susceptible/resistant to all
-	 * graphs
-	 */
-	public static void updateCounts() {
+    /**
+     * Attaches counters of the numbers of infected/susceptible/resistant to all
+     * graphs
+     */
+    public void updateCounts() {
 //		System.out.println("updating counts in thread " + Thread.currentThread().getName());
-		ObservableGraph g = MyGraph.getInstance();
-		int ns = 0, ni = 0, nr = 0;
-		for (Object xx : g.getVertices()) {//count how many nodes are in each state
-			MyVertex yy = (MyVertex) xx;
-			if (yy.getUserDatum(Strings.state).equals(EpiState.INFECTED)) {
-				ni++;
-			} else if (yy.getUserDatum(Strings.state).equals(EpiState.RESISTANT)) {
-				nr++;
-			} else {
-				ns++;
-			}
-		}
+        ObservableGraph g = this.g;
+        int ns = 0, ni = 0, nr = 0;
+        for (Object xx : g.getVertices()) {//count how many nodes are in each state
+            MyVertex yy = (MyVertex) xx;
+            if (yy.getUserDatum(Strings.state).equals(EpiState.INFECTED)) {
+                ni++;
+            } else if (yy.getUserDatum(Strings.state).equals(EpiState.RESISTANT)) {
+                nr++;
+            } else {
+                ns++;
+            }
+        }
 
 //            System.out.println("graph  " + i);
 //            System.out.println("number inf " + ni);
 //            System.out.println("number  sus" + ns);
 //            System.out.println("number  res" + nr);
 
-		MyGraph.setUserDatum(Strings.numInfected, ni);
-		MyGraph.setUserDatum(Strings.numRes, nr);
-		MyGraph.setUserDatum(Strings.numSus, ns);
-	}
+        this.g.setUserDatum(Strings.numInfected, ni);
+        this.g.setUserDatum(Strings.numRes, nr);
+        this.g.setUserDatum(Strings.numSus, ns);
+    }
 
-	/**
-	 * Sets all undefined nodes to susceptible Sets all resistant nodes in a
-	 * non-SIR epidemic to susceptible
-	 */
-	public static void validateNodeStates() {
-		Iterator i = MyGraph.getInstance().getVertices().iterator();
-		while (i.hasNext()) {
-			MyVertex current = ((MyVertex) i.next());
-			if (current.getUserDatum(Strings.state) == null) {
-				current.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
-			}
-			if (current.getUserDatum(Strings.state).equals(EpiState.RESISTANT) && (MyGraph.getUserDatum(Strings.dynamics) instanceof SIRDynamics)) {
-				current.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
-			}
-		}
+    /**
+     * Sets all undefined nodes to susceptible Sets all resistant nodes in a
+     * non-SIR epidemic to susceptible
+     */
+    public void validateNodeStates() {
+        Iterator i = this.g.getVertices().iterator();
+        while (i.hasNext()) {
+            MyVertex current = ((MyVertex) i.next());
+            if (current.getUserDatum(Strings.state) == null) {
+                current.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
+            }
+            if (current.getUserDatum(Strings.state).equals(EpiState.RESISTANT) && (this.g.getUserDatum(Strings.dynamics) instanceof SIRDynamics)) {
+                current.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
+            }
+        }
 
-	}
+    }
 
 
-	//------------SAVE/ LOAD FUNCTIONALITY--------------
+    //------------SAVE/ LOAD FUNCTIONALITY--------------
 
-	/**
-	 * Asks the parser to create a graph from file, makes a frame and displays
-	 * the graph in it
-	 *
-	 * @param path
-	 */
-	public static void load(String path) {
-		try {
-			MyGraph.setInstance(PajekParser.load(path));
-			Controller.setAllSusceptible();
+    /**
+     * Asks the parser to create a graph from file, makes a frame and displays
+     * the graph in it
+     *
+     * @param path
+     */
+    public void load(String path) {
+        try {
+            g.setInstance(PajekParser.load(path));
+            setAllSusceptible(g);
 //            Simulator.stepNumber =
-		} catch (Exception ex) {
-			Exceptions.showReadWriteErrorNotification(ex);
-		}
-		gui.redisplayCompletely();
-	}
+        } catch (Exception ex) {
+            Exceptions.showReadWriteErrorNotification(ex);
+        }
+        gui.redisplayCompletely();
+    }
 
-	public static void save(String path, ObservableGraph g) {
-		try {
-			PajekParser.save(path, g);
-		} catch (Exception ex) {
-			Exceptions.showReadWriteErrorNotification(ex);
-		}
-	}
+    public void save(String path, ObservableGraph g) {
+        try {
+            PajekParser.save(path, g);
+        } catch (Exception ex) {
+            Exceptions.showReadWriteErrorNotification(ex);
+        }
+    }
 
-	//=========!!!all generated/loaded graphs will appear in a new window!!!=========
-	//-----------GENERATION FUNCTIONALITY-------------------
-	public static void generateRandom(int a, int b) {
-		MyGraph.setInstance(Generator.generateRandom(a, b));
+    //=========!!!all generated/loaded graphs will appear in a new window!!!=========
+    //-----------GENERATION FUNCTIONALITY-------------------
+    public void generateRandom(int a, int b) {
+        this.g.setInstance(Generator.generateRandom(a, b, this));
         //todo these methods should not trigger a redisplay manually, but should fire a graphchanged event
+        setAllSusceptible(g);
 //		gui.redisplayCompletely();
-	}
+    }
 
-	public static void generate4Lattice(int a, int b) {
-		MyGraph.setInstance(Generator.generateRectangularLattice(a, b));
+    public void generate4Lattice(int a, int b) {
+        this.g.setInstance(Generator.generateRectangularLattice(a, b, this));
+        setAllSusceptible(g);
 //        gui.redisplayCompletely();
 
-	}
+    }
 
-	public static void generate6Lattice(int a, int b) {
-		MyGraph.setInstance(Generator.generateHexagonalLattice(a, b));
+    public void generate6Lattice(int a, int b) {
+        this.g.setInstance(Generator.generateHexagonalLattice(a, b, this));
+        setAllSusceptible(g);
 //        gui.redisplayCompletely();
-	}
+    }
 
-	public static void generateKleinbergSmallWorld(int m, int n, double c) {
-		MyGraph.setInstance(Generator.generateKleinbergSmallWorld(m, n, c));
+    public void generateKleinbergSmallWorld(int m, int n, double c) {
+        this.g.setInstance(Generator.generateKleinbergSmallWorld(m, n, c, this));
+        setAllSusceptible(g);
 //        gui.redisplayCompletely();
-	}
+    }
 
-	public static void generateScaleFree(int a, int b, int c) {
-		MyGraph.setInstance(Generator.generateScaleFree(a, 1, c));
-//        gui.redisplayCompletely();
-	}
+    public void generateScaleFree(int a, int b, int c) {
+        this.g.setInstance(Generator.generateScaleFree(a, 1, c, this));
+        setAllSusceptible(g);
+        gui.redisplayCompletely();
+    }
 
-	public static void generateEppsteinPowerLaw(int numVert, int numEdges, int r) {
-		MyGraph.setInstance(Generator.generateEppsteinPowerLaw(numVert, numEdges, r));
-//        gui.redisplayCompletely();
-	}
+    public void generateEppsteinPowerLaw(int numVert, int numEdges, int r) {
+        this.g.setInstance(Generator.generateEppsteinPowerLaw(numVert, numEdges, r));
+        setAllSusceptible(g);
+        gui.redisplayCompletely();
+    }
 
-	//------------OPENING NEW DOCUMENTS--------------------
-	/**
-	 * Puts an graph into the collection of graphs, creates a displaying frame
-	 * for it and starts displaying it.
-	 *
-	 * @param g
-	 */
-	/**
-	 * Convenience pass-through to the display, prevents the simulators from
-	 * accessing the display directly
-	 */
-	public static void updateDisplay() {
-		Display.vv.repaint();
-	}
+    //------------OPENING NEW DOCUMENTS--------------------
+    /**
+     * Puts an graph into the collection of graphs, creates a displaying frame
+     * for it and starts displaying it.
+     *
+     * @param g
+     */
+    /**
+     * Convenience pass-through to the display, prevents the simulators from
+     * accessing the display directly
+     */
+    public void updateDisplay() {
+        Display.vv.repaint();
+    }
 
-	/**
-	 * Infects a given number of vertices in the given graph at random. The
-	 * number is assumed to be <= number of vertices in g
-	 *
-	 * @param g
-	 * @param number
-	 */
-	public static void infectNodes(Graph g, int number) {
-		Object[] x = g.getVertices().toArray();
-		MyVertex[] v = new MyVertex[x.length];
-		for (int i = 0; i < v.length; i++) {
-			v[i] = (MyVertex) x[i];
-		}
-		Random rand = new Random();
-		int i = 0;
-		while (i < number) {
-			int next = rand.nextInt(v.length);
-			if (!v[next].getUserDatum(Strings.state).equals(EpiState.INFECTED)) {
-				v[next].setUserDatum(Strings.state, EpiState.INFECTED);
-				i++; //only increment if infection occured- number of infections guaranteed
-			}
-		}
-		updateCounts();
-		updateDisplay();
+    /**
+     * Infects a given number of vertices in the given graph at random. The
+     * number is assumed to be <= number of vertices in g
+     *
+     * @param g
+     * @param number
+     */
+    public void infectNodes(Graph g, int number) {
+        Object[] x = g.getVertices().toArray();
+        MyVertex[] v = new MyVertex[x.length];
+        for (int i = 0; i < v.length; i++) {
+            v[i] = (MyVertex) x[i];
+        }
+        Random rand = new Random();
+        int i = 0;
+        while (i < number) {
+            int next = rand.nextInt(v.length);
+            if (!v[next].getUserDatum(Strings.state).equals(EpiState.INFECTED)) {
+                v[next].setUserDatum(Strings.state, EpiState.INFECTED);
+                i++; //only increment if infection occured- number of infections guaranteed
+            }
+        }
+        updateCounts();
+        updateDisplay();
 
-	}
+    }
 
-	public static void main(String[] args) {
-        setAllSusceptible();//this will implicitly create a graph instance
-        Stats stats = new Stats();
 
-        Controller cont = new Controller(stats);  //controller
+    public Simulator getSimulator() {
+        return sim;
+    }
 
-        final Display d = new Display(stats, cont); // display uses stats
-        Controller.setGui(d); // so that controller can trigger updates
+    public MyGraph getGraph() {
+        return g;
+    }
 
-        MyGraph.getInstance().addGraphEventListener(d); // so that gui will update when graph changes
-        MyGraph.getInstance().addGraphEventListener(stats); // so that stats will update on graph events
+    public static void main(String[] args) {
+        MyGraph g = new GraphFactory().create();
+
+
+        Stats stats = new Stats(g);
+        Controller cont = new Controller(stats, g);  //controller
+        cont.setAllSusceptible(g);
+
+        final Display d = new Display(stats, cont, g); // display uses stats
+        cont.setGui(d); // so that controller can trigger updates
+
+        g.addGraphEventListener(d); // so that gui will update when graph changes
+        g.addGraphEventListener(stats); // so that stats will update on graph events
 
         //display a graph
-        Controller.generateScaleFree(30, 1, 1); //todo this should trigger a stats recalculation and a gui update
-        sim.updateInfectedCountGraph(d.getStatsPanel());
-	}
+//        cont.generateScaleFree(30, 1, 1); //todo this should trigger a stats recalculation and a
+
+        // gui update
+        cont.getSimulator().updateInfectedCountGraph(d.getStatsPanel());
+    }
+
 }

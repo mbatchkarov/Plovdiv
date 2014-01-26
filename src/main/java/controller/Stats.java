@@ -39,6 +39,7 @@ import edu.uci.ics.jung.algorithms.scoring.BetweennessCentrality;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraDistance;
 import edu.uci.ics.jung.algorithms.shortestpath.DistanceStatistics;
 import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.Hypergraph;
 import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.graph.ObservableGraph;
 import edu.uci.ics.jung.graph.event.GraphEvent;
@@ -82,9 +83,11 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge> {
     private double degreeCorrelation;
     private BetweennessCentrality edgeBetweenness;
     private BetweennessCentrality vertexBetweenness;
+    private MyGraph<MyVertex, MyEdge> g;
 
 
-    public Stats() {
+    public Stats(MyGraph<MyVertex, MyEdge> g) {
+        this.g = g;
         this.selectedNode = null;
         this.ccMap = new HashMap<MyVertex, Double>();
         this.avgCC = -1d;
@@ -116,7 +119,6 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge> {
     private void calculateDegreeCorrelation() {
         //degree correlation
         // this is just the Pearson product-moment correlation coefficient averaged over each connection
-        Graph<MyVertex, MyEdge> g = MyGraph.getInstance();
         double degreeA, degreeB;
         double numConnectionsProcessed = 0.0;
         double currentConnectionWeight = 0.0;
@@ -160,10 +162,9 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge> {
 
     private void calculateAssortativity() {
         //assortativity
-        Graph g = MyGraph.getInstance();
-        int m = MyGraph.getInstance().getEdgeCount();
+        int m = g.getEdgeCount();
         if (m > 0) {
-            Object[] vertices = g.getVertices().toArray();
+            MyVertex[] vertices = (MyVertex[]) g.getVertices().toArray();
             int[] degrees = new int[vertices.length];
             int[] degrees_sq = new int[vertices.length];
             for (int i = 0; i < degrees.length; i++) {
@@ -197,7 +198,6 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge> {
 
     private void calculateDegreeDistribution() {
         //degree distribution
-        ObservableGraph g = MyGraph.getInstance();
         int max = getMaxDegree();
         int numBuckets = max + 1;//if no edges exist, make the buckets array at least 1 element wide
         degreeDistribution = new int[numBuckets];
@@ -223,10 +223,9 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge> {
 
     private void calculateAverageDegree() {
         //average degree
-        if (MyGraph.getInstance().getVertexCount() > 0) {
-            ObservableGraph g = MyGraph.getInstance();
+        if (g.getVertexCount() > 0) {
             double res = 0d;
-            for (Object v : g.getVertices()) {
+            for (MyVertex v : g.getVertices()) {
                 res += g.outDegree(v);
             }
             avgDegree = (res / g.getVertexCount());
@@ -237,14 +236,14 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge> {
 
     private void calculateAveragePathLength() {
         //average path length
-        if (MyGraph.getInstance().getVertexCount() > 0) {
-            aplMap = DistanceStatistics.averageDistances(MyGraph.getInstance(), new DijkstraDistance(MyGraph.getInstance()));
+        if (g.getVertexCount() > 0) {
+            aplMap = DistanceStatistics.averageDistances(g, new DijkstraDistance(g));
             double sum = 0;
-            for (Object x : MyGraph.getInstance().getVertices()) {
+            for (Object x : g.getVertices()) {
                 sum += getAPL((MyVertex) x);
             }
             BigDecimal total = new BigDecimal(sum);
-            BigDecimal res = total.divide(new BigDecimal(MyGraph.getInstance().getVertexCount()), MathContext.DECIMAL32);
+            BigDecimal res = total.divide(new BigDecimal(g.getVertexCount()), MathContext.DECIMAL32);
             apl = (res.doubleValue());
         } else {
             apl = Double.NaN;
@@ -253,13 +252,13 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge> {
 
     private void calculateClusteringCoefficient() {
         //clustering coefficient
-        ccMap = Metrics.clusteringCoefficients(MyGraph.getInstance());
-        if (MyGraph.getInstance().getVertexCount() > 0) {
+        ccMap = Metrics.clusteringCoefficients(g);
+        if (g.getVertexCount() > 0) {
             double sum = 0;
-            for (Object x : MyGraph.getInstance().getVertices()) {
+            for (Object x : g.getVertices()) {
                 sum += ccMap.get(x);
             }
-            double res = (sum) / (MyGraph.getInstance().getVertexCount());
+            double res = (sum) / (g.getVertexCount());
             avgCC = (res);
         } else {
             avgCC = Double.NaN;
@@ -268,11 +267,11 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge> {
 
     // accessors
     public int getEdgeCount() {
-        return MyGraph.getInstance().getEdgeCount();
+        return g.getEdgeCount();
     }
 
     public int getVertexCount() {
-        return MyGraph.getInstance().getVertexCount();
+        return g.getVertexCount();
     }
 
     public double getCC() {
@@ -328,7 +327,6 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge> {
 
     public int getMaxDegree() {
         int max = 0;
-        ObservableGraph g = MyGraph.getInstance();
         Collection<MyVertex> v = g.getVertices();
         if (v.size() > 0) {
             for (MyVertex x : v) {
@@ -343,7 +341,6 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge> {
 
     public int getMinDegree() {
         int min = Integer.MAX_VALUE;
-        ObservableGraph g = MyGraph.getInstance();
         Collection<MyVertex> v = g.getVertices();
         if (v.size() > 0) {
             for (MyVertex x : v) {
@@ -383,7 +380,7 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge> {
      */
     private double getWeightedDegree(MyVertex v) {
         double res = 0;
-        for (Object e : MyGraph.getInstance().getOutEdges(v)) {
+        for (Object e : g.getOutEdges(v)) {
             res += ((MyEdge) e).getWeigth();
         }
         return res;
@@ -396,22 +393,22 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge> {
      * @return
      */
     public double getBetweennessCentrality(MyVertex vertex) {
-        BetweennessCentrality bc = new BetweennessCentrality(MyGraph.getInstance(), new Transformer<MyEdge, Double>() {
+        BetweennessCentrality bc = new BetweennessCentrality(g, new Transformer<MyEdge, Double>() {
             public Double transform(MyEdge arg0) {
                 return arg0.getWeigth();
             }
         });
-        int n = MyGraph.getInstance().getVertexCount();
+        int n = g.getVertexCount();
         return ((2 * bc.getVertexScore(vertex)) / ((n - 1) * (n - 2)));
     }
 
     public double getBetweennessCentrality(MyEdge edge) {
-        BetweennessCentrality bc = new BetweennessCentrality(MyGraph.getInstance(), new Transformer<MyEdge, Double>() {
+        BetweennessCentrality bc = new BetweennessCentrality(g, new Transformer<MyEdge, Double>() {
             public Double transform(MyEdge arg0) {
                 return arg0.getWeigth();
             }
         });
-        int n = MyGraph.getInstance().getVertexCount();
+        int n = g.getVertexCount();
         return ((2 * bc.getEdgeScore(edge)) / ((n - 1) * (n - 2)));
     }
 
@@ -424,7 +421,7 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge> {
      */
     public String getDistFromSelectedTo(MyVertex target) {
         if (selectedNode != null && target != null) {
-            DijkstraDistance d = new DijkstraDistance(MyGraph.getInstance());
+            DijkstraDistance d = new DijkstraDistance(g);
             Double dist = (Double) d.getDistance(getSelectedNode(), target);
             if (dist != null) {
                 return (dist).toString();
@@ -456,7 +453,6 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge> {
      * @return
      */
     public double getDensity() {
-        ObservableGraph g = MyGraph.getInstance();
         if (g.getVertexCount() > 1) {
             return ((2 * g.getEdgeCount()) / (g.getVertexCount() * (g.getVertexCount() - 1)));
         } else {
@@ -473,7 +469,7 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge> {
     public double[] getExtremaOfEdgeWeights() {
         double[] res = new double[2];
         double min = Double.MAX_VALUE, max = Double.MIN_VALUE;
-        for (Object x : MyGraph.getInstance().getEdges()) {
+        for (Object x : g.getEdges()) {
             MyEdge e = (MyEdge) x;
             if (e.getWeigth() > max) {
                 max = e.getWeigth();
@@ -520,8 +516,6 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge> {
         plot.setRangeAxis(rangeAxis);
 
         final NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
-        System.out.println(getMaxDegree());
-        System.out.println(getMinDegree());
         domainAxis.setRange(getMinDegree(), getMaxDegree());
         domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
@@ -561,9 +555,14 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge> {
         return dataset;
     }
 
+    public MyGraph<MyVertex, MyEdge> getGraph() {
+        return g;
+    }
+
     // HANDLE GRAPH EVENTS APPROPRIATELY (AND EFFICIENTLY)
     @Override
     public void handleGraphEvent(GraphEvent<MyVertex, MyEdge> evt) {
 
     }
+
 }

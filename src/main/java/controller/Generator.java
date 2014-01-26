@@ -55,10 +55,10 @@ public class Generator {
     public Generator() {
     }
 
-    public static ObservableGraph generateRandom(int v, int e) {
-        VertexFactory vf = Controller.getVertexFactory();
+    public static ObservableGraph generateRandom(int v, int e, Controller controller) {
+        VertexFactory vf = controller.getVertexFactory();
         vf.reset();
-        EdgeFactory ef = Controller.getEdgeFactory();
+        EdgeFactory ef = controller.getEdgeFactory();
         ef.reset();
         RandomGenerator r = new RandomGenerator(new GraphFactory2(), vf, ef, v, e);
         ObservableGraph g = r.create();
@@ -78,12 +78,12 @@ public class Generator {
      * @param m
      * @param n
      */
-    public static ObservableGraph generateRectangularLattice(int m, int n) {
+    public static ObservableGraph generateRectangularLattice(int m, int n, Controller controller) {
         //@see notes 17 JUL 2009
-        ObservableGraph g = MyGraph.getNewInstance();
-        VertexFactory vf = Controller.getVertexFactory();
+        ObservableGraph g = controller.getGraphFactory().create();
+        VertexFactory vf = controller.getVertexFactory();
         vf.reset();
-        EdgeFactory ef = Controller.getEdgeFactory();
+        EdgeFactory ef = controller.getEdgeFactory();
         ef.reset();
 
         //feed stuff to the buffer
@@ -116,7 +116,6 @@ public class Generator {
                 n - 1; i++) {
             g.addEdge(ef.create(), allNodes[m - 1][i], allNodes[m - 1][i + 1]);//TODO modify to include last row and last column
         }
-//        MyGraph.setInstance(g);
         return g;
     }
 
@@ -126,12 +125,12 @@ public class Generator {
      * @param m
      * @param n
      */
-    public static ObservableGraph generateHexagonalLattice(int m, int n) {
+    public static ObservableGraph generateHexagonalLattice(int m, int n, Controller controller) {
         //@see notes 17 JUL 2009
-        ObservableGraph g = MyGraph.getNewInstance();
-        VertexFactory vf = Controller.getVertexFactory();
+        ObservableGraph g = controller.getGraphFactory().create();
+        VertexFactory vf = controller.getVertexFactory();
         vf.reset();
-        EdgeFactory ef = Controller.getEdgeFactory();
+        EdgeFactory ef = controller.getEdgeFactory();
         ef.reset();
         MyVertex[][] nodes = new MyVertex[m][n];
         for (int i = 0; i <
@@ -185,10 +184,12 @@ public class Generator {
         return g;
     }
 
-    public static ObservableGraph generateKleinbergSmallWorld(int m, int n, double clusteringExponent) {
-//        VertexFactory vf = Controller.getVertexFactory();
+    public static ObservableGraph generateKleinbergSmallWorld(int m, int n,
+                                                              double clusteringExponent,
+                                                              Controller controller) {
+//        VertexFactory vf = controller.getVertexFactory();
 //        vf.reset();
-//        EdgeFactory ef = Controller.getEdgeFactory();
+//        EdgeFactory ef = controller.getEdgeFactory();
 //        ef.reset();
 //        KleinbergSmallWorldGenerator gen = new KleinbergSmallWorldGenerator(new GraphFactory2(),
 //                vf, ef, m, n, clusteringExponent);
@@ -196,10 +197,10 @@ public class Generator {
 //        return (MyGraph) gen.create();
 
         //make sure numbering starts from 1
-        Controller.getEdgeFactory().reset();
-        Controller.getVertexFactory().reset();
+        controller.getEdgeFactory().reset();
+        controller.getVertexFactory().reset();
         SmallWorldGenerator gen = new SmallWorldGenerator(new GraphFactory2(),
-                Controller.getVertexFactory(), Controller.getEdgeFactory(), m, n, clusteringExponent);
+                controller.getVertexFactory(), controller.getEdgeFactory(), m, n, clusteringExponent);
         return gen.create();
     }
 
@@ -220,10 +221,11 @@ public class Generator {
      * @param numVertices
      * @param numEdgesToAttach
      */
-    public static ObservableGraph generateScaleFree(int evolveSteps, int numVertices, int numEdgesToAttach) {
-        VertexFactory vf = Controller.getVertexFactory();
+    public static ObservableGraph generateScaleFree(int evolveSteps, int numVertices,
+                                                    int numEdgesToAttach, Controller controller) {
+        VertexFactory vf = controller.getVertexFactory();
         vf.reset();
-        EdgeFactory ef = Controller.getEdgeFactory();
+        EdgeFactory ef = controller.getEdgeFactory();
         ef.reset();
         HashSet<MyVertex> seeds = new HashSet<MyVertex>();
         //make sure numbering starts from 1

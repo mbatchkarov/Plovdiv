@@ -81,11 +81,12 @@ MouseListener, MouseMotionListener {
 	protected VisualizationServer.Paintable edgePaintable;
 	protected VisualizationServer.Paintable arrowPaintable;
 	protected EdgeType edgeIsDirected;
-	protected Factory<MyVertex> vertexFactory;
+    private Graph g;
+    protected Factory<MyVertex> vertexFactory;
 	protected Factory<MyEdge> edgeFactory;
 
-	public CustomEditingPlugin(Factory vertexFactory, Factory edgeFactory) {
-		this(MouseEvent.BUTTON1_MASK, vertexFactory, edgeFactory);
+	public CustomEditingPlugin(Graph g, Factory vertexFactory, Factory edgeFactory) {
+		this(MouseEvent.BUTTON1_MASK, g, vertexFactory, edgeFactory);
 	}
 
 	/**
@@ -95,9 +96,11 @@ MouseListener, MouseMotionListener {
 	 * @param vertexFactory
 	 * @param edgeFactory
 	 */
-	public CustomEditingPlugin(int modifiers, Factory<MyVertex> vertexFactory, Factory<MyEdge> edgeFactory) {
+	public CustomEditingPlugin(int modifiers, Graph g, Factory<MyVertex> vertexFactory,
+                               Factory<MyEdge> edgeFactory) {
 		super(modifiers);
-		this.vertexFactory = vertexFactory;
+        this.g = g;
+        this.vertexFactory = vertexFactory;
 		this.edgeFactory = edgeFactory;
 		rawEdge.setCurve(0.0f, 0.0f, 0.33f, 100, .66f, -50,
 		1.0f, 0.0f);
@@ -191,7 +194,7 @@ MouseListener, MouseMotionListener {
 				final MyVertex vertex = (MyVertex) pickSupport.getVertex(layout, p.getX(), p.getY());
 				if (vertex != null && startVertex != null) {
 					Graph graph = vv.getGraphLayout().getGraph();
-					if (MyGraph.getInstance().findEdge(startVertex, vertex) == null
+					if (g.findEdge(startVertex, vertex) == null
 					&& !vertex.equals(startVertex)) {//do not allow edges to self
 						graph.addEdge(edgeFactory.create(), startVertex, vertex, edgeIsDirected);
 					}
