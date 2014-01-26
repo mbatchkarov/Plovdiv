@@ -7,8 +7,8 @@ import edu.uci.ics.jung.graph.Graph;
  */
 public abstract class ExtraGraphEvent<V, E>{
 
-    protected Graph<V, E> source;
-    protected ExtraEventTypes type;
+    public Graph<V, E> source;
+    public ExtraEventTypes type;
 
     /**
      * Creates an instance with the specified {@code source} graph and {@code Type}
@@ -23,7 +23,8 @@ public abstract class ExtraGraphEvent<V, E>{
      * Extra types of graph events.
      */
     public static enum ExtraEventTypes {
-        GRAPH_REPLACED
+        GRAPH_REPLACED,
+        SIM_STEP_COMPLETE
         //todo add here as needed
     }
 
@@ -31,6 +32,13 @@ public abstract class ExtraGraphEvent<V, E>{
 
         public GraphReplacedEvent(Graph<V, E> source) {
             super(source, ExtraEventTypes.GRAPH_REPLACED);
+        }
+    }
+
+    public static class SimStepCompleteEvent<V, E> extends ExtraGraphEvent<V, E> {
+
+        public SimStepCompleteEvent(Graph<V, E> source) {
+            super(source, ExtraEventTypes.SIM_STEP_COMPLETE);
         }
     }
 

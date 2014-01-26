@@ -1971,24 +1971,17 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     static javax.swing.JButton zoomOutToolbar;
     // End of variables declaration//GEN-END:variables
 
-    /**
-     * @return the graphMouse
-     */
-    ModalGraphMouse getGraphMouse() {
-        return graphMouse;
-    }
-
     @Override
     public void handleGraphEvent(GraphEvent<MyVertex, MyEdge> evt) {
         //invoked when a vertex/edge is added/deleted
-        System.out.println("display handling graph event");
         updateStatsDisplay(null);
     }
 
     @Override
     public void handleExtraGraphEvent(ExtraGraphEvent<MyVertex, MyEdge> evt) {
-        System.out.println("display handling extra graph event");
-        //todo handle this event
+        if (evt.type == ExtraGraphEvent.ExtraEventTypes.SIM_STEP_COMPLETE) {
+            controller.getSimulator().updateInfectedCountGraph(this.getStatsPanel());
+        }
     }
 
     public Controller getController() {

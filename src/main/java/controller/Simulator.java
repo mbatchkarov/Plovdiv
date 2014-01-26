@@ -450,7 +450,8 @@ public class Simulator {
 //        System.out.println("Doing step " + stepNumber + " in thread " + Thread.currentThread().getName());
         doStep(beta, g, recoveryProb, infectionProb);
 //        updateInfectedCountGraph();
-        g.fireEvent(null);//todo fire event at the end of each sim step
+        g.fireExtraEvent(new ExtraGraphEvent.SimStepCompleteEvent(g));//todo fire event at the
+        // end of each sim step
         Display.redisplayPartially();
         stepNumber++;
     }

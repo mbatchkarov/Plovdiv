@@ -320,13 +320,14 @@ public class Controller {
         cont.setGui(d); // so that controller can trigger updates
 
         g.addGraphEventListener(d); // so that gui will update when graph changes
+        g.addExtraGraphEventListener(d); // so that gui will update when graph changes
         g.addGraphEventListener(stats); // so that stats will update on graph events
 
         //display a graph
         cont.generateScaleFree(30, 1, 1); //todo this should trigger a stats recalculation and a
 
         // gui update
-        cont.getSimulator().updateInfectedCountGraph(d.getStatsPanel());
+//        cont.getSimulator().updateInfectedCountGraph(d.getStatsPanel());
     }
 
 }
