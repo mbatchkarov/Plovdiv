@@ -51,7 +51,6 @@ import java.util.List;
 
 public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable {
 
-    private ObservableGraph<V, E> INSTANCE;
     List<ExtraGraphEventListener<V, E>> extraListenerList;
 
 
@@ -80,14 +79,14 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
      *
      * @return
      */
-    public ObservableGraph getNewInstance() {
-        setInstance(new MyGraph(new OrderedSparseMultigraph<MyVertex, MyEdge>()));
+    public Graph getNewInstance() {
+        setInstance(new OrderedSparseMultigraph<MyVertex, MyEdge>());
         return getInstance();
     }
 
-    public void setInstance(ObservableGraph newInstance) {
-        INSTANCE = newInstance;
-        fireExtraEvent(new ExtraGraphEvent.GraphReplacedEvent<V, E>(INSTANCE));
+    public void setInstance(Graph newInstance) {
+        delegate = newInstance;
+        fireExtraEvent(new ExtraGraphEvent.GraphReplacedEvent<V, E>(delegate));
     }
 
     public void fireEvent(GraphEvent evt) {
@@ -120,16 +119,16 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
      *
      * @return
      */
-    public ObservableGraph<V, E> getInstance() {
-        if (INSTANCE == null) {
+    public Graph<V, E> getInstance() {
+        if (delegate == null) {
             setInstance(getNewInstance());
         }
 
-        return INSTANCE;
+        return delegate;
     }
 
     public void flushInstance() {
-        INSTANCE = null;
+        delegate = null;
     }
 
     public void setUserDatum(Object key, Object value) {

@@ -223,26 +223,26 @@ public class Controller {
         this.g.setInstance(Generator.generateRandom(a, b, this));
         //todo these methods should not trigger a redisplay manually, but should fire a graphchanged event
         setAllSusceptible(g);
-//		gui.redisplayCompletely();
+		gui.redisplayCompletely();
     }
 
     public void generate4Lattice(int a, int b) {
         this.g.setInstance(Generator.generateRectangularLattice(a, b, this));
         setAllSusceptible(g);
-//        gui.redisplayCompletely();
+        gui.redisplayCompletely();
 
     }
 
     public void generate6Lattice(int a, int b) {
         this.g.setInstance(Generator.generateHexagonalLattice(a, b, this));
         setAllSusceptible(g);
-//        gui.redisplayCompletely();
+        gui.redisplayCompletely();
     }
 
     public void generateKleinbergSmallWorld(int m, int n, double c) {
         this.g.setInstance(Generator.generateKleinbergSmallWorld(m, n, c, this));
         setAllSusceptible(g);
-//        gui.redisplayCompletely();
+        gui.redisplayCompletely();
     }
 
     public void generateScaleFree(int a, int b, int c) {
@@ -323,7 +323,7 @@ public class Controller {
         g.addGraphEventListener(stats); // so that stats will update on graph events
 
         //display a graph
-//        cont.generateScaleFree(30, 1, 1); //todo this should trigger a stats recalculation and a
+        cont.generateScaleFree(30, 1, 1); //todo this should trigger a stats recalculation and a
 
         // gui update
         cont.getSimulator().updateInfectedCountGraph(d.getStatsPanel());

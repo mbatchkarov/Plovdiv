@@ -164,7 +164,7 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge> {
         //assortativity
         int m = g.getEdgeCount();
         if (m > 0) {
-            MyVertex[] vertices = (MyVertex[]) g.getVertices().toArray();
+            MyVertex[] vertices = g.getVertices().toArray(new MyVertex[1]);
             int[] degrees = new int[vertices.length];
             int[] degrees_sq = new int[vertices.length];
             for (int i = 0; i < degrees.length; i++) {
