@@ -38,8 +38,6 @@ import controller.ExtraGraphEvent;
 import controller.ExtraGraphEventListener;
 import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
-import model.MyEdge;
-import model.MyVertex;
 import model.dynamics.SISDynamics;
 
 import java.io.Serializable;
@@ -62,31 +60,15 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
                 new LinkedList<ExtraGraphEventListener<V, E>>());
     }
 
+    public void setInstance(MyGraph newInstance) {
+        delegate = newInstance.delegate;
+        fireExtraEvent(new ExtraGraphEvent.GraphReplacedEvent<V, E>(delegate));
+    }
+
     public void addExtraGraphEventListener(ExtraGraphEventListener<V, E> l) {
         extraListenerList.add(l);
     }
 
-    /**
-     * Removes {@code l} as a listener to this graph.
-     */
-    public void removeExtraGraphEventListener(GraphEventListener<V, E> l) {
-        extraListenerList.remove(l);
-    }
-
-    /**
-     * returns an empty graph instance (with no edges or vertices)
-     *
-     * @return
-     */
-    public Graph getNewInstance() {
-        setInstance(new OrderedSparseMultigraph<MyVertex, MyEdge>());
-        return getInstance();
-    }
-
-    public void setInstance(Graph newInstance) {
-        delegate = newInstance;
-        fireExtraEvent(new ExtraGraphEvent.GraphReplacedEvent<V, E>(delegate));
-    }
 
     public void fireGraphEvent(GraphEvent evt) {
         for (GraphEventListener<V, E> listener : super.listenerList) {
@@ -101,8 +83,7 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
     }
 
     public void setDefaultSimulationSettings() {
-        setUserDatum("dynamics",
-                new SISDynamics(0.1, 0.1, 0.1, 0.1));
+        setUserDatum("dynamics", new SISDynamics(0.1, 0.1, 0.1, 0.1));
 
         //attach the running time to the graph
         setUserDatum("time", new Integer(100));
@@ -110,24 +91,6 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         //attach the speed multiplier to the graph
         setUserDatum("speed", 200);
         //make sure the graphs is in a proper state
-    }
-
-
-    /**
-     * returns the signleton instance, which is to be displayed
-     *
-     * @return
-     */
-    public Graph<V, E> getInstance() {
-        if (delegate == null) {
-            setInstance(getNewInstance());
-        }
-
-        return delegate;
-    }
-
-    public void flushInstance() {
-        delegate = null;
     }
 
     public void setUserDatum(Object key, Object value) {
@@ -146,5 +109,14 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         } else {
             return defaultValue;
         }
+    }
+
+    @Override
+    public String toString() {
+        return "MyGraph{" +
+               "delegate=" + this.delegate +
+               ", extraListenerList=" + extraListenerList +
+               ", userData=" + userData +
+               '}';
     }
 }

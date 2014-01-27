@@ -35,7 +35,6 @@
 package controller;
 
 import edu.uci.ics.jung.graph.MyGraph;
-import edu.uci.ics.jung.graph.ObservableGraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import model.MyEdge;
 import model.MyVertex;
@@ -48,6 +47,7 @@ import java.util.Random;
  * Generates random graphs, where each two vertices are equally likely to be
  * connected with an edge
  * Allows parallel edges, but not self-links
+ *
  * @author reseter
  */
 public class RandomGenerator {
@@ -58,10 +58,10 @@ public class RandomGenerator {
     private Factory<MyVertex> vf;
     private Factory<MyGraph> gf;
 
-    public RandomGenerator(Factory gf,
-            Factory vf,
-            Factory ef,
-            int vertices, int edges) {
+    public RandomGenerator(Factory<MyGraph> gf,
+                           Factory<MyVertex> vf,
+                           Factory<MyEdge> ef,
+                           int vertices, int edges) {
 
         this.gf = gf;
         this.vf = vf;
@@ -70,11 +70,10 @@ public class RandomGenerator {
         numE = edges;
     }
 
-    public ObservableGraph create() {
-        ObservableGraph g = gf.create();
+    public MyGraph create() {
+        MyGraph g = gf.create();
         for (int i = 0; i < numV; i++) {
             MyVertex v = vf.create();
-//            v.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
             g.addVertex(v);
         }
 

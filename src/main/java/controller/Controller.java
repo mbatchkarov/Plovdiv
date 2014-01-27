@@ -52,10 +52,10 @@ import java.util.Random;
  */
 public class Controller {
 
-    private static EdgeFactory ef;
-    private static VertexFactory vf;
-    private static GraphFactory gf;
-    private static Display gui;
+    private EdgeFactory ef;
+    private VertexFactory vf;
+    private GraphFactory gf;
+    private Display gui;
     private Simulator sim;
 
     private MyGraph g;
@@ -81,21 +81,21 @@ public class Controller {
     }
 
     //auto-generated getters
-    public static EdgeFactory getEdgeFactory() {
+    public EdgeFactory getEdgeFactory() {
         if (ef == null) {
             ef = new EdgeFactory();
         }
         return ef;
     }
 
-    public static GraphFactory getGraphFactory() {
+    public GraphFactory getGraphFactory() {
         if (gf == null) {
             gf = new GraphFactory();
         }
-        return gf;
+        return new GraphFactory(getGraph());
     }
 
-    public static VertexFactory getVertexFactory() {
+    public VertexFactory getVertexFactory() {
         if (vf == null) {
             vf = new VertexFactory();
         }
@@ -175,7 +175,8 @@ public class Controller {
             if (current.getUserDatum(Strings.state) == null) {
                 current.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
             }
-            if (current.getUserDatum(Strings.state).equals(EpiState.RESISTANT) && (this.g.getUserDatum(Strings.dynamics) instanceof SIRDynamics)) {
+            if (current.getUserDatum(Strings.state).equals(EpiState.RESISTANT) &&
+                (this.g.getUserDatum(Strings.dynamics) instanceof SIRDynamics)) {
                 current.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
             }
         }
@@ -193,7 +194,8 @@ public class Controller {
      */
     public void load(String path) {
         try {
-            g.setInstance(PajekParser.load(path));
+            g.setInstance(PajekParser.load(path, getGraphFactory(),
+                                           getVertexFactory(), getEdgeFactory()));
             setAllSusceptible(g);
         } catch (Exception ex) {
             Exceptions.showReadWriteErrorNotification(ex);
@@ -213,7 +215,6 @@ public class Controller {
     //-----------GENERATION FUNCTIONALITY-------------------
     public void generateRandom(int a, int b) {
         this.g.setInstance(Generator.generateRandom(a, b, this));
-        //todo these methods should not trigger a redisplay manually, but should fire a graphchanged event
         gui.redisplayCompletely();
     }
 
@@ -234,12 +235,12 @@ public class Controller {
     }
 
     public void generateScaleFree(int a, int b, int c) {
-        this.g = Generator.generateScaleFree(a, 1, c, this);
+        this.g.setInstance(Generator.generateScaleFree(a, 1, c, this));
         gui.redisplayCompletely();
     }
 
     public void generateEppsteinPowerLaw(int numVert, int numEdges, int r) {
-        this.g.setInstance(Generator.generateEppsteinPowerLaw(numVert, numEdges, r));
+        this.g.setInstance(Generator.generateEppsteinPowerLaw(numVert, numEdges, r, this));
         gui.redisplayCompletely();
     }
 
@@ -311,7 +312,8 @@ public class Controller {
         g.addGraphEventListener(stats); // so that stats will update on graph events
 
         //display a graph
-        cont.generateScaleFree(20, 1, 1); //todo this should trigger a stats recalculation and a gui update
+        cont.generateScaleFree(20, 1, 1);
+        cont.generateScaleFree(20, 1, 1);
         d.handlingEvents = true;
     }
 

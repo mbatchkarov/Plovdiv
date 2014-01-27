@@ -1359,7 +1359,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     }//GEN-LAST:event_helpAboutActionPerformed
 
     private void newDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newDocActionPerformed
-        g.flushInstance();
+        this.g.setInstance(this.controller.getGraphFactory().create());
         redisplayCompletely();
     }//GEN-LAST:event_newDocActionPerformed
 

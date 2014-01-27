@@ -35,7 +35,7 @@
 package controller;
 
 import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.graph.ObservableGraph;
+import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.io.PajekNetReader;
 import edu.uci.ics.jung.io.PajekNetWriter;
 import model.MyEdge;
@@ -55,29 +55,26 @@ public class PajekParser {
         //only static methods
     }
 
-    public static ObservableGraph load(String path) throws IOException {
-        VertexFactory vf = Controller.getVertexFactory();
-        vf.reset();
-        EdgeFactory ef = Controller.getEdgeFactory();
-        ef.reset();
+    public static MyGraph load(String path, GraphFactory gf, VertexFactory vf, EdgeFactory ef) throws IOException {
         PajekNetReader reader = new PajekNetReader(vf, ef);
-        return (ObservableGraph) reader.load(path, new GraphFactory());
+        return (MyGraph) reader.load(path, gf);
     }
 
     public static void save(String path, Graph g) throws IOException {
         PajekNetWriter writer = new PajekNetWriter();
         writer.save(g, path, new Transformer<Object, String>() {
 
-            @Override
-            public String transform(Object graphElement) {
-                return graphElement.toString();  //no vertex labels
-            }
-        }, new Transformer<MyEdge, Number>() {
+                        @Override
+                        public String transform(Object graphElement) {
+                            return graphElement.toString();  //no vertex labels
+                        }
+                    }, new Transformer<MyEdge, Number>() {
 
-            @Override
-            public Number transform(MyEdge o) {
-                return o.getWeigth();
-            }
-        });
+                        @Override
+                        public Number transform(MyEdge o) {
+                            return o.getWeigth();
+                        }
+                    }
+                   );
     }
 }

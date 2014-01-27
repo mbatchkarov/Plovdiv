@@ -302,7 +302,7 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
         if (result.isNaN() || result.isInfinite()) {
             result = 0d;
         }
-        return (result);
+        return result;
     }
 
     public double getAvgDegree() {
@@ -521,7 +521,7 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
         int maxWidth = (int) maxSize.getWidth() - 12;
 
         return new ChartPanel(chart, maxWidth, maxHeight, 50, 50, maxWidth, maxHeight,
-                true, true, false, false, false, false, true);
+                              true, true, false, false, false, false, true);
     }
 
     /**

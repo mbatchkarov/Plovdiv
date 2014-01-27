@@ -36,10 +36,12 @@ import model.MyEdge;
 import model.MyVertex;
 import org.apache.commons.collections15.Factory;
 
+import java.util.Iterator;
+
 /**
  * @author mb724
  */
-public class GraphFactory implements Factory {
+public class GraphFactory implements Factory<MyGraph> {
 
     private MyGraph g;
 
@@ -49,12 +51,15 @@ public class GraphFactory implements Factory {
 
     public GraphFactory(MyGraph g) {
         this.g = g;
-        for (Object v : g.getVertices()) {
-            g.removeVertex(v);
+        // todo this does not work
+        Iterator it = g.getVertices().iterator();
+        while(it.hasNext()){
+            g.removeVertex(it.next());
         }
 
-        for (Object v : g.getEdges()) {
-            g.removeVertex(v);
+        it = g.getEdges().iterator();
+        while (it.hasNext()) {
+            g.removeEdge(it.next());
         }
     }
 

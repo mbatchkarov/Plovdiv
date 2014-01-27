@@ -36,10 +36,10 @@ package controller;
 import edu.uci.ics.jung.algorithms.generators.random.BarabasiAlbertGenerator;
 import edu.uci.ics.jung.algorithms.generators.random.EppsteinPowerLawGenerator;
 import edu.uci.ics.jung.graph.MyGraph;
-import edu.uci.ics.jung.graph.ObservableGraph;
 import model.MyEdge;
 import model.MyVertex;
-import model.factories.*;
+import model.factories.EdgeFactory;
+import model.factories.VertexFactory;
 
 import java.util.HashSet;
 
@@ -52,16 +52,17 @@ import java.util.HashSet;
  */
 public class Generator {
 
-    public Generator() {
+    private Generator() {
+        //static methods only
     }
 
-    public static ObservableGraph generateRandom(int v, int e, Controller controller) {
+    public static MyGraph generateRandom(int v, int e, Controller controller) {
         VertexFactory vf = controller.getVertexFactory();
-        vf.reset();
         EdgeFactory ef = controller.getEdgeFactory();
+        vf.reset();
         ef.reset();
-        RandomGenerator r = new RandomGenerator(new GraphFactory(), vf, ef, v, e);
-        ObservableGraph g = r.create();
+        RandomGenerator r = new RandomGenerator(controller.getGraphFactory(), vf, ef, v, e);
+        MyGraph g = r.create();
         System.out.println("Generator has created: " + g);
         return g;
     }
@@ -72,9 +73,10 @@ public class Generator {
      * @param m
      * @param n
      */
-    public static ObservableGraph generateRectangularLattice(int m, int n, Controller controller) {
+    public static MyGraph generateRectangularLattice(int m, int n, Controller controller) {
         //@see notes 17 JUL 2009
-        ObservableGraph g = controller.getGraphFactory().create();
+        MyGraph g = controller.getGraphFactory().create();
+        System.out.println(g);
         VertexFactory vf = controller.getVertexFactory();
         vf.reset();
         EdgeFactory ef = controller.getEdgeFactory();
@@ -83,18 +85,18 @@ public class Generator {
         //feed stuff to the buffer
         MyVertex[][] allNodes = new MyVertex[m][n];
         for (int i = 0; i <
-                m; i++) {//give vertices and ID and add them to the graph
+                        m; i++) {//give vertices and ID and add them to the graph
             for (int j = 0; j <
-                    n; j++) {
+                            n; j++) {
                 allNodes[i][j] = vf.create();
                 g.addVertex(allNodes[i][j]);
             }
 
         }
         for (int i = 0; i <
-                m - 1; i++) {//initialize it
+                        m - 1; i++) {//initialize it
             for (int j = 0; j <
-                    n - 1; j++) {
+                            n - 1; j++) {
                 g.addEdge(ef.create(), allNodes[i][j], allNodes[i][j + 1]);//link to the right
                 g.addEdge(ef.create(), allNodes[i][j], allNodes[i + 1][j]);// link down
             }
@@ -102,12 +104,12 @@ public class Generator {
         }
         //last row and column not initialized yet
         for (int i = 0; i <
-                m - 1; i++) {
+                        m - 1; i++) {
             g.addEdge(ef.create(), allNodes[i][n - 1], allNodes[i + 1][n - 1]);//TODO modify to include last row and last column
         }
 
         for (int i = 0; i <
-                n - 1; i++) {
+                        n - 1; i++) {
             g.addEdge(ef.create(), allNodes[m - 1][i], allNodes[m - 1][i + 1]);//TODO modify to include last row and last column
         }
         return g;
@@ -119,18 +121,18 @@ public class Generator {
      * @param m
      * @param n
      */
-    public static ObservableGraph generateHexagonalLattice(int m, int n, Controller controller) {
+    public static MyGraph generateHexagonalLattice(int m, int n, Controller controller) {
         //@see notes 17 JUL 2009
-        ObservableGraph g = controller.getGraphFactory().create();
+        MyGraph g = controller.getGraphFactory().create();
         VertexFactory vf = controller.getVertexFactory();
         vf.reset();
         EdgeFactory ef = controller.getEdgeFactory();
         ef.reset();
         MyVertex[][] nodes = new MyVertex[m][n];
         for (int i = 0; i <
-                m; i++) {//initialize vertices and add them to the graph
+                        m; i++) {//initialize vertices and add them to the graph
             for (int j = 0; j <
-                    n; j++) {
+                            n; j++) {
                 nodes[i][j] = vf.create();
                 g.addVertex(nodes[i][j]);
             }
@@ -139,9 +141,9 @@ public class Generator {
 
         //link to the right
         for (int i = 0; i <
-                m; i++) {
+                        m; i++) {
             for (int j = 0; j <
-                    n; j++) {
+                            n; j++) {
                 try {
                     g.addEdge(ef.create(), nodes[i][j], nodes[i][j + 1]);
                 } catch (ArrayIndexOutOfBoundsException e) {
@@ -152,9 +154,9 @@ public class Generator {
         //link to bottom right/ left, depending on the row number- see paper notes
         //link to left for even row numbers, link to left for odd rows
         for (int i = 0; i <
-                m; i++) {
+                        m; i++) {
             for (int j = 0; j <
-                    n; j++) {
+                            n; j++) {
                 try {
                     g.addEdge(ef.create(), nodes[i][j], nodes[i + 1][j - 1 + 2 * (i % 2)]);
                 } catch (ArrayIndexOutOfBoundsException e) {
@@ -164,9 +166,9 @@ public class Generator {
 
         //link to bottom left
         for (int i = 0; i <
-                m; i++) {
+                        m; i++) {
             for (int j = 0; j <
-                    n; j++) {
+                            n; j++) {
                 try {
                     g.addEdge(ef.create(), nodes[i][j], nodes[i + 1][j]);
                 } catch (ArrayIndexOutOfBoundsException e) {
@@ -178,21 +180,23 @@ public class Generator {
         return g;
     }
 
-    public static ObservableGraph generateKleinbergSmallWorld(int m, int n,
-                                                              double clusteringExponent,
-                                                              Controller controller) {
+    public static MyGraph generateKleinbergSmallWorld(int m, int n,
+                                                      double clusteringExponent,
+                                                      Controller controller) {
         //make sure numbering starts from 1
         controller.getEdgeFactory().reset();
         controller.getVertexFactory().reset();
-        SmallWorldGenerator gen = new SmallWorldGenerator(new GraphFactory(),
-                controller.getVertexFactory(), controller.getEdgeFactory(), m, n, clusteringExponent);
-        return gen.create();
+        SmallWorldGenerator gen = new SmallWorldGenerator(controller.getGraphFactory(),
+                                                          controller.getVertexFactory(),
+                                                          controller.getEdgeFactory(), m, n, clusteringExponent);
+        return (MyGraph) gen.create();
     }
 
-    public static ObservableGraph generateEppsteinPowerLaw(int numVert, int numEdges, int r) {
+    public static MyGraph generateEppsteinPowerLaw(int numVert, int numEdges, int r, Controller controller) {
         VertexFactory vf = new VertexFactory();
         EdgeFactory ef = new EdgeFactory();
-        EppsteinPowerLawGenerator<MyVertex, MyEdge> gen = new EppsteinPowerLawGenerator(new GraphFactory(), vf, ef, numVert, numEdges, r);
+        EppsteinPowerLawGenerator<MyVertex, MyEdge> gen = new EppsteinPowerLawGenerator(
+                controller.getGraphFactory(), vf, ef, numVert, numEdges, r);
         return (MyGraph) gen.create();
     }
 
@@ -207,15 +211,15 @@ public class Generator {
      * @param numEdgesToAttach
      */
     public static MyGraph generateScaleFree(int evolveSteps, int numVertices,
-                                                    int numEdgesToAttach, Controller controller) {
+                                            int numEdgesToAttach, Controller controller) {
         VertexFactory vf = controller.getVertexFactory();
-        vf.reset();
         EdgeFactory ef = controller.getEdgeFactory();
+        vf.reset();
         ef.reset();
         HashSet<MyVertex> seeds = new HashSet<MyVertex>();
         //make sure numbering starts from 1
         BarabasiAlbertGenerator gen = new BarabasiAlbertGenerator(
-                new GraphFactory(controller.getGraph()), vf, ef,
+                controller.getGraphFactory(), vf, ef,
                 numVertices, numEdgesToAttach, seeds);
         gen.evolveGraph(evolveSteps);
         return (MyGraph) gen.create();
