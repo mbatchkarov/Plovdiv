@@ -30,13 +30,15 @@
 
 package model.factories;
 
+import controller.ExtraGraphEventListener;
 import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.graph.OrderedSparseMultigraph;
+import edu.uci.ics.jung.graph.event.GraphEventListener;
 import model.MyEdge;
 import model.MyVertex;
 import org.apache.commons.collections15.Factory;
 
-import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author mb724
@@ -50,17 +52,8 @@ public class GraphFactory implements Factory<MyGraph> {
     }
 
     public GraphFactory(MyGraph g) {
+        // copy constructor, copies all associated listener
         this.g = g;
-        // todo this does not work
-        Iterator it = g.getVertices().iterator();
-        while(it.hasNext()){
-            g.removeVertex(it.next());
-        }
-
-        it = g.getEdges().iterator();
-        while (it.hasNext()) {
-            g.removeEdge(it.next());
-        }
     }
 
     /**
@@ -69,11 +62,21 @@ public class GraphFactory implements Factory<MyGraph> {
      * @return
      */
     public MyGraph create() {
+        MyGraph res = new MyGraph(new OrderedSparseMultigraph<MyVertex, MyEdge>());
+
         if (this.g != null) {
-            return g;
-        } else {
-            return new MyGraph(new OrderedSparseMultigraph<MyVertex, MyEdge>());
+            // move the listener of the old graph to the new one
+            final List<GraphEventListener> listenerList = this.g.getListenerList();
+            for (GraphEventListener listener : listenerList) {
+                res.addGraphEventListener(listener);
+            }
+
+            final List<ExtraGraphEventListener> extraListenerList = this.g.getExtraListenerList();
+            for (ExtraGraphEventListener listener : extraListenerList) {
+                res.addExtraGraphEventListener(listener);
+            }
         }
+        return res;
     }
 
 }

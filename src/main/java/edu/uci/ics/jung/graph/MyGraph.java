@@ -82,6 +82,14 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         }
     }
 
+    public List<ExtraGraphEventListener<V, E>> getExtraListenerList() {
+        return extraListenerList;
+    }
+
+    public List<GraphEventListener<V, E>> getListenerList() {
+        return listenerList;
+    }
+
     public void setDefaultSimulationSettings() {
         setUserDatum("dynamics", new SISDynamics(0.1, 0.1, 0.1, 0.1));
 

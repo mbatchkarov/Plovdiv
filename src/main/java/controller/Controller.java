@@ -313,7 +313,6 @@ public class Controller {
 
         //display a graph
         cont.generateScaleFree(20, 1, 1);
-        cont.generateScaleFree(20, 1, 1);
         d.handlingEvents = true;
     }
 
