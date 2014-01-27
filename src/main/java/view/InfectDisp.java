@@ -42,7 +42,6 @@ package view;
 
 import controller.Controller;
 import edu.uci.ics.jung.graph.MyGraph;
-import edu.uci.ics.jung.graph.ObservableGraph;
 import model.Strings;
 
 import java.awt.event.KeyEvent;
@@ -150,75 +149,75 @@ public class InfectDisp extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addContainerGap()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(jLabel1)
-                                                        .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
-                                                        .addGroup(layout.createSequentialGroup()
-                                                                .addComponent(jLabel2)
-                                                                .addGap(55, 55, 55)
-                                                                .addComponent(max))
-                                                        .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(slider, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)))
-                                        .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 484, Short.MAX_VALUE)
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                .addContainerGap()
-                                                .addComponent(ok)
-                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 387, Short.MAX_VALUE)
-                                                .addComponent(cancel))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addContainerGap()
-                                                .addComponent(jLabel3))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addContainerGap()
-                                                .addComponent(jSeparator3, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addContainerGap()
-                                                .addComponent(jLabel4))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addContainerGap()
-                                                .addComponent(jLabel5))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addContainerGap()
-                                                .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)))
-                                .addContainerGap())
-        );
+                      .addGroup(layout.createSequentialGroup()
+                                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                      .addGroup(layout.createSequentialGroup()
+                                                                      .addContainerGap()
+                                                                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                      .addComponent(jLabel1)
+                                                                                      .addComponent(jSeparator1, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)
+                                                                                      .addGroup(layout.createSequentialGroup()
+                                                                                                      .addComponent(jLabel2)
+                                                                                                      .addGap(55, 55, 55)
+                                                                                                      .addComponent(max))
+                                                                                      .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                      .addComponent(slider, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)))
+                                                      .addComponent(jSeparator2, javax.swing.GroupLayout.DEFAULT_SIZE, 484, Short.MAX_VALUE)
+                                                      .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                                                                                  .addContainerGap()
+                                                                                                                  .addComponent(ok)
+                                                                                                                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 387, Short.MAX_VALUE)
+                                                                                                                  .addComponent(cancel))
+                                                      .addGroup(layout.createSequentialGroup()
+                                                                      .addContainerGap()
+                                                                      .addComponent(jLabel3))
+                                                      .addGroup(layout.createSequentialGroup()
+                                                                      .addContainerGap()
+                                                                      .addComponent(jSeparator3, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE))
+                                                      .addGroup(layout.createSequentialGroup()
+                                                                      .addContainerGap()
+                                                                      .addComponent(jLabel4))
+                                                      .addGroup(layout.createSequentialGroup()
+                                                                      .addContainerGap()
+                                                                      .addComponent(jLabel5))
+                                                      .addGroup(layout.createSequentialGroup()
+                                                                      .addContainerGap()
+                                                                      .addComponent(jLabel6, javax.swing.GroupLayout.DEFAULT_SIZE, 472, Short.MAX_VALUE)))
+                                      .addContainerGap())
+                                 );
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(slider, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(jLabel2)
-                                        .addComponent(max))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(cancel)
-                                        .addComponent(ok))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(7, 7, 7)
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel4)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addComponent(jLabel5)
-                                        .addComponent(jLabel6))
-                                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+                      .addGroup(layout.createSequentialGroup()
+                                      .addContainerGap()
+                                      .addComponent(jLabel1)
+                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                      .addComponent(slider, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                      .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                      .addComponent(jLabel2)
+                                                      .addComponent(max))
+                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                      .addComponent(number, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                      .addComponent(jSeparator2, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                      .addComponent(cancel)
+                                                      .addComponent(ok))
+                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                      .addComponent(jSeparator3, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                      .addGap(7, 7, 7)
+                                      .addComponent(jLabel3)
+                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                      .addComponent(jLabel4)
+                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                      .addComponent(jLabel5)
+                                                      .addComponent(jLabel6))
+                                      .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                               );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -253,24 +252,10 @@ public class InfectDisp extends javax.swing.JFrame {
                 System.out.println("Negative number entered!");
             }
         } else {
-//            int n = slider.getValue();
-//            try {
-//                int numInfected = Integer.parseInt(g.getUserDatum(Strings.numInfected).toString());
-//                if ((n * g.numVertices() / 100) > (g.numVertices() - numInfected)) {
-//                    throw new NumberFormatException();
-//                }
             //infect the number the user specified or as many as possible
             int n = Math.min(slider.getValue() * g.getVertexCount() / 100,
-                    Integer.parseInt(g.getUserDatum(Strings.numSus).toString()));
+                             Integer.parseInt(g.getUserDatum(Strings.numSus).toString()));
             controller.infectNodes(g, n);
-//                System.out.println("Will infect: " + n);
-
-//            }
-//            catch (NumberFormatException nfe) {
-//                controller.infectNodes(g, Integer.parseInt(g.getUserDatum(Strings.numSus).toString()));
-////                getToolkit().beep();
-////                number.requestFocus();
-//            }
         }
 
         dispose();

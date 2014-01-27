@@ -1343,7 +1343,8 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 
     private void healAllButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_healAllButtonActionPerformed
         if (g != null) {
-            controller.setAllSusceptible(g);
+            controller.setAllSusceptible();
+            //todo fire appropriate event- must update/reset Infected graph
             vv.repaint();
         } else {
             Exceptions.showNoGraphWarning();

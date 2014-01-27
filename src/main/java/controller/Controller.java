@@ -120,50 +120,15 @@ public class Controller {
 
     //----------SIMULATION CONTROLS
 
-    /**
-     * sets all vertices to susceptible state and gives them a generation index
-     * 0 (ie. not yet infected).
-     */
-    public void setAllSusceptible(MyGraph g) {
-//        g.setUserDatum(Strings.steps, 0);
-        Iterator i = g.getVertices().iterator();
-        MyVertex x;
-        while (i.hasNext()) {
-            x = (MyVertex) i.next();
-            x.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
-//            x.setUserDatum(Strings.generation, new Integer(0));
-        }
-        Iterator j = g.getEdges().iterator();
-        MyEdge e;
-        while (j.hasNext()) {
-            e = (MyEdge) j.next();
-            e.setUserDatum(Strings.infected, false);
-        }
-        updateCounts();
-    }
 
-    /**
-     * Attaches counters of the numbers of infected/susceptible/resistant to all
-     * graphs
-     */
+
     public void updateCounts() {
-        ObservableGraph g = this.g;
-        int ns = 0, ni = 0, nr = 0;
-        for (Object xx : g.getVertices()) {//count how many nodes are in each state
-            MyVertex yy = (MyVertex) xx;
-            if (yy.getUserDatum(Strings.state).equals(EpiState.INFECTED)) {
-                ni++;
-            } else if (yy.getUserDatum(Strings.state).equals(EpiState.RESISTANT)) {
-                nr++;
-            } else {
-                ns++;
-            }
-        }
-        this.g.setUserDatum(Strings.numInfected, ni);
-        this.g.setUserDatum(Strings.numRes, nr);
-        this.g.setUserDatum(Strings.numSus, ns);
+        this.g.updateCounts();
     }
 
+    public void setAllSusceptible(){
+        this.g.setAllSusceptible();
+    }
     /**
      * Sets all undefined nodes to susceptible Sets all resistant nodes in a
      * non-SIR epidemic to susceptible
@@ -196,7 +161,6 @@ public class Controller {
         try {
             g.setInstance(PajekParser.load(path, getGraphFactory(),
                                            getVertexFactory(), getEdgeFactory()));
-            setAllSusceptible(g);
         } catch (Exception ex) {
             Exceptions.showReadWriteErrorNotification(ex);
         }
@@ -300,7 +264,6 @@ public class Controller {
 
         Stats stats = new Stats(g);
         Controller cont = new Controller(stats, g);  //controller
-        cont.setAllSusceptible(g);
 
         final Display d = new Display(stats, cont, g); // display uses stats
         cont.setGui(d); // so that controller can trigger updates

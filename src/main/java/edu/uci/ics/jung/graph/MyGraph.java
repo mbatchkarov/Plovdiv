@@ -38,13 +38,14 @@ import controller.ExtraGraphEvent;
 import controller.ExtraGraphEventListener;
 import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
+import model.EpiState;
+import model.MyEdge;
+import model.MyVertex;
+import model.Strings;
 import model.dynamics.SISDynamics;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable {
 
@@ -62,6 +63,8 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
 
     public void setInstance(MyGraph newInstance) {
         delegate = newInstance.delegate;
+        setAllSusceptible();
+        updateCounts();
         fireExtraEvent(new ExtraGraphEvent.GraphReplacedEvent<V, E>(delegate));
     }
 
@@ -126,5 +129,49 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
                ", extraListenerList=" + extraListenerList +
                ", userData=" + userData +
                '}';
+    }
+
+
+    /**
+     * Attaches counters of the numbers of infected/susceptible/resistant to all
+     * graphs
+     */
+    public void updateCounts() {
+        int ns = 0, ni = 0, nr = 0;
+        for (Object xx : delegate.getVertices()) {//count how many nodes are in each state
+            MyVertex yy = (MyVertex) xx;
+            if (yy.getUserDatum(Strings.state).equals(EpiState.INFECTED)) {
+                ni++;
+            } else if (yy.getUserDatum(Strings.state).equals(EpiState.RESISTANT)) {
+                nr++;
+            } else {
+                ns++;
+            }
+        }
+        this.setUserDatum(Strings.numInfected, ni);
+        this.setUserDatum(Strings.numRes, nr);
+        this.setUserDatum(Strings.numSus, ns);
+    }
+
+    /**
+     * sets all vertices to susceptible state and gives them a generation index
+     * 0 (ie. not yet infected).
+     */
+    public void setAllSusceptible() {
+//        g.setUserDatum(Strings.steps, 0);
+        Iterator i = delegate.getVertices().iterator();
+        MyVertex x;
+        while (i.hasNext()) {
+            x = (MyVertex) i.next();
+            x.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
+//            x.setUserDatum(Strings.generation, new Integer(0));
+        }
+        Iterator j = delegate.getEdges().iterator();
+        MyEdge e;
+        while (j.hasNext()) {
+            e = (MyEdge) j.next();
+            e.setUserDatum(Strings.infected, false);
+        }
+        updateCounts();
     }
 }
