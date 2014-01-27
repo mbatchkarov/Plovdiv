@@ -60,17 +60,11 @@ public class Generator {
         vf.reset();
         EdgeFactory ef = controller.getEdgeFactory();
         ef.reset();
-        RandomGenerator r = new RandomGenerator(new GraphFactory2(), vf, ef, v, e);
+        RandomGenerator r = new RandomGenerator(new GraphFactory(), vf, ef, v, e);
         ObservableGraph g = r.create();
         System.out.println("Generator has created: " + g);
         return g;
     }
-
-//    public static MyGraph generateErdosRenyi(int v, double p){
-//        ErdosRenyiGenerator gen = new ErdosRenyiGenerator(new GraphFactory(), new VertexFactory2(),
-//                new EdgeFactory2(), v, p);
-//        return (MyGraph) gen.create();
-//    }
 
     /**
      * Generates a "rectangular" lattice, where the nodes form little rectangles/squares
@@ -187,27 +181,18 @@ public class Generator {
     public static ObservableGraph generateKleinbergSmallWorld(int m, int n,
                                                               double clusteringExponent,
                                                               Controller controller) {
-//        VertexFactory vf = controller.getVertexFactory();
-//        vf.reset();
-//        EdgeFactory ef = controller.getEdgeFactory();
-//        ef.reset();
-//        KleinbergSmallWorldGenerator gen = new KleinbergSmallWorldGenerator(new GraphFactory2(),
-//                vf, ef, m, n, clusteringExponent);
-//
-//        return (MyGraph) gen.create();
-
         //make sure numbering starts from 1
         controller.getEdgeFactory().reset();
         controller.getVertexFactory().reset();
-        SmallWorldGenerator gen = new SmallWorldGenerator(new GraphFactory2(),
+        SmallWorldGenerator gen = new SmallWorldGenerator(new GraphFactory(),
                 controller.getVertexFactory(), controller.getEdgeFactory(), m, n, clusteringExponent);
         return gen.create();
     }
 
     public static ObservableGraph generateEppsteinPowerLaw(int numVert, int numEdges, int r) {
-        VertexFactory2 vf = new VertexFactory2();
-        EdgeFactory2 ef = new EdgeFactory2();
-        EppsteinPowerLawGenerator<MyVertex, MyEdge> gen = new EppsteinPowerLawGenerator(new GraphFactory2(), vf, ef, numVert, numEdges, r);
+        VertexFactory vf = new VertexFactory();
+        EdgeFactory ef = new EdgeFactory();
+        EppsteinPowerLawGenerator<MyVertex, MyEdge> gen = new EppsteinPowerLawGenerator(new GraphFactory(), vf, ef, numVert, numEdges, r);
         return (MyGraph) gen.create();
     }
 
@@ -221,7 +206,7 @@ public class Generator {
      * @param numVertices
      * @param numEdgesToAttach
      */
-    public static ObservableGraph generateScaleFree(int evolveSteps, int numVertices,
+    public static MyGraph generateScaleFree(int evolveSteps, int numVertices,
                                                     int numEdgesToAttach, Controller controller) {
         VertexFactory vf = controller.getVertexFactory();
         vf.reset();
@@ -230,7 +215,7 @@ public class Generator {
         HashSet<MyVertex> seeds = new HashSet<MyVertex>();
         //make sure numbering starts from 1
         BarabasiAlbertGenerator gen = new BarabasiAlbertGenerator(
-                new GraphFactory2(), vf, ef,
+                new GraphFactory(controller.getGraph()), vf, ef,
                 numVertices, numEdgesToAttach, seeds);
         gen.evolveGraph(evolveSteps);
         return (MyGraph) gen.create();

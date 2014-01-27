@@ -38,10 +38,7 @@ import edu.uci.ics.jung.algorithms.metrics.Metrics;
 import edu.uci.ics.jung.algorithms.scoring.BetweennessCentrality;
 import edu.uci.ics.jung.algorithms.shortestpath.DijkstraDistance;
 import edu.uci.ics.jung.algorithms.shortestpath.DistanceStatistics;
-import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.graph.Hypergraph;
 import edu.uci.ics.jung.graph.MyGraph;
-import edu.uci.ics.jung.graph.ObservableGraph;
 import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
 import model.MyEdge;
@@ -69,7 +66,8 @@ import java.util.Map;
 /**
  * @author mb724
  */
-public class Stats implements GraphEventListener<MyVertex, MyEdge> {
+public class Stats implements GraphEventListener<MyVertex, MyEdge>,
+        ExtraGraphEventListener<MyVertex, MyEdge> {
 
     private MyVertex selectedNode;
     private Map<MyVertex, Double> ccMap;
@@ -113,7 +111,7 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge> {
         calculateAssortativity();
         calculateDegreeCorrelation();
 
-
+        g.fireExtraEvent(new ExtraGraphEvent.StatsChangedEvent<MyVertex, MyEdge>(g));
     }
 
     private void calculateDegreeCorrelation() {
@@ -562,7 +560,13 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge> {
     // HANDLE GRAPH EVENTS APPROPRIATELY (AND EFFICIENTLY)
     @Override
     public void handleGraphEvent(GraphEvent<MyVertex, MyEdge> evt) {
-
+        recalculateAll();
     }
 
+    @Override
+    public void handleExtraGraphEvent(ExtraGraphEvent<MyVertex, MyEdge> evt) {
+        if (evt.type == ExtraGraphEvent.ExtraEventTypes.GRAPH_REPLACED) {
+            recalculateAll();
+        }
+    }
 }

@@ -37,17 +37,38 @@ import model.MyVertex;
 import org.apache.commons.collections15.Factory;
 
 /**
- *
  * @author mb724
  */
-public class GraphFactory implements Factory{
+public class GraphFactory implements Factory {
+
+    private MyGraph g;
+
+    public GraphFactory() {
+        this.g = null;
+    }
+
+    public GraphFactory(MyGraph g) {
+        this.g = g;
+        for (Object v : g.getVertices()) {
+            g.removeVertex(v);
+        }
+
+        for (Object v : g.getEdges()) {
+            g.removeVertex(v);
+        }
+    }
 
     /**
      * Returns the graph currently in memory (not in buffer)
+     *
      * @return
      */
     public MyGraph create() {
-        return new MyGraph(new OrderedSparseMultigraph<MyVertex, MyEdge>());
+        if (this.g != null) {
+            return g;
+        } else {
+            return new MyGraph(new OrderedSparseMultigraph<MyVertex, MyEdge>());
+        }
     }
 
 }

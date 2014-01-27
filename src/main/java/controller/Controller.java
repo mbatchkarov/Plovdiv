@@ -147,7 +147,6 @@ public class Controller {
      * graphs
      */
     public void updateCounts() {
-//		System.out.println("updating counts in thread " + Thread.currentThread().getName());
         ObservableGraph g = this.g;
         int ns = 0, ni = 0, nr = 0;
         for (Object xx : g.getVertices()) {//count how many nodes are in each state
@@ -160,12 +159,6 @@ public class Controller {
                 ns++;
             }
         }
-
-//            System.out.println("graph  " + i);
-//            System.out.println("number inf " + ni);
-//            System.out.println("number  sus" + ns);
-//            System.out.println("number  res" + nr);
-
         this.g.setUserDatum(Strings.numInfected, ni);
         this.g.setUserDatum(Strings.numRes, nr);
         this.g.setUserDatum(Strings.numSus, ns);
@@ -202,7 +195,6 @@ public class Controller {
         try {
             g.setInstance(PajekParser.load(path));
             setAllSusceptible(g);
-//            Simulator.stepNumber =
         } catch (Exception ex) {
             Exceptions.showReadWriteErrorNotification(ex);
         }
@@ -222,38 +214,32 @@ public class Controller {
     public void generateRandom(int a, int b) {
         this.g.setInstance(Generator.generateRandom(a, b, this));
         //todo these methods should not trigger a redisplay manually, but should fire a graphchanged event
-        setAllSusceptible(g);
-		gui.redisplayCompletely();
+        gui.redisplayCompletely();
     }
 
     public void generate4Lattice(int a, int b) {
         this.g.setInstance(Generator.generateRectangularLattice(a, b, this));
-        setAllSusceptible(g);
         gui.redisplayCompletely();
 
     }
 
     public void generate6Lattice(int a, int b) {
         this.g.setInstance(Generator.generateHexagonalLattice(a, b, this));
-        setAllSusceptible(g);
         gui.redisplayCompletely();
     }
 
     public void generateKleinbergSmallWorld(int m, int n, double c) {
         this.g.setInstance(Generator.generateKleinbergSmallWorld(m, n, c, this));
-        setAllSusceptible(g);
         gui.redisplayCompletely();
     }
 
     public void generateScaleFree(int a, int b, int c) {
-        this.g.setInstance(Generator.generateScaleFree(a, 1, c, this));
-        setAllSusceptible(g);
+        this.g = Generator.generateScaleFree(a, 1, c, this);
         gui.redisplayCompletely();
     }
 
     public void generateEppsteinPowerLaw(int numVert, int numEdges, int r) {
         this.g.setInstance(Generator.generateEppsteinPowerLaw(numVert, numEdges, r));
-        setAllSusceptible(g);
         gui.redisplayCompletely();
     }
 
@@ -296,7 +282,6 @@ public class Controller {
         }
         updateCounts();
         updateDisplay();
-
     }
 
 
@@ -321,13 +306,13 @@ public class Controller {
 
         g.addGraphEventListener(d); // so that gui will update when graph changes
         g.addExtraGraphEventListener(d); // so that gui will update when graph changes
+
+        g.addExtraGraphEventListener(stats); // so that stats are recomputed when graph changes
         g.addGraphEventListener(stats); // so that stats will update on graph events
 
         //display a graph
-        cont.generateScaleFree(30, 1, 1); //todo this should trigger a stats recalculation and a
-
-        // gui update
-//        cont.getSimulator().updateInfectedCountGraph(d.getStatsPanel());
+        cont.generateScaleFree(20, 1, 1); //todo this should trigger a stats recalculation and a gui update
+        d.handlingEvents = true;
     }
 
 }

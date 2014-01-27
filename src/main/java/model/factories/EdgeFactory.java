@@ -30,36 +30,29 @@
 
 package model.factories;
 
-import model.*;
+import model.MyEdge;
+import model.Strings;
 import org.apache.commons.collections15.Factory;
 
 /**
- *
- * 
  * @author mb724
  */
 public class EdgeFactory implements Factory<MyEdge> {
 
-    int i = 1;
+    int i;
 
-    /**
-     * Set weigth to 1 by default. If the graph is weighted,
-     * this value will be overriden. 
-     * @return
-     */
+    public EdgeFactory() {
+        i = 0;
+    }
+
     public MyEdge create() {
-//        MyEdge e = new MyEdge(MyGraph.getBuffer().getEdgeCount() + 1);
-        MyEdge e = new MyEdge(i);
-        e.setWeigth(1);
-        i++;
+        MyEdge e = new MyEdge(++i);
+        e.setWeigth(1.0);
+        e.setUserDatum(Strings.infected, false);
         return e;
     }
 
-    /**
-     * restarts numbering, used when a new graph appears
-     *
-     */
     public void reset() {
-        i = 1;
+        i = 0;
     }
 }

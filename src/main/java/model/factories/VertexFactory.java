@@ -30,32 +30,29 @@
 
 package model.factories;
 
-import model.*;
+import model.EpiState;
+import model.MyVertex;
+import model.Strings;
 import org.apache.commons.collections15.Factory;
 
 /**
- *
  * @author mb724
  */
-public class VertexFactory implements Factory<MyVertex>{
+public class VertexFactory implements Factory<MyVertex> {
 
-    int i =1;
-   /**
-    * creates vertices and numbers them according to
-    * an internal counter (it has to be reset explicitly)
-    * @return
-    */
+    int i;
+
+    public VertexFactory() {
+        i = 0;
+    }
+
     public MyVertex create() {
-        MyVertex x = new MyVertex(i);
-        i++;
+        MyVertex x = new MyVertex(++i);
+        x.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
         return x;
     }
 
-    /**
-     * restarts numbering
-     */
-    public void reset(){
-        i=1;
+    public void reset() {
+        i = 0;
     }
-
 }

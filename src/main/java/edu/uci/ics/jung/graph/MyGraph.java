@@ -34,7 +34,6 @@ package edu.uci.ics.jung.graph;
  * @author Miroslav Batchkarov
  */
 
-import controller.Controller;
 import controller.ExtraGraphEvent;
 import controller.ExtraGraphEventListener;
 import edu.uci.ics.jung.graph.event.GraphEvent;
@@ -89,7 +88,7 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         fireExtraEvent(new ExtraGraphEvent.GraphReplacedEvent<V, E>(delegate));
     }
 
-    public void fireEvent(GraphEvent evt) {
+    public void fireGraphEvent(GraphEvent evt) {
         for (GraphEventListener<V, E> listener : super.listenerList) {
             listener.handleGraphEvent(evt);
         }

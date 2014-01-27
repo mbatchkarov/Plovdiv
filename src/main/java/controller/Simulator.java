@@ -35,7 +35,6 @@
 package controller;
 
 import cern.jet.random.engine.MersenneTwister;
-import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.graph.ObservableGraph;
 import edu.uci.ics.jung.graph.util.Pair;
@@ -457,14 +456,12 @@ public class Simulator {
     }
 
     private void updateStatisticsDisplay(JPanel statsPanel) {
-//        System.out.println("updating stats frame in thread " + Thread.currentThread().getName());
         xValues.add(stepNumber);
         yValues.add((Integer) g.getUserDatum(Strings.numInfected));
         ChartPanel panel = getInfectedCountChart(xValues, yValues, statsPanel.getSize());
         statsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         statsPanel.removeAll();
         statsPanel.add(panel);
-//        statsPanel.setPreferredSize(statsPanel.getPreferredSize());
         statsPanel.validate();
         statsPanel.revalidate();
         panel.repaint();

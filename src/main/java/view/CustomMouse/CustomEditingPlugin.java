@@ -37,7 +37,6 @@ import edu.uci.ics.jung.algorithms.layout.util.VisRunner;
 import edu.uci.ics.jung.algorithms.util.IterativeContext;
 import edu.uci.ics.jung.graph.DirectedGraph;
 import edu.uci.ics.jung.graph.Graph;
-import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.visualization.VisualizationServer;
@@ -272,8 +271,6 @@ MouseListener, MouseMotionListener {
 		final VisualizationViewer vv =
 		(VisualizationViewer) e.getSource();
 
-//        vv.getRenderContext().getPickedVertexState().clear();
-//        vv.getRenderContext().getPickedEdgeState().clear();
 		try {
 
 			Layout layout = vv.getGraphLayout();
@@ -286,7 +283,6 @@ MouseListener, MouseMotionListener {
 			new LayoutTransition<MyVertex, MyEdge>(vv, layout, layout);
 			Animator animator = new Animator(lt);
 			animator.start();
-//				vv.getRenderContext().getMultiLayerTransformer().setToIdentity();
 			vv.repaint();
 
 		} catch (Exception ex) {

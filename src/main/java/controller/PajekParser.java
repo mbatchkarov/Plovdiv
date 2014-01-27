@@ -38,13 +38,13 @@ import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.ObservableGraph;
 import edu.uci.ics.jung.io.PajekNetReader;
 import edu.uci.ics.jung.io.PajekNetWriter;
+import model.MyEdge;
 import model.factories.EdgeFactory;
-import model.factories.GraphFactory2;
+import model.factories.GraphFactory;
 import model.factories.VertexFactory;
+import org.apache.commons.collections15.Transformer;
 
 import java.io.IOException;
-import model.MyEdge;
-import org.apache.commons.collections15.Transformer;
 
 /**
  * @author reseter
@@ -61,7 +61,7 @@ public class PajekParser {
         EdgeFactory ef = Controller.getEdgeFactory();
         ef.reset();
         PajekNetReader reader = new PajekNetReader(vf, ef);
-        return (ObservableGraph) reader.load(path, new GraphFactory2());
+        return (ObservableGraph) reader.load(path, new GraphFactory());
     }
 
     public static void save(String path, Graph g) throws IOException {
