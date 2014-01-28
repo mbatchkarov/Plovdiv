@@ -41,11 +41,9 @@ import model.dynamics.SIRDynamics;
 import model.factories.EdgeFactory;
 import model.factories.GraphFactory;
 import model.factories.VertexFactory;
-import org.apache.commons.io.FilenameUtils;
 import view.Display;
-import view.Exceptions;
 
-import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
@@ -160,28 +158,20 @@ public class Controller {
      *
      * @param path
      */
-    public void load(String path) {
-        try {
-            MyGraph g = PajekParser.load(path, getGraphFactory(),
-                                         getVertexFactory().reset(),
-                                         getEdgeFactory().reset());
-            this.g.setInstance(g);
-            IOClass.loadLayout(getGui(), path);
-        } catch (Exception ex) {
-            Exceptions.showReadWriteErrorNotification(ex);
-        }
+    public void load(String path) throws IOException {
+        MyGraph g = PajekParser.load(path, getGraphFactory(),
+                                     getVertexFactory().reset(),
+                                     getEdgeFactory().reset());
+        this.g.setInstance(g);
+        IOClass.loadLayout(getGui(), path);
+
     }
 
-    public void save(String path, ObservableGraph g, PersistentLayout layout) {
+    public void save(String path, ObservableGraph g, PersistentLayout layout) throws IOException {
         if (path != "nullnull") {
             //if the user pressed cancel, nullnull will be passed to this method
-            try {
-                PajekParser.save(path + ".graph", g);
-                layout.persist(path + ".layout");
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                Exceptions.showReadWriteErrorNotification(ex);
-            }
+            PajekParser.save(path + ".graph", g);
+            layout.persist(path + ".layout");
         }
     }
 
@@ -211,11 +201,12 @@ public class Controller {
         this.g.setInstance(Generator.generateEppsteinPowerLaw(numVert, numEdges, r, this));
     }
 
-    public void generateEmptyGraph(){
+    public void generateEmptyGraph() {
         getEdgeFactory().reset();
         getVertexFactory().reset();
         this.g.setInstance(getGraphFactory().create());
     }
+
     /**
      * Convenience pass-through to the display, prevents the simulators from
      * accessing the display directly

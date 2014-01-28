@@ -43,7 +43,9 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.ui.ApplicationFrame;
 import view.generatorSettings.GeneratorSettings;
 
+import javax.swing.*;
 import java.awt.*;
+import java.io.IOException;
 
 /**
  * Shows dialog windows and and parses user input to evoke the appropriate
@@ -54,9 +56,11 @@ import java.awt.*;
 public class InfoGatherer {
 
     private Controller controller;
+    private Display    d;
 
-    public InfoGatherer(Controller controller) {
+    public InfoGatherer(Controller controller, Display d) {
         this.controller = controller;
+        this.d = d;
     }
 
     /**
@@ -69,7 +73,12 @@ public class InfoGatherer {
         FileDialog window = new FileDialog(parent, "Save", FileDialog.SAVE);
         window.setSize(500, 500);
         window.setVisible(true);
-        controller.save(window.getDirectory() + window.getFile(), g, layout);
+        try {
+            controller.save(window.getDirectory() + window.getFile(), g, layout);
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(d, "Error! \n" + e.getMessage());
+        }
     }
 
     /**
@@ -85,7 +94,12 @@ public class InfoGatherer {
 
         PersistentLayout layout = null;
         if (!path.equals("nullnull")) {//if the user clicks CANCEL path will be set to "nullnull"
-            controller.load(path);
+            try {
+                controller.load(path);
+            } catch (IOException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(d, "Error! \n" + e.getMessage());
+            }
         }
     }
 

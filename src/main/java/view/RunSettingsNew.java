@@ -42,6 +42,7 @@ package view;
 
 import controller.Controller;
 import edu.uci.ics.jung.graph.MyGraph;
+import model.Strings;
 import model.dynamics.SIDynamics;
 import model.dynamics.SIRDynamics;
 import model.dynamics.SISDynamics;
@@ -58,7 +59,7 @@ public class RunSettingsNew extends javax.swing.JFrame {
     private Controller controller;
     //available dynamics
 //    private static final String[] availableTypes = {"SI", "SIS", "SIR"};
-    private MyGraph g; //the graph these settings are for
+    private MyGraph    g; //the graph these settings are for
     //    private Controller c; //the controller the settings will be sent to
     private int waitTime = 100;
 
@@ -232,95 +233,95 @@ public class RunSettingsNew extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addComponent(deltaT, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
-                                                .addContainerGap())
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addComponent(breakingRate, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
-                                                .addContainerGap())
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addComponent(runTime, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
-                                                .addContainerGap())
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                .addGap(578, 578, 578))
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addGroup(layout.createSequentialGroup()
-                                                                .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
-                                                                .addGap(391, 391, 391))
-                                                        .addGroup(layout.createSequentialGroup()
-                                                                .addComponent(runTimeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
-                                                                .addGap(264, 264, 264))
-                                                        .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
-                                                        .addGroup(layout.createSequentialGroup()
-                                                                .addGap(22, 22, 22)
-                                                                .addComponent(cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 465, Short.MAX_VALUE)
-                                                                .addComponent(ok, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                                        .addComponent(speed, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 668, Short.MAX_VALUE)
-                                                                        .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 668, Short.MAX_VALUE))
-                                                                .addGap(12, 12, 12)))
-                                                .addContainerGap())
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                .addComponent(edgeBreakingLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
-                                                .addGap(332, 332, 332))
-                                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                                        .addComponent(gama, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
-                                                        .addComponent(tau, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
-                                                        .addComponent(dynamics, 0, 680, Short.MAX_VALUE))
-                                                .addContainerGap())
-                                        .addGroup(layout.createSequentialGroup()
-                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                        .addComponent(gamaLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addContainerGap())))
-        );
+                      .addGroup(layout.createSequentialGroup()
+                                      .addContainerGap()
+                                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                      .addGroup(layout.createSequentialGroup()
+                                                                      .addComponent(deltaT, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
+                                                                      .addContainerGap())
+                                                      .addGroup(layout.createSequentialGroup()
+                                                                      .addComponent(breakingRate, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
+                                                                      .addContainerGap())
+                                                      .addGroup(layout.createSequentialGroup()
+                                                                      .addComponent(runTime, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
+                                                                      .addContainerGap())
+                                                      .addGroup(layout.createSequentialGroup()
+                                                                      .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                                                      .addGap(578, 578, 578))
+                                                      .addGroup(layout.createSequentialGroup()
+                                                                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                      .addGroup(layout.createSequentialGroup()
+                                                                                                      .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, 289, Short.MAX_VALUE)
+                                                                                                      .addGap(391, 391, 391))
+                                                                                      .addGroup(layout.createSequentialGroup()
+                                                                                                      .addComponent(runTimeLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 416, Short.MAX_VALUE)
+                                                                                                      .addGap(264, 264, 264))
+                                                                                      .addComponent(jSeparator1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
+                                                                                      .addGroup(layout.createSequentialGroup()
+                                                                                                      .addGap(22, 22, 22)
+                                                                                                      .addComponent(cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 465, Short.MAX_VALUE)
+                                                                                                      .addComponent(ok, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                                      .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                                                                                                                  .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                                                                                                                                  .addComponent(speed, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 668, Short.MAX_VALUE)
+                                                                                                                                                                  .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, 668, Short.MAX_VALUE))
+                                                                                                                                                  .addGap(12, 12, 12)))
+                                                                      .addContainerGap())
+                                                      .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                                                                                  .addComponent(edgeBreakingLabel, javax.swing.GroupLayout.DEFAULT_SIZE, 360, Short.MAX_VALUE)
+                                                                                                                  .addGap(332, 332, 332))
+                                                      .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                                                                                  .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                                                                                                                  .addComponent(gama, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
+                                                                                                                                  .addComponent(tau, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 680, Short.MAX_VALUE)
+                                                                                                                                  .addComponent(dynamics, 0, 680, Short.MAX_VALUE))
+                                                                                                                  .addContainerGap())
+                                                      .addGroup(layout.createSequentialGroup()
+                                                                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                      .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                                      .addComponent(gamaLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                                      .addContainerGap())))
+                                 );
         layout.setVerticalGroup(
                 layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jLabel1)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(dynamics, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(tau, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(gamaLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(gama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(edgeBreakingLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(breakingRate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(deltaT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(runTimeLabel)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(runTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(30, 30, 30)
-                                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addComponent(jLabel5)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(speed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                        .addComponent(cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(ok))
-                                .addContainerGap())
-        );
+                      .addGroup(layout.createSequentialGroup()
+                                      .addContainerGap()
+                                      .addComponent(jLabel1)
+                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                      .addComponent(dynamics, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                      .addGap(18, 18, 18)
+                                      .addComponent(jLabel2)
+                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                      .addComponent(tau, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                      .addGap(18, 18, 18)
+                                      .addComponent(gamaLabel)
+                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                      .addComponent(gama, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                      .addGap(18, 18, 18)
+                                      .addComponent(edgeBreakingLabel)
+                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                      .addComponent(breakingRate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                      .addGap(18, 18, 18)
+                                      .addComponent(jLabel3)
+                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                      .addComponent(deltaT, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                      .addGap(18, 18, 18)
+                                      .addComponent(runTimeLabel)
+                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                      .addComponent(runTime, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                      .addGap(30, 30, 30)
+                                      .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                      .addGap(18, 18, 18)
+                                      .addComponent(jLabel5)
+                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                      .addComponent(speed, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                      .addGap(18, 18, 18)
+                                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                      .addComponent(cancel, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                      .addComponent(ok))
+                                      .addContainerGap())
+                               );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -333,21 +334,21 @@ public class RunSettingsNew extends javax.swing.JFrame {
             //attach the dynamics setting to the graph
             if (dynamics.getSelectedItem().toString().equals("SIR")) {
                 g.setUserDatum("dynamics",
-                        new SIRDynamics(Double.parseDouble(tau.getText()),
-                                Double.parseDouble(deltaT.getText()), Double.parseDouble(gama.getText())));
+                               new SIRDynamics(Double.parseDouble(tau.getText()),
+                                               Double.parseDouble(deltaT.getText()), Double.parseDouble(gama.getText())));
             } else if (dynamics.getSelectedItem().toString().equals("SIS")) {
                 g.setUserDatum("dynamics",
-                        new SISDynamics(Double.parseDouble(tau.getText()),
-                                Double.parseDouble(deltaT.getText()), Double.parseDouble(gama.getText()),
-                                Double.parseDouble(breakingRate.getText())));
+                               new SISDynamics(Double.parseDouble(tau.getText()),
+                                               Double.parseDouble(deltaT.getText()), Double.parseDouble(gama.getText()),
+                                               Double.parseDouble(breakingRate.getText())));
             } else {
                 g.setUserDatum("dynamics",
-                        new SIDynamics(Double.parseDouble(tau.getText()),
-                                Double.parseDouble(deltaT.getText())));
+                               new SIDynamics(Double.parseDouble(tau.getText()),
+                                              Double.parseDouble(deltaT.getText())));
             }
             //attach the running time to the graph
             g.setUserDatum("time",
-                    new Integer(Integer.parseInt(runTime.getText())));
+                           new Integer(Integer.parseInt(runTime.getText())));
 
             //attach the speed multiplier to the graph
             g.setUserDatum("speed", waitTime);
@@ -357,7 +358,7 @@ public class RunSettingsNew extends javax.swing.JFrame {
 //            Controller.initSim(g);
 //            Controller.runSim();
         } catch (IllegalArgumentException ex) {
-            Exceptions.showIllegalArgumentNotification(ex);
+            JOptionPane.showMessageDialog(this, Strings.numberFormatError);
         }
 
     }//GEN-LAST:event_okActionPerformed
@@ -457,21 +458,21 @@ public class RunSettingsNew extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTextField breakingRate;
-    private javax.swing.JButton cancel;
+    private javax.swing.JButton    cancel;
     private javax.swing.JTextField deltaT;
-    private javax.swing.JComboBox dynamics;
-    private javax.swing.JLabel edgeBreakingLabel;
+    private javax.swing.JComboBox  dynamics;
+    private javax.swing.JLabel     edgeBreakingLabel;
     private javax.swing.JTextField gama;
-    private javax.swing.JLabel gamaLabel;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel     gamaLabel;
+    private javax.swing.JLabel     jLabel1;
+    private javax.swing.JLabel     jLabel2;
+    private javax.swing.JLabel     jLabel3;
+    private javax.swing.JLabel     jLabel5;
     private javax.swing.JSeparator jSeparator1;
-    private javax.swing.JButton ok;
+    private javax.swing.JButton    ok;
     private javax.swing.JTextField runTime;
-    private javax.swing.JLabel runTimeLabel;
-    private javax.swing.JSlider speed;
+    private javax.swing.JLabel     runTimeLabel;
+    private javax.swing.JSlider    speed;
     private javax.swing.JTextField tau;
     // End of variables declaration//GEN-END:variables
 }
