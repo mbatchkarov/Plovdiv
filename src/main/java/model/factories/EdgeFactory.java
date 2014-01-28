@@ -52,7 +52,8 @@ public class EdgeFactory implements Factory<MyEdge> {
         return e;
     }
 
-    public void reset() {
+    public EdgeFactory reset() {
         i = 0;
+        return this;
     }
 }

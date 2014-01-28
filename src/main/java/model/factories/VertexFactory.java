@@ -52,7 +52,8 @@ public class VertexFactory implements Factory<MyVertex> {
         return x;
     }
 
-    public void reset() {
+    public VertexFactory reset() {
         i = 0;
+        return this;
     }
 }

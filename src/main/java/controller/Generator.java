@@ -57,8 +57,8 @@ public class Generator {
     }
 
     public static MyGraph generateRandom(int v, int e, Controller controller) {
-        VertexFactory vf = controller.getVertexFactory();
-        EdgeFactory ef = controller.getEdgeFactory();
+        VertexFactory vf = controller.getVertexFactory().reset();
+        EdgeFactory ef = controller.getEdgeFactory().reset();
         vf.reset();
         ef.reset();
         RandomGenerator r = new RandomGenerator(controller.getGraphFactory(), vf, ef, v, e);
@@ -77,9 +77,9 @@ public class Generator {
         //@see notes 17 JUL 2009
         MyGraph g = controller.getGraphFactory().create();
         System.out.println(g);
-        VertexFactory vf = controller.getVertexFactory();
+        VertexFactory vf = controller.getVertexFactory().reset();
         vf.reset();
-        EdgeFactory ef = controller.getEdgeFactory();
+        EdgeFactory ef = controller.getEdgeFactory().reset();
         ef.reset();
 
         //feed stuff to the buffer
@@ -124,9 +124,9 @@ public class Generator {
     public static MyGraph generateHexagonalLattice(int m, int n, Controller controller) {
         //@see notes 17 JUL 2009
         MyGraph g = controller.getGraphFactory().create();
-        VertexFactory vf = controller.getVertexFactory();
+        VertexFactory vf = controller.getVertexFactory().reset();
         vf.reset();
-        EdgeFactory ef = controller.getEdgeFactory();
+        EdgeFactory ef = controller.getEdgeFactory().reset();
         ef.reset();
         MyVertex[][] nodes = new MyVertex[m][n];
         for (int i = 0; i <
@@ -187,14 +187,16 @@ public class Generator {
         controller.getEdgeFactory().reset();
         controller.getVertexFactory().reset();
         SmallWorldGenerator gen = new SmallWorldGenerator(controller.getGraphFactory(),
-                                                          controller.getVertexFactory(),
-                                                          controller.getEdgeFactory(), m, n, clusteringExponent);
+                                                          controller.getVertexFactory().reset(),
+                                                          controller.getEdgeFactory().reset(),
+                                                          m, n, clusteringExponent);
         return (MyGraph) gen.create();
     }
 
-    public static MyGraph generateEppsteinPowerLaw(int numVert, int numEdges, int r, Controller controller) {
-        VertexFactory vf = new VertexFactory();
-        EdgeFactory ef = new EdgeFactory();
+    public static MyGraph generateEppsteinPowerLaw(int numVert, int numEdges,
+                                                   int r, Controller controller) {
+        VertexFactory vf = controller.getVertexFactory().reset();
+        EdgeFactory ef = controller.getEdgeFactory().reset();
         EppsteinPowerLawGenerator<MyVertex, MyEdge> gen = new EppsteinPowerLawGenerator(
                 controller.getGraphFactory(), vf, ef, numVert, numEdges, r);
         return (MyGraph) gen.create();
@@ -212,8 +214,8 @@ public class Generator {
      */
     public static MyGraph generateScaleFree(int evolveSteps, int numVertices,
                                             int numEdgesToAttach, Controller controller) {
-        VertexFactory vf = controller.getVertexFactory();
-        EdgeFactory ef = controller.getEdgeFactory();
+        VertexFactory vf = controller.getVertexFactory().reset();
+        EdgeFactory ef = controller.getEdgeFactory().reset();
         vf.reset();
         ef.reset();
         HashSet<MyVertex> seeds = new HashSet<MyVertex>();

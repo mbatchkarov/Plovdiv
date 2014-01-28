@@ -163,7 +163,8 @@ public class Controller {
     public void load(String path) {
         try {
             MyGraph g = PajekParser.load(path, getGraphFactory(),
-                                         new VertexFactory(), new EdgeFactory());
+                                         getVertexFactory().reset(),
+                                         getEdgeFactory().reset());
             this.g.setInstance(g);
             IOClass.loadLayout(getGui(), path);
         } catch (Exception ex) {
@@ -188,41 +189,33 @@ public class Controller {
     //-----------GENERATION FUNCTIONALITY-------------------
     public void generateRandom(int a, int b) {
         this.g.setInstance(Generator.generateRandom(a, b, this));
-//        gui.redisplayCompletely();
     }
 
     public void generate4Lattice(int a, int b) {
         this.g.setInstance(Generator.generateRectangularLattice(a, b, this));
-//        gui.redisplayCompletely();
     }
 
     public void generate6Lattice(int a, int b) {
         this.g.setInstance(Generator.generateHexagonalLattice(a, b, this));
-//        gui.redisplayCompletely();
     }
 
     public void generateKleinbergSmallWorld(int m, int n, double c) {
         this.g.setInstance(Generator.generateKleinbergSmallWorld(m, n, c, this));
-//        gui.redisplayCompletely();
     }
 
     public void generateScaleFree(int a, int b, int c) {
         this.g.setInstance(Generator.generateScaleFree(a, 1, c, this));
-//        gui.redisplayCompletely();
     }
 
     public void generateEppsteinPowerLaw(int numVert, int numEdges, int r) {
         this.g.setInstance(Generator.generateEppsteinPowerLaw(numVert, numEdges, r, this));
-//        gui.redisplayCompletely();
     }
 
-    //------------OPENING NEW DOCUMENTS--------------------
-    /**
-     * Puts an graph into the collection of graphs, creates a displaying frame
-     * for it and starts displaying it.
-     *
-     * @param g
-     */
+    public void generateEmptyGraph(){
+        getEdgeFactory().reset();
+        getVertexFactory().reset();
+        this.g.setInstance(getGraphFactory().create());
+    }
     /**
      * Convenience pass-through to the display, prevents the simulators from
      * accessing the display directly
