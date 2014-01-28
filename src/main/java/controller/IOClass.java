@@ -36,6 +36,7 @@ import edu.uci.ics.jung.algorithms.generators.random.BarabasiAlbertGenerator;
 import edu.uci.ics.jung.algorithms.matrix.GraphMatrixOperations;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
+
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.BufferedWriter;
@@ -52,45 +53,43 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
+
 import model.*;
 import model.factories.*;
+import org.apache.commons.io.FilenameUtils;
 import view.generatorSettings.GeneratorSettings;
 import view.Display;
 
 /**
  * Static methods to load, save and generate various graphs
+ *
  * @author mb724
  */
 public class IOClass {
 
-   
- 
+
     /**
      * Load a layout for the given graph if it exists- meant to be used by the user
-     * @param parent where to display it
-     * @param path absolute path to the layout file, only used if the File is null
-     * @param askForConfirmation whether to do it automatically
+     *
+     * @param parent             where to display it
+     * @param path               absolute path to the layout file, only used if the File is null
      */
     public static void loadLayout(Display parent, String path) {
-        String name = "";
-        int whereDot = path.lastIndexOf('.');
-        if (0 < whereDot && whereDot <= path.length() - 2) {
-            name = path.substring(0, whereDot);
-        }
-
+        String name = FilenameUtils.removeExtension(path);
         name += ".layout";
+
         System.out.println("Will search for layout file: " + name);
         File f = new File(name);
         boolean okToLoad = true; //this is how the user affects loading
         if (f.exists()) {
             System.out.println("File exists " + name);
-                okToLoad = (JOptionPane.showConfirmDialog(parent, "This graph has a layout file associated with it." +
-                        "Do you want to load it?") == JOptionPane.YES_OPTION);
+            okToLoad = (JOptionPane.showConfirmDialog(parent, "This graph has a layout file associated with it." +
+                                                              "Do you want to load it?") == JOptionPane.YES_OPTION);
             System.out.println("Permission to load: " + okToLoad);
             if (okToLoad) {
                 try {
                     System.out.println("Will load layout: " + name);
-                        parent.loadLayout(name);
+                    parent.loadLayout(name);
                 } catch (Exception ex) {
                     System.out.println(ex.getLocalizedMessage());
                     ex.printStackTrace();
@@ -99,29 +98,11 @@ public class IOClass {
 
         }
     }
-    /**
-     * Loads layouts, for internal use only.
-     * Does not check if the file exists, does not ask for confirmation
-     * @param parent
-     * @param is
-     */
-    public static void loadLayout(Display parent, InputStream is) {
-
-                try {
-                        parent.loadLayout(is);
-                } catch (Exception ex) {
-                    System.out.println(ex.getLocalizedMessage());
-                    ex.printStackTrace();
-                }
-    }
-
-   
-
-
 
     /**
      * copy the visible part of the graph to a file as a jpeg image
-     * @param vv 
+     *
+     * @param vv
      * @param file
      */
     public static void writeJPEGImage(VisualizationViewer vv, File file) {
@@ -129,7 +110,7 @@ public class IOClass {
         int height = vv.getHeight();
 
         BufferedImage bi = new BufferedImage(width, height,
-                BufferedImage.TYPE_INT_RGB);
+                                             BufferedImage.TYPE_INT_RGB);
         Graphics2D graphics = bi.createGraphics();
         vv.paint(graphics);
         graphics.dispose();

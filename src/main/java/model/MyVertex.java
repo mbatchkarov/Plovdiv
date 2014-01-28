@@ -34,13 +34,14 @@
  */
 package model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
  *
  * @author reseter
  */
-public class MyVertex {
+public class MyVertex implements Serializable {
 
     private int id;
     private HashMap userData;

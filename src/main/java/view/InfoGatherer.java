@@ -33,6 +33,7 @@ package view;
 import controller.Controller;
 import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.graph.ObservableGraph;
+import edu.uci.ics.jung.visualization.layout.PersistentLayout;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
@@ -64,11 +65,11 @@ public class InfoGatherer {
      * @param parent the window that this dialog was evoked from
      * @param g      the graph to save
      */
-    public void showSave(Frame parent, ObservableGraph g) {
+    public void showSave(Frame parent, ObservableGraph g, PersistentLayout layout) {
         FileDialog window = new FileDialog(parent, "Save", FileDialog.SAVE);
         window.setSize(500, 500);
         window.setVisible(true);
-        controller.save(window.getDirectory() + window.getFile(), g);
+        controller.save(window.getDirectory() + window.getFile(), g, layout);
     }
 
     /**
@@ -81,10 +82,11 @@ public class InfoGatherer {
         window.setSize(500, 500);
         window.setVisible(true);
         String path = window.getDirectory() + window.getFile();
+
+        PersistentLayout layout = null;
         if (!path.equals("nullnull")) {//if the user clicks CANCEL path will be set to "nullnull"
             controller.load(path);
         }
-
     }
 
     /**

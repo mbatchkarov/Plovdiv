@@ -32,6 +32,7 @@ package controller;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.graph.ObservableGraph;
+import edu.uci.ics.jung.visualization.layout.PersistentLayout;
 import model.EpiState;
 import model.MyEdge;
 import model.MyVertex;
@@ -40,9 +41,11 @@ import model.dynamics.SIRDynamics;
 import model.factories.EdgeFactory;
 import model.factories.GraphFactory;
 import model.factories.VertexFactory;
+import org.apache.commons.io.FilenameUtils;
 import view.Display;
 import view.Exceptions;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
@@ -52,11 +55,11 @@ import java.util.Random;
  */
 public class Controller {
 
-    private EdgeFactory ef;
+    private EdgeFactory   ef;
     private VertexFactory vf;
-    private GraphFactory gf;
-    private Display gui;
-    private Simulator sim;
+    private GraphFactory  gf;
+    private Display       gui;
+    private Simulator     sim;
 
     private MyGraph g;
 
@@ -121,14 +124,14 @@ public class Controller {
     //----------SIMULATION CONTROLS
 
 
-
     public void updateCounts() {
         this.g.updateCounts();
     }
 
-    public void setAllSusceptible(){
+    public void setAllSusceptible() {
         this.g.setAllSusceptible();
     }
+
     /**
      * Sets all undefined nodes to susceptible Sets all resistant nodes in a
      * non-SIR epidemic to susceptible
@@ -159,19 +162,25 @@ public class Controller {
      */
     public void load(String path) {
         try {
-            g.setInstance(PajekParser.load(path, getGraphFactory(),
-                                           getVertexFactory(), getEdgeFactory()));
+            MyGraph g = PajekParser.load(path, getGraphFactory(),
+                                         new VertexFactory(), new EdgeFactory());
+            this.g.setInstance(g);
+            IOClass.loadLayout(getGui(), path);
         } catch (Exception ex) {
             Exceptions.showReadWriteErrorNotification(ex);
         }
-        gui.redisplayCompletely();
     }
 
-    public void save(String path, ObservableGraph g) {
-        try {
-            PajekParser.save(path, g);
-        } catch (Exception ex) {
-            Exceptions.showReadWriteErrorNotification(ex);
+    public void save(String path, ObservableGraph g, PersistentLayout layout) {
+        if (path != "nullnull") {
+            //if the user pressed cancel, nullnull will be passed to this method
+            try {
+                PajekParser.save(path + ".graph", g);
+                layout.persist(path + ".layout");
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                Exceptions.showReadWriteErrorNotification(ex);
+            }
         }
     }
 
@@ -179,33 +188,32 @@ public class Controller {
     //-----------GENERATION FUNCTIONALITY-------------------
     public void generateRandom(int a, int b) {
         this.g.setInstance(Generator.generateRandom(a, b, this));
-        gui.redisplayCompletely();
+//        gui.redisplayCompletely();
     }
 
     public void generate4Lattice(int a, int b) {
         this.g.setInstance(Generator.generateRectangularLattice(a, b, this));
-        gui.redisplayCompletely();
-
+//        gui.redisplayCompletely();
     }
 
     public void generate6Lattice(int a, int b) {
         this.g.setInstance(Generator.generateHexagonalLattice(a, b, this));
-        gui.redisplayCompletely();
+//        gui.redisplayCompletely();
     }
 
     public void generateKleinbergSmallWorld(int m, int n, double c) {
         this.g.setInstance(Generator.generateKleinbergSmallWorld(m, n, c, this));
-        gui.redisplayCompletely();
+//        gui.redisplayCompletely();
     }
 
     public void generateScaleFree(int a, int b, int c) {
         this.g.setInstance(Generator.generateScaleFree(a, 1, c, this));
-        gui.redisplayCompletely();
+//        gui.redisplayCompletely();
     }
 
     public void generateEppsteinPowerLaw(int numVert, int numEdges, int r) {
         this.g.setInstance(Generator.generateEppsteinPowerLaw(numVert, numEdges, r, this));
-        gui.redisplayCompletely();
+//        gui.redisplayCompletely();
     }
 
     //------------OPENING NEW DOCUMENTS--------------------

@@ -38,6 +38,7 @@ import controller.ExtraGraphEvent;
 import controller.ExtraGraphEventListener;
 import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
+import edu.uci.ics.jung.visualization.layout.PersistentLayout;
 import model.EpiState;
 import model.MyEdge;
 import model.MyVertex;

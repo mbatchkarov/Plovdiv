@@ -34,13 +34,14 @@
  */
 package model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
  *
  * @author reseter
  */
-public class MyEdge {
+public class MyEdge implements Serializable {
 
     private HashMap userData;
     private int id;

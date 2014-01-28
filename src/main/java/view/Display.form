@@ -116,22 +116,14 @@
                 <Property name="text" type="java.lang.String" value="Zoom OUT"/>
               </Properties>
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="showDD">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Show Detailed Statistics "/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="showDDActionPerformed"/>
-              </Events>
-            </MenuItem>
             <MenuItem class="javax.swing.JSeparator" name="jSeparator20">
             </MenuItem>
-            <MenuItem class="javax.swing.JMenuItem" name="dumbToJpg">
+            <MenuItem class="javax.swing.JMenuItem" name="dumpToJpg">
               <Properties>
                 <Property name="text" type="java.lang.String" value="Save to .jpg"/>
               </Properties>
               <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="dumbToJpgActionPerformed"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="dumpToJpgActionPerformed"/>
               </Events>
             </MenuItem>
           </SubComponents>
