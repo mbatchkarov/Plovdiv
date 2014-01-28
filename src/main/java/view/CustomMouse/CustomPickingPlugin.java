@@ -219,7 +219,7 @@ public class CustomPickingPlugin extends AbstractGraphMousePlugin
                         //#######  SHOW STATISTICS FOR THIS VERTEX  ##########
                         stats.setSelectedNode(vertex);
 //                        System.out.println("selected node: " + vertex);
-                        this.gui.updateStatsDisplay(vertex);
+                        this.gui.updateStatsDisplay();
 
                     }
                     // layout.getLocation applies the layout transformer so
@@ -240,7 +240,7 @@ public class CustomPickingPlugin extends AbstractGraphMousePlugin
                     pickedVertexState.clear();
                     //return stats back to zero
                     stats.setSelectedNode(vertex);
-                    this.gui.updateStatsDisplay(null);
+                    this.gui.updateStatsDisplay();
                 }
 
             } else if (e.getModifiers() == addToSelectionModifiers) {

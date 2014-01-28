@@ -126,7 +126,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                                         graph.addEdge(controller.getEdgeFactory().create(),
                                                 other, vertex, EdgeType.DIRECTED);
                                         vv.repaint();
-                                        CustomPopupPlugin.this.d.updateStatsDisplay(null);
+                                        CustomPopupPlugin.this.d.updateStatsDisplay();
                                     }
                                 });
                             }
@@ -141,7 +141,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                                         graph.addEdge(controller.getEdgeFactory().create(),
                                                 other, vertex);
                                         vv.repaint();
-                                        CustomPopupPlugin.this.d.updateStatsDisplay(null);
+                                        CustomPopupPlugin.this.d.updateStatsDisplay();
                                     }
                                 });
                             }
@@ -156,7 +156,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             }
                             graph.removeVertex(vertex);
                             vv.repaint();
-                            CustomPopupPlugin.this.d.updateStatsDisplay(null);
+                            CustomPopupPlugin.this.d.updateStatsDisplay();
                         }
                     });
                     popup1.add(new AbstractAction("Set susceptible") {
@@ -165,7 +165,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             vertex.setUserDatum("state", EpiState.SUSCEPTIBLE);
                             vv.repaint();
                             controller.updateCounts();
-                            CustomPopupPlugin.this.d.updateStatsDisplay(vertex);
+                            CustomPopupPlugin.this.d.updateStatsDisplay();
 
                         }
                     });
@@ -175,7 +175,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             vertex.setUserDatum("state", EpiState.INFECTED);
                             vv.repaint();
                             controller.updateCounts();
-                            CustomPopupPlugin.this.d.updateStatsDisplay(vertex);
+                            CustomPopupPlugin.this.d.updateStatsDisplay();
 
                         }
                     });
@@ -185,7 +185,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             vertex.setUserDatum("state", EpiState.RESISTANT);
                             vv.repaint();
                             controller.updateCounts();
-                            CustomPopupPlugin.this.d.updateStatsDisplay(vertex);
+                            CustomPopupPlugin.this.d.updateStatsDisplay();
                         }
                     });
                     vv.repaint();
@@ -198,7 +198,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             pickedEdgeState.pick(edge, false);
                             graph.removeEdge(edge);
                             vv.repaint();
-                            CustomPopupPlugin.this.d.updateStatsDisplay(null);
+                            CustomPopupPlugin.this.d.updateStatsDisplay();
                         }
                     });
 
@@ -217,7 +217,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                                     JOptionPane.showMessageDialog(controller.getGui(), "Input is not a valid number!");
                                 }
                             }
-                            CustomPopupPlugin.this.d.updateStatsDisplay(null);
+                            CustomPopupPlugin.this.d.updateStatsDisplay();
                         }
                     });
                 } else {
@@ -229,7 +229,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             graph.addVertex(newV);
                             layout.setLocation(newV, vv.getRenderContext().getMultiLayerTransformer().inverseTransform(ivp));
                             vv.repaint();
-                            CustomPopupPlugin.this.d.updateStatsDisplay(null);
+                            CustomPopupPlugin.this.d.updateStatsDisplay();
                         }
                     });
                 }

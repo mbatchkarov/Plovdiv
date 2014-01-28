@@ -80,6 +80,7 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 
 import static view.Utils.round;
 
@@ -89,19 +90,19 @@ import static view.Utils.round;
 public class Display extends JFrame implements GraphEventListener<MyVertex, MyEdge>,
         ExtraGraphEventListener<MyVertex, MyEdge> {
 
-    private static InfoGatherer gatherer;
+    private static InfoGatherer                            gatherer;
     //declared as fields rather than as local variables so that their value can be altered by listeners
-    public static VisualizationViewer vv;
-    private static ScalingControl scaler;
+    public static  VisualizationViewer                     vv;
+    private static ScalingControl                          scaler;
     //    EditingModalGraphMouse<MyVertex, MyEdge> graphMouse;
-    private static CustomGraphMouse graphMouse;
-    static AnnotationControls<MyVertex, MyEdge> annotationControls;
-    static JToolBar annotationControlsToolbar;
+    private static CustomGraphMouse                        graphMouse;
+    static         AnnotationControls<MyVertex, MyEdge>    annotationControls;
+    static         JToolBar                                annotationControlsToolbar;
     private static PersistentLayoutImpl2<MyVertex, MyEdge> persistentLayout;
-    public boolean handlingEvents;
-    private Stats stats;
-    private Controller controller;
-    private MyGraph g;
+    public         boolean                                 handlingEvents;
+    private        Stats                                   stats;
+    private        Controller                              controller;
+    private        MyGraph                                 g;
 
     /**
      * Creates new form Display
@@ -148,10 +149,18 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
      * Recalculates and display the stats of the graph and of the vertex passed
      * in. If it is null, sets all local statistics to "N/A"
      *
-     * @param selectedVertex the currently selected vertex
      */
-    public void updateStatsDisplay(MyVertex selectedVertex) {
-        //populate information labels accross the screen
+    public void updateStatsDisplay() {
+        // get selected vertex
+        MyVertex selectedVertex = null;
+        ArrayList<MyVertex> pickedVertices = new ArrayList(
+                this.getVV().getPickedVertexState().getPicked()
+        );
+        if (pickedVertices.size() == 1) {
+            selectedVertex = pickedVertices.get(0);
+        }
+
+        //populate information labels across the screen
         globalCC.setText(round(stats.getCC()));
         globalAPL.setText(round(stats.getAPL()));
         globalAvgDegree.setText(round(stats.getAvgDegree()));
@@ -257,7 +266,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         in = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
         out = new javax.swing.JLabel();
-        graphstatsPanel = new javax.swing.JPanel();
+        graphStatsPanel = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jLabel12 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
@@ -555,13 +564,13 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 
         localCC.setText("0.0");
 
-        jLabel9.setText("Clustering coefficient");
+        jLabel9.setText("Clustering coef.");
 
         localAPL.setText("0.0");
 
         jLabel11.setText("APL");
 
-        jLabel13.setText("Betweenness dentrality");
+        jLabel13.setText("Betweenness centrality");
 
         localBC.setText("0.0");
 
@@ -626,16 +635,16 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                                                            .addComponent(localAPL)))
                                       );
 
-        graphstatsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Graph statistics"));
-        graphstatsPanel.setMaximumSize(new java.awt.Dimension(367, 269));
+        graphStatsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Graph statistics"));
+        graphStatsPanel.setMaximumSize(new java.awt.Dimension(367, 269));
 
         jLabel10.setText("Avg degree = ");
 
         jLabel12.setText("APL = ");
 
-        jLabel16.setText("Degree correlation = ");
+        jLabel16.setText("Degree corr. = ");
 
-        jLabel17.setText("Clustering coefficient = ");
+        jLabel17.setText("Clustering coef. = ");
 
         globalCC.setText("0");
 
@@ -691,83 +700,83 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
             }
         });
 
-        javax.swing.GroupLayout graphstatsPanelLayout = new javax.swing.GroupLayout(graphstatsPanel);
-        graphstatsPanel.setLayout(graphstatsPanelLayout);
-        graphstatsPanelLayout.setHorizontalGroup(
-                graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                     .addGroup(graphstatsPanelLayout.createSequentialGroup()
+        javax.swing.GroupLayout graphStatsPanelLayout = new javax.swing.GroupLayout(graphStatsPanel);
+        graphStatsPanel.setLayout(graphStatsPanelLayout);
+        graphStatsPanelLayout.setHorizontalGroup(
+                graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                     .addGroup(graphStatsPanelLayout.createSequentialGroup()
                                                                     .addContainerGap()
-                                                                    .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                                                                   .addGroup(graphstatsPanelLayout.createSequentialGroup()
-                                                                                                                                  .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                                                                                                                                 .addGroup(graphstatsPanelLayout.createSequentialGroup()
+                                                                    .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                   .addGroup(graphStatsPanelLayout.createSequentialGroup()
+                                                                                                                                  .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                                                                                 .addGroup(graphStatsPanelLayout.createSequentialGroup()
                                                                                                                                                                                                 .addComponent(jLabel17)
                                                                                                                                                                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                                                                                                                                                                 .addComponent(globalCC, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                                                                                                                                 .addGroup(graphstatsPanelLayout.createSequentialGroup()
+                                                                                                                                                                 .addGroup(graphStatsPanelLayout.createSequentialGroup()
                                                                                                                                                                                                 .addComponent(jLabel10)
                                                                                                                                                                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                                                                                                                                                                 .addComponent(globalAvgDegree))
-                                                                                                                                                                 .addGroup(graphstatsPanelLayout.createSequentialGroup()
+                                                                                                                                                                 .addGroup(graphStatsPanelLayout.createSequentialGroup()
                                                                                                                                                                                                 .addComponent(jLabel18)
                                                                                                                                                                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                                                                                                                                                                 .addComponent(globalVertexCount))
-                                                                                                                                                                 .addGroup(graphstatsPanelLayout.createSequentialGroup()
+                                                                                                                                                                 .addGroup(graphStatsPanelLayout.createSequentialGroup()
                                                                                                                                                                                                 .addComponent(jLabel20)
                                                                                                                                                                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                                                                                                                                                                 .addComponent(globalMinDegree)))
                                                                                                                                   .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                                                                                                  .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                                                                                                                                 .addGroup(graphstatsPanelLayout.createSequentialGroup()
-                                                                                                                                                                                                .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                                                  .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                                                                                                                 .addGroup(graphStatsPanelLayout.createSequentialGroup()
+                                                                                                                                                                                                .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                                                                                                                                                                                                .addComponent(jLabel16)
-                                                                                                                                                                                                                               .addGroup(graphstatsPanelLayout.createSequentialGroup()
+                                                                                                                                                                                                                               .addGroup(graphStatsPanelLayout.createSequentialGroup()
                                                                                                                                                                                                                                                               .addComponent(jLabel12)
                                                                                                                                                                                                                                                               .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                                                                                                                                                                                                                               .addComponent(globalAPL)))
                                                                                                                                                                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                                                                                                                                                                 .addComponent(globalDegreeCorrelation))
-                                                                                                                                                                 .addGroup(graphstatsPanelLayout.createSequentialGroup()
+                                                                                                                                                                 .addGroup(graphStatsPanelLayout.createSequentialGroup()
                                                                                                                                                                                                 .addComponent(jLabel19)
                                                                                                                                                                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                                                                                                                                                                 .addComponent(globalEdgeCount))
-                                                                                                                                                                 .addGroup(graphstatsPanelLayout.createSequentialGroup()
+                                                                                                                                                                 .addGroup(graphStatsPanelLayout.createSequentialGroup()
                                                                                                                                                                                                 .addComponent(jLabel21)
                                                                                                                                                                                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                                                                                                                                                                 .addComponent(globalMaxDegree)))
                                                                                                                                   .addGap(5, 5, 5))
-                                                                                                   .addGroup(graphstatsPanelLayout.createSequentialGroup()
+                                                                                                   .addGroup(graphStatsPanelLayout.createSequentialGroup()
                                                                                                                                   .addComponent(degDistLogScale)
                                                                                                                                   .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                                                                                                   .addComponent(degDistCumulative, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                                                                                   .addContainerGap())
-                                                                                                   .addGroup(graphstatsPanelLayout.createSequentialGroup()
+                                                                                                   .addGroup(graphStatsPanelLayout.createSequentialGroup()
                                                                                                                                   .addComponent(degreeDistPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                                                                                   .addGap(0, 0, Short.MAX_VALUE))))
                                                 );
-        graphstatsPanelLayout.setVerticalGroup(
-                graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                     .addGroup(graphstatsPanelLayout.createSequentialGroup()
+        graphStatsPanelLayout.setVerticalGroup(
+                graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                     .addGroup(graphStatsPanelLayout.createSequentialGroup()
                                                                     .addContainerGap()
-                                                                    .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                    .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                                                                                    .addComponent(jLabel17)
                                                                                                    .addComponent(jLabel12)
                                                                                                    .addComponent(globalCC)
                                                                                                    .addComponent(globalAPL))
                                                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                    .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                    .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                                                                                    .addComponent(jLabel10)
                                                                                                    .addComponent(jLabel16)
                                                                                                    .addComponent(globalDegreeCorrelation)
                                                                                                    .addComponent(globalAvgDegree))
                                                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                    .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                    .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                                                                                    .addComponent(jLabel18)
                                                                                                    .addComponent(globalVertexCount)
                                                                                                    .addComponent(jLabel19)
                                                                                                    .addComponent(globalEdgeCount))
                                                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                    .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                                                    .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                                                                                                    .addComponent(jLabel20)
                                                                                                    .addComponent(globalMinDegree)
                                                                                                    .addComponent(jLabel21)
@@ -775,7 +784,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                                     .addComponent(degreeDistPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                    .addGroup(graphstatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                                    .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                                                                    .addComponent(degDistCumulative)
                                                                                                    .addComponent(degDistLogScale))
                                                                     .addGap(5, 5, 5))
@@ -1230,7 +1239,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                                                       .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                       .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                       .addComponent(statsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                      .addComponent(graphstatsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                      .addComponent(graphStatsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                       .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                       .addGap(5, 5, 5))
                                  );
@@ -1249,7 +1258,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                                                       .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                                       .addComponent(statsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                       .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                                                      .addComponent(graphstatsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                                      .addComponent(graphStatsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                       .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                                       .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                       .addGroup(layout.createSequentialGroup()
@@ -1692,7 +1701,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         redisplayPartially();
         parseSimulationParameters(null);
         //initially display nothing
-        updateStatsDisplay(null);
+        updateStatsDisplay();
 
         mouseModeButtonGroup.clearSelection();
         select.doClick();
@@ -1856,117 +1865,117 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    static javax.swing.JToggleButton annotate;
-    private static javax.swing.JTextField breakingRate;
-    private javax.swing.JRadioButtonMenuItem circleL;
-    private static javax.swing.JCheckBox degDistCumulative;
-    private static javax.swing.JCheckBox degDistLogScale;
-    private static javax.swing.JPanel degreeDistPanel;
-    private static javax.swing.JTextField deltaT;
-    static javax.swing.JButton doStepToolbarButton;
-    private javax.swing.JMenuItem dumbToJpg;
-    private static javax.swing.JComboBox dynamics;
-    private javax.swing.JRadioButtonMenuItem eBC;
-    private javax.swing.JRadioButtonMenuItem eID;
-    private javax.swing.JRadioButtonMenuItem eNone;
-    private javax.swing.JRadioButtonMenuItem eWeight;
-    private javax.swing.JLabel edgeBreakingLabel;
-    private static javax.swing.ButtonGroup edgeLabel;
-    static javax.swing.JToggleButton edit;
-    private javax.swing.JMenuItem fileGenerate1;
-    private javax.swing.JMenuItem fileLoad;
-    private javax.swing.JMenuItem fileQuit1;
-    private javax.swing.JMenuItem fileSave;
-    private javax.swing.JRadioButtonMenuItem fr;
-    private static javax.swing.JTextField gama;
-    private javax.swing.JLabel gamaLabel;
-    static javax.swing.JLabel globalAPL;
-    static javax.swing.JLabel globalAvgDegree;
-    static javax.swing.JLabel globalCC;
-    static javax.swing.JLabel globalDegreeCorrelation;
-    static javax.swing.JLabel globalEdgeCount;
-    static javax.swing.JLabel globalMaxDegree;
-    static javax.swing.JLabel globalMinDegree;
-    static javax.swing.JLabel globalVertexCount;
-    private javax.swing.JPanel graphstatsPanel;
-    private javax.swing.JMenuItem healAllButton;
-    private javax.swing.JMenuItem helpAbout;
-    private javax.swing.JMenuItem helpHowTo;
-    private static javax.swing.JLabel in;
-    private javax.swing.JMenuItem infectButton;
-    private javax.swing.JRadioButtonMenuItem isom;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    static javax.swing.JLabel jLabel10;
-    private static javax.swing.JLabel jLabel11;
-    static javax.swing.JLabel jLabel12;
-    private static javax.swing.JLabel jLabel13;
-    private static javax.swing.JLabel jLabel14;
-    private static javax.swing.JLabel jLabel15;
-    static javax.swing.JLabel jLabel16;
-    static javax.swing.JLabel jLabel17;
-    static javax.swing.JLabel jLabel18;
-    static javax.swing.JLabel jLabel19;
-    private javax.swing.JLabel jLabel2;
-    static javax.swing.JLabel jLabel20;
-    static javax.swing.JLabel jLabel21;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel6;
-    private static javax.swing.JLabel jLabel9;
-    private static javax.swing.JMenu jMenu2;
-    private static javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
-    private javax.swing.JPanel jPanel3;
-    private javax.swing.JSeparator jSeparator13;
-    private javax.swing.JSeparator jSeparator20;
-    static javax.swing.JToolBar jToolBar4;
-    private javax.swing.JRadioButtonMenuItem kk;
-    private static javax.swing.JMenu label2;
-    private static javax.swing.JMenu label3;
-    private static javax.swing.JMenu layoutMenu;
-    private static javax.swing.ButtonGroup layouts;
-    private static javax.swing.JLabel localAPL;
-    private static javax.swing.JLabel localBC;
-    private static javax.swing.JLabel localCC;
-    private static javax.swing.JMenu menuFile;
-    private static javax.swing.JMenu menuHelp;
-    private static javax.swing.JMenu menuSimulation;
-    private static javax.swing.ButtonGroup mouseModeButtonGroup;
-    static javax.swing.JToolBar mouseModeToolbar;
-    private javax.swing.JMenuItem newDoc;
-    private static javax.swing.JLabel out;
-    private static javax.swing.JPanel pane;
-    static javax.swing.JButton pauseSimToolbarButton;
-    static javax.swing.JToggleButton select;
-    private javax.swing.JMenuItem showDD;
-    private javax.swing.JPanel simControlsPanel;
-    private javax.swing.JMenuItem simPauseMenuItem;
-    private static javax.swing.JSlider speedSlider;
-    private javax.swing.JRadioButtonMenuItem spring;
-    private static javax.swing.JPanel statsPanel;
-    private static javax.swing.JTextField tau;
-    static javax.swing.JToggleButton transform;
-    private javax.swing.JRadioButtonMenuItem vBC;
-    private javax.swing.JRadioButtonMenuItem vCC;
-    private javax.swing.JRadioButtonMenuItem vDEgree;
-    private javax.swing.JRadioButtonMenuItem vDist;
-    private javax.swing.JRadioButtonMenuItem vGeneration;
-    private javax.swing.JRadioButtonMenuItem vID;
-    private javax.swing.JRadioButtonMenuItem vNone;
-    private static javax.swing.ButtonGroup vertexLabel;
-    private javax.swing.JMenuItem zoomIn;
-    static javax.swing.JButton zoomInToolbar;
-    private javax.swing.JMenuItem zoomOut;
-    static javax.swing.JButton zoomOutToolbar;
+    static         javax.swing.JToggleButton        annotate;
+    private static javax.swing.JTextField           breakingRate;
+    private        javax.swing.JRadioButtonMenuItem circleL;
+    private static javax.swing.JCheckBox            degDistCumulative;
+    private static javax.swing.JCheckBox            degDistLogScale;
+    private static javax.swing.JPanel               degreeDistPanel;
+    private static javax.swing.JTextField           deltaT;
+    static         javax.swing.JButton              doStepToolbarButton;
+    private        javax.swing.JMenuItem            dumbToJpg;
+    private static javax.swing.JComboBox            dynamics;
+    private        javax.swing.JRadioButtonMenuItem eBC;
+    private        javax.swing.JRadioButtonMenuItem eID;
+    private        javax.swing.JRadioButtonMenuItem eNone;
+    private        javax.swing.JRadioButtonMenuItem eWeight;
+    private        javax.swing.JLabel               edgeBreakingLabel;
+    private static javax.swing.ButtonGroup          edgeLabel;
+    static         javax.swing.JToggleButton        edit;
+    private        javax.swing.JMenuItem            fileGenerate1;
+    private        javax.swing.JMenuItem            fileLoad;
+    private        javax.swing.JMenuItem            fileQuit1;
+    private        javax.swing.JMenuItem            fileSave;
+    private        javax.swing.JRadioButtonMenuItem fr;
+    private static javax.swing.JTextField           gama;
+    private        javax.swing.JLabel               gamaLabel;
+    static         javax.swing.JLabel               globalAPL;
+    static         javax.swing.JLabel               globalAvgDegree;
+    static         javax.swing.JLabel               globalCC;
+    static         javax.swing.JLabel               globalDegreeCorrelation;
+    static         javax.swing.JLabel               globalEdgeCount;
+    static         javax.swing.JLabel               globalMaxDegree;
+    static         javax.swing.JLabel               globalMinDegree;
+    static         javax.swing.JLabel               globalVertexCount;
+    private        javax.swing.JPanel               graphStatsPanel;
+    private        javax.swing.JMenuItem            healAllButton;
+    private        javax.swing.JMenuItem            helpAbout;
+    private        javax.swing.JMenuItem            helpHowTo;
+    private static javax.swing.JLabel               in;
+    private        javax.swing.JMenuItem            infectButton;
+    private        javax.swing.JRadioButtonMenuItem isom;
+    private        javax.swing.JButton              jButton1;
+    private        javax.swing.JButton              jButton2;
+    static         javax.swing.JLabel               jLabel10;
+    private static javax.swing.JLabel               jLabel11;
+    static         javax.swing.JLabel               jLabel12;
+    private static javax.swing.JLabel               jLabel13;
+    private static javax.swing.JLabel               jLabel14;
+    private static javax.swing.JLabel               jLabel15;
+    static         javax.swing.JLabel               jLabel16;
+    static         javax.swing.JLabel               jLabel17;
+    static         javax.swing.JLabel               jLabel18;
+    static         javax.swing.JLabel               jLabel19;
+    private        javax.swing.JLabel               jLabel2;
+    static         javax.swing.JLabel               jLabel20;
+    static         javax.swing.JLabel               jLabel21;
+    private        javax.swing.JLabel               jLabel4;
+    private        javax.swing.JLabel               jLabel6;
+    private static javax.swing.JLabel               jLabel9;
+    private static javax.swing.JMenu                jMenu2;
+    private static javax.swing.JMenuBar             jMenuBar1;
+    private        javax.swing.JMenuItem            jMenuItem1;
+    private        javax.swing.JPanel               jPanel1;
+    private        javax.swing.JPanel               jPanel2;
+    private        javax.swing.JPanel               jPanel3;
+    private        javax.swing.JSeparator           jSeparator13;
+    private        javax.swing.JSeparator           jSeparator20;
+    static         javax.swing.JToolBar             jToolBar4;
+    private        javax.swing.JRadioButtonMenuItem kk;
+    private static javax.swing.JMenu                label2;
+    private static javax.swing.JMenu                label3;
+    private static javax.swing.JMenu                layoutMenu;
+    private static javax.swing.ButtonGroup          layouts;
+    private static javax.swing.JLabel               localAPL;
+    private static javax.swing.JLabel               localBC;
+    private static javax.swing.JLabel               localCC;
+    private static javax.swing.JMenu                menuFile;
+    private static javax.swing.JMenu                menuHelp;
+    private static javax.swing.JMenu                menuSimulation;
+    private static javax.swing.ButtonGroup          mouseModeButtonGroup;
+    static         javax.swing.JToolBar             mouseModeToolbar;
+    private        javax.swing.JMenuItem            newDoc;
+    private static javax.swing.JLabel               out;
+    private static javax.swing.JPanel               pane;
+    static         javax.swing.JButton              pauseSimToolbarButton;
+    static         javax.swing.JToggleButton        select;
+    private        javax.swing.JMenuItem            showDD;
+    private        javax.swing.JPanel               simControlsPanel;
+    private        javax.swing.JMenuItem            simPauseMenuItem;
+    private static javax.swing.JSlider              speedSlider;
+    private        javax.swing.JRadioButtonMenuItem spring;
+    private static javax.swing.JPanel               statsPanel;
+    private static javax.swing.JTextField           tau;
+    static         javax.swing.JToggleButton        transform;
+    private        javax.swing.JRadioButtonMenuItem vBC;
+    private        javax.swing.JRadioButtonMenuItem vCC;
+    private        javax.swing.JRadioButtonMenuItem vDEgree;
+    private        javax.swing.JRadioButtonMenuItem vDist;
+    private        javax.swing.JRadioButtonMenuItem vGeneration;
+    private        javax.swing.JRadioButtonMenuItem vID;
+    private        javax.swing.JRadioButtonMenuItem vNone;
+    private static javax.swing.ButtonGroup          vertexLabel;
+    private        javax.swing.JMenuItem            zoomIn;
+    static         javax.swing.JButton              zoomInToolbar;
+    private        javax.swing.JMenuItem            zoomOut;
+    static         javax.swing.JButton              zoomOutToolbar;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public void handleGraphEvent(GraphEvent<MyVertex, MyEdge> evt) {
         if (this.handlingEvents) {
             //invoked when a vertex/edge is added/deleted
-            updateStatsDisplay(null);
+            updateStatsDisplay();
         }
     }
 
@@ -1977,7 +1986,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                 controller.getSimulator().updateInfectedCountGraph(this.getStatsPanel());
             }
             if (evt.type == ExtraGraphEvent.ExtraEventTypes.STATS_CHANGED) {
-                updateStatsDisplay(null);
+                updateStatsDisplay();
             }
         }
     }
