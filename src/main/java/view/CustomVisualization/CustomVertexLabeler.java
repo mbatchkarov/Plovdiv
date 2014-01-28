@@ -40,6 +40,8 @@ import model.MyVertex;
 import org.apache.commons.collections15.Transformer;
 import view.Display;
 
+import static view.Utils.round;
+
 /**
  *
  * @author mb724
@@ -63,10 +65,10 @@ public class CustomVertexLabeler implements Transformer<MyVertex, String> {
                 label += stats.getGraph().degree(v);
             }
             if (mode.startsWith("1")) {
-                label += stats.getCC(v);
+                label += round(stats.getCC(v));
             }
             if (mode.startsWith("2")) {
-                label += stats.getBetweennessCentrality(v);
+                label += round(stats.getBetweennessCentrality(v));
             }
             
             if (mode.startsWith("4")) {//distance from selected node

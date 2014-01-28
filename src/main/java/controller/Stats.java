@@ -63,6 +63,8 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
+import static view.Utils.round;
+
 /**
  * @author mb724
  */
@@ -422,7 +424,7 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
             DijkstraDistance d = new DijkstraDistance(g);
             Double dist = (Double) d.getDistance(getSelectedNode(), target);
             if (dist != null) {
-                return (dist).toString();
+                return (round(dist)).toString();
             } else {
                 return "unreachable";
             }
