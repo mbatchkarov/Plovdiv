@@ -55,7 +55,7 @@ public class SIRDynamics extends model.dynamics.Dynamics{
     }
  
     public EpiState getNextState(MyVertex v) {
-        if(v.getUserDatum("state").equals(EpiState.SUSCEPTIBLE)){
+        if(v.isSusceptible()){
             return EpiState.INFECTED;
         }
         else {

@@ -43,6 +43,7 @@ import model.EpiState;
 import model.MyEdge;
 import model.MyVertex;
 import model.Strings;
+import model.dynamics.Dynamics;
 import model.dynamics.SISDynamics;
 
 import java.io.Serializable;
@@ -52,12 +53,13 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
 
     List<ExtraGraphEventListener<V, E>> extraListenerList;
 
-
+    private Dynamics                dynamics;
     private HashMap<Object, Object> userData;
 
     public MyGraph(Graph<V, E> delegate) {
         super(delegate);
         userData = new HashMap<Object, Object>();
+        this.dynamics = null;
         extraListenerList = Collections.synchronizedList(
                 new LinkedList<ExtraGraphEventListener<V, E>>());
     }
@@ -73,6 +75,13 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         extraListenerList.add(l);
     }
 
+    public Dynamics getDynamics() {
+        return dynamics;
+    }
+
+    public void setDynamics(Dynamics dynamics) {
+        this.dynamics = dynamics;
+    }
 
     public void fireGraphEvent(GraphEvent evt) {
         for (GraphEventListener<V, E> listener : super.listenerList) {
@@ -141,9 +150,9 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         int ns = 0, ni = 0, nr = 0;
         for (Object xx : delegate.getVertices()) {//count how many nodes are in each state
             MyVertex yy = (MyVertex) xx;
-            if (yy.getUserDatum(Strings.state).equals(EpiState.INFECTED)) {
+            if (yy.isInfected()) {
                 ni++;
-            } else if (yy.getUserDatum(Strings.state).equals(EpiState.RESISTANT)) {
+            } else if (yy.isResistant()) {
                 nr++;
             } else {
                 ns++;
@@ -164,7 +173,7 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         MyVertex x;
         while (i.hasNext()) {
             x = (MyVertex) i.next();
-            x.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
+            x.setEpiState(EpiState.SUSCEPTIBLE);
 //            x.setUserDatum(Strings.generation, new Integer(0));
         }
         Iterator j = delegate.getEdges().iterator();

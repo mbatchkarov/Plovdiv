@@ -48,7 +48,6 @@ public class VertexFactory implements Factory<MyVertex> {
 
     public MyVertex create() {
         MyVertex x = new MyVertex(++i);
-        x.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
         return x;
     }
 

@@ -44,16 +44,10 @@ public abstract class Strings {
             "Brighton, UK \n mmb28 (at) sussex.ac.uk";
     public static final String numberFormatError = "Please make sure you have \n " +
             "entered the correct data type! ";
-    public static final String readWriteError = "Error while reading/writing file! ";
-    public static final String projectName = "Project Plovdiv v0.2 ";
-    //    public static final String generation = "generation";
-    public static final String state = "state";
-    //    public static final String steps = "steps";
     public static final String speed = "speed";
     public static final String simSleepTime = "time";
     public static final String dynamics = "dynamics";
     public static final String infected = "infected";
-    public static final String next = "next";
     public static final String noGraph = "No Graph Selected! ";
     public static final String numSus = "numSusceptible";
     public static final String numInfected = "numInfected";

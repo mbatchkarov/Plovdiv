@@ -1917,6 +1917,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         if (this.handlingEvents) {
             if (evt.type == ExtraGraphEvent.ExtraEventTypes.SIM_STEP_COMPLETE) {
                 controller.getSimulator().updateInfectedCountGraph(this.getStatsPanel());
+                redisplayPartially();
             }
             if (evt.type == ExtraGraphEvent.ExtraEventTypes.STATS_CHANGED) {
                 updateStatsDisplay();

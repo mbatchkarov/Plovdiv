@@ -131,19 +131,17 @@ public class Controller {
     }
 
     /**
-     * Sets all undefined nodes to susceptible Sets all resistant nodes in a
+     * Sets all undefined nodes to susceptible. Sets all resistant nodes in a
      * non-SIR epidemic to susceptible
      */
     public void validateNodeStates() {
         Iterator i = this.g.getVertices().iterator();
         while (i.hasNext()) {
             MyVertex current = ((MyVertex) i.next());
-            if (current.getUserDatum(Strings.state) == null) {
-                current.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
-            }
-            if (current.getUserDatum(Strings.state).equals(EpiState.RESISTANT) &&
-                (this.g.getUserDatum(Strings.dynamics) instanceof SIRDynamics)) {
-                current.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
+            if (current.isResistant() && (this.g.getDynamics() instanceof SIRDynamics)) {
+                //todo this needs to be NOT instanceof?
+                System.out.println("Setting to susceptible " + current);
+                current.setEpiState(EpiState.SUSCEPTIBLE);
             }
         }
 
@@ -232,9 +230,9 @@ public class Controller {
         int i = 0;
         while (i < number) {
             int next = rand.nextInt(v.length);
-            if (!v[next].getUserDatum(Strings.state).equals(EpiState.INFECTED)) {
-                v[next].setUserDatum(Strings.state, EpiState.INFECTED);
-                i++; //only increment if infection occured- number of infections guaranteed
+            if (!v[next].isInfected()) {
+                v[next].setEpiState(EpiState.INFECTED);
+                i++; //only increment if infection occurred- number of infections guaranteed
             }
         }
         updateCounts();
