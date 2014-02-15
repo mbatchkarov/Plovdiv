@@ -128,6 +128,7 @@ public class Controller {
 
     public void setAllSusceptible() {
         this.g.setAllSusceptible();
+        sim.resetSimulation();
     }
 
     /**

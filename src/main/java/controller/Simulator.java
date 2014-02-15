@@ -65,20 +65,20 @@ import java.util.Random;
  * @author reseter
  */
 public class Simulator {
-    private          Random                      rng;
-    private          SimModelThread              thread;
-    private          Double                      recoveryProb;
-    private          Double                      infectionProb;
-    private          int                         sleepTime;
-    private          Dynamics                    dynamics;
-    private volatile int                         stepNumber;
-    private          double                      beta;
-    private          CircularFifoBuffer<Integer> xValues;
-    private          CircularFifoBuffer<Integer> yValues;
-    private          boolean                     doOneStepOnly;
+    private Random rng;
+    private SimModelThread thread;
+    private Double recoveryProb;
+    private Double infectionProb;
+    private int sleepTime;
+    private Dynamics dynamics;
+    private volatile int stepNumber;
+    private double beta;
+    private CircularFifoBuffer<Integer> xValues;
+    private CircularFifoBuffer<Integer> yValues;
+    private boolean doOneStepOnly;
     private final int WINDOW_WIDTH = 50;
-    private MyGraph    g;
-    private Stats      stats;
+    private MyGraph g;
+    private Stats stats;
     private Controller controller;
 
     public Simulator(MyGraph g, Stats stats, Controller controller) {
@@ -94,8 +94,8 @@ public class Simulator {
 
         thread = new SimModelThread("sim-thread");
         //stuff below needed?
-        thread.start();
         thread.pause();
+        thread.start();
     }
 
     public void resetSimulation() {
@@ -182,10 +182,6 @@ public class Simulator {
                               true, true, false, false, false, false, true);
     }
 
-    public void stopSim() {
-        thread.die();
-    }
-
     public void pauseSim() {
         thread.pause();
     }
@@ -199,26 +195,6 @@ public class Simulator {
         thread.unpause();
     }
 
-    public void startSim() {
-        thread.start();
-    }
-
-    /**
-     * Given a vertex, finds the number of infected neighbours it has
-     *
-     * @param v
-     * @return
-     */
-    private int numInfectedNeighbours(MyVertex v) {
-        int ans = 0;
-        for (Object o : g.getNeighbors(v)) {
-            MyVertex current = (MyVertex) o;
-            if (current.isInfected()) {
-                ans++;
-            }
-        }
-        return ans;
-    }
 
     /**
      * Checks if the SUSCEPTIBLE node vertex second will get infected at this
@@ -347,13 +323,14 @@ public class Simulator {
         }
 
         /**
-         * Stops the thread. Invoked when the program exitst. This method cannot
+         * Stops the thread. Invoked when the program exits. This method cannot
          * be named stop().
          */
         public synchronized void die() {
             alive = false;
             interrupt();
         }
+
 
         /**
          * Returns true if the thread is not suspended and not dead

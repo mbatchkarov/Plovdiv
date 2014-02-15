@@ -168,13 +168,11 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
      * 0 (ie. not yet infected).
      */
     public void setAllSusceptible() {
-//        g.setUserDatum(Strings.steps, 0);
         Iterator i = delegate.getVertices().iterator();
         MyVertex x;
         while (i.hasNext()) {
             x = (MyVertex) i.next();
             x.setEpiState(EpiState.SUSCEPTIBLE);
-//            x.setUserDatum(Strings.generation, new Integer(0));
         }
         Iterator j = delegate.getEdges().iterator();
         MyEdge e;
