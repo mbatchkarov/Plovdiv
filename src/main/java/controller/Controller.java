@@ -38,6 +38,7 @@ import model.MyEdge;
 import model.MyVertex;
 import model.Strings;
 import model.dynamics.SIRDynamics;
+import model.dynamics.SISDynamics;
 import model.factories.EdgeFactory;
 import model.factories.GraphFactory;
 import model.factories.VertexFactory;
@@ -53,17 +54,17 @@ import java.util.Random;
  */
 public class Controller {
 
-    private EdgeFactory   ef;
+    private EdgeFactory ef;
     private VertexFactory vf;
-    private GraphFactory  gf;
-    private Display       gui;
-    private Simulator     sim;
+    private GraphFactory gf;
+    private Display gui;
+    private Simulator sim;
 
     private MyGraph g;
 
     private Controller(Stats stats, MyGraph g) {
         this.g = g;
-        g.setDefaultSimulationSettings();
+        g.setDynamics(new SISDynamics(0.1, 0.1, 0.1, 0.1));
         sim = new Simulator(g, stats, this);
         validateNodeStates();
     }
@@ -139,15 +140,12 @@ public class Controller {
         Iterator i = this.g.getVertices().iterator();
         while (i.hasNext()) {
             MyVertex current = ((MyVertex) i.next());
-            if (current.isResistant() && (this.g.getDynamics() instanceof SIRDynamics)) {
-                //todo this needs to be NOT instanceof?
-                System.out.println("Setting to susceptible " + current);
+            if (current.isResistant() && !(this.g.getDynamics() instanceof SIRDynamics)) {
                 current.setEpiState(EpiState.SUSCEPTIBLE);
             }
         }
 
     }
-
 
     //------------SAVE/ LOAD FUNCTIONALITY--------------
 

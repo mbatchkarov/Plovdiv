@@ -43,13 +43,11 @@ import java.util.HashMap;
  */
 public class MyEdge implements Serializable {
 
-    private HashMap userData;
     private int id;
     private double weigth;
 
     public MyEdge(int id) {
         this.id = id;
-        userData = new HashMap<Object, Object>();
     }
 
     public MyEdge(int id, double weigth) {
@@ -76,18 +74,6 @@ public class MyEdge implements Serializable {
      */
     public void setWeigth(double weigth) {
         this.weigth = weigth;
-    }
-
-
-
-    public void setUserDatum(Object key, Object value) {
-        if (key != null && value != null) {
-            userData.put(key, value);
-        }
-    }
-
-    public Object getUserDatum(Object key){
-        return userData.get(key);
     }
 
     public boolean equals(Object o){

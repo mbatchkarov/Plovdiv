@@ -37,10 +37,8 @@ package controller;
 import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.graph.ObservableGraph;
 import edu.uci.ics.jung.graph.util.Pair;
-import model.EpiState;
 import model.MyEdge;
 import model.MyVertex;
-import model.Strings;
 import model.dynamics.Dynamics;
 import model.dynamics.SISDynamics;
 import org.apache.commons.collections15.buffer.CircularFifoBuffer;
@@ -197,16 +195,12 @@ public class Simulator {
 
 
     /**
-     * Checks if the SUSCEPTIBLE node vertex second will get infected at this
-     * simSleepTime step and colour the edge from which the infection came The
-     * vertex is assumed vy this method to have been in contact with an infected
+     * Checks if a SUSCEPTIBLE node vertex second will get infected at this
+     * simSleepTime step. The vertex is assumed to have been in contact with an infected
      * node
-     *
-     * @param vertex the vertex
      */
     private void checkForInfection(MyVertex vertex, MyEdge currentEdge, double infProb, double beta,
                                    HashMap<MyEdge, Pair> edgesToAdd) {
-//        System.out.println("checking for infection in thread " + Thread.currentThread().getName());
         //compute a random probability
         Double randomProb = Math.abs((double) rng.nextInt() / new Double(Integer.MAX_VALUE));
         //if this chap is unlucky
@@ -219,7 +213,7 @@ public class Simulator {
                 vertex.setNextEpiState(dynamics.getNextState(vertex));
             } else {
                 //break current connection and try to reconnect to another susceptible node
-                int numSus = (Integer) g.getUserDatum(Strings.numSus);
+                int numSus = g.getNumSusceptible();
                 if (numSus > 0) {
                     ArrayList<MyVertex> sus = new ArrayList<MyVertex>(numSus);
                     for (Object x : g.getVertices()) {
@@ -237,7 +231,6 @@ public class Simulator {
                         if (first != second && !g.isNeighbor(v[first], v[second])) {
                             MyEdge e = controller.getEdgeFactory().create();
                             e.setWeigth(1.0);
-                            e.setUserDatum(Strings.infected, false);
                             edgesToAdd.put(currentEdge, new Pair(v[first], v[second]));
                             controller.updateDisplay();
                             controller.updateCounts();
@@ -257,8 +250,7 @@ public class Simulator {
      * @param recProb
      */
     private void checkForRecovery(MyVertex vertex, double recProb) {
-        double randomProb = Math.abs((double) rng.nextInt() / (double) Integer.MAX_VALUE);
-        if (randomProb < recProb) {
+        if (rng.nextFloat() < recProb) {
             //put this vertex on the "waiting list" for recovery
             vertex.setNextEpiState(dynamics.getNextState(vertex));
         }
@@ -266,7 +258,7 @@ public class Simulator {
 
     public void updateInfectedCountGraph(JPanel statsPanel) {
         xValues.add(stepNumber);
-        yValues.add((Integer) g.getUserDatum(Strings.numInfected, 0));
+        yValues.add(g.getNumInfected());
         Dimension maxChartSize = statsPanel.getSize();
         ChartPanel panel = getInfectedCountChart(xValues, yValues, maxChartSize);
         statsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -374,13 +366,13 @@ public class Simulator {
         }
 
         private void readSimSettingsFromGraph() {
-            dynamics = (Dynamics) g.getUserDatum(Strings.dynamics);
+            dynamics = g.getDynamics();
 
             beta = 0;
             if (dynamics instanceof SISDynamics) {
                 beta = ((SISDynamics) dynamics).getEdgeBreakingRate();
             }
-            sleepTime = (Integer) g.getUserDatum(Strings.simSleepTime);
+            sleepTime = g.getSleepTimeBetweenSteps();
 
             //probabilities based on per-link traversal of the graph
             //probability of recovery is constant, and in this case so is the infection probability
@@ -397,7 +389,7 @@ public class Simulator {
 
     private void updateStatisticsDisplay(JPanel statsPanel) {
         xValues.add(stepNumber);
-        yValues.add((Integer) g.getUserDatum(Strings.numInfected));
+        yValues.add(g.getNumInfected());
         ChartPanel panel = getInfectedCountChart(xValues, yValues, statsPanel.getSize());
         statsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
         statsPanel.removeAll();
