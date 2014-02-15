@@ -43,7 +43,6 @@ import view.Display;
 import static view.Utils.round;
 
 /**
- *
  * @author mb724
  */
 public class CustomVertexLabeler implements Transformer<MyVertex, String> {
@@ -57,40 +56,33 @@ public class CustomVertexLabeler implements Transformer<MyVertex, String> {
     public String transform(MyVertex v) {
         String label = "";
 
-        try {
-            //Degree, Clustering, Centrality, Label, Distance from selected vertex
-            String mode = "" + Display.getSelectedVertexLabelingOption();
+        //Degree, Clustering, Centrality, Label, Distance from selected vertex
+        int mode = Display.getSelectedVertexLabelingOption();
 
-            if (mode.startsWith("0")) {
-                label += stats.getGraph().degree(v);
-            }
-            if (mode.startsWith("1")) {
-                label += round(stats.getCC(v));
-            }
-            if (mode.startsWith("2")) {
-                label += round(stats.getBetweennessCentrality(v));
-            }
-            
-            if (mode.startsWith("4")) {//distance from selected node
-                String d = stats.getDistFromSelectedTo(v);
-                if (d == null) {
-                    label += "unreachable";
-                } else {
-                    label += d;
-                }
-            }
-            if (mode.startsWith("5")) {
-
-                label += v.getId();
-
-            }
-            if (mode.startsWith("6")) {
-                label = "";
-            }
-        } catch (IllegalArgumentException e) {
-            return label;
+        if (mode == 0) {
+            label += stats.getGraph().degree(v);
+        }
+        if (mode == 1) {
+            label += round(stats.getCC(v));
+        }
+        if (mode == 2) {
+            label += round(stats.getBetweennessCentrality(v));
         }
 
+        if (mode == 3) {//distance from selected node
+            String d = stats.getDistFromSelectedTo(v);
+            if (d == null) {
+                label += "unreachable";
+            } else {
+                label += d;
+            }
+        }
+        if (mode == 4) {
+            label += v.getId();
+        }
+        if (mode == 5) {
+            label = "";
+        }
         return label;
     }
 }
