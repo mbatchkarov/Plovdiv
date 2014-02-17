@@ -45,7 +45,6 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
-import org.jfree.chart.axis.NumberTickUnit;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
 import org.jfree.data.xy.XYSeries;
@@ -75,6 +74,7 @@ public class Simulator {
     private boolean doOneStepOnly;
     private final int WINDOW_WIDTH = 50;
     private XYSeries infectedXYSeries;
+    private XYPlot xyPlot;
     private MyGraph g;
     private Stats stats;
     private Controller controller;
@@ -100,6 +100,8 @@ public class Simulator {
         stepNumber = 0;
         xValues.clear();
         yValues.clear();
+        updateChartUnderlyingData();
+        updateChartAxisParameters();
     }
 
     private void doStep(double beta, MyGraph<MyVertex, MyEdge> g, Double recProb, Double infProb) {
@@ -144,11 +146,52 @@ public class Simulator {
     }
 
     /**
+     * Once a chart has been created from an up-to-date data set,
+     * set its range and ticks
+     */
+    public void updateChartAxisParameters() {
+        NumberAxis yAxis = (NumberAxis) xyPlot.getRangeAxis();
+        yAxis.setRange(0, g.getVertexCount());
+        yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+
+        final NumberAxis domainAxis = (NumberAxis) xyPlot.getDomainAxis();
+        domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+    }
+
+    public void createInfectedCountGraph(JPanel statsPanel) {
+        Dimension maxSize = statsPanel.getSize();
+        updateChartUnderlyingData();
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(infectedXYSeries);
+
+        // create the chart
+        JFreeChart jfreechart = ChartFactory.createXYLineChart("", "", "Infected",
+                                                               dataset, PlotOrientation.VERTICAL, false, false, false);
+        // save plot object so that we can update its axes if the graph changes
+        xyPlot = (XYPlot) jfreechart.getPlot();
+
+        updateChartAxisParameters();
+
+        int maxHeight = (int) (0.8 * maxSize.getHeight()); //save vertical space
+        int maxWidth = (int) maxSize.getWidth();
+
+        ChartPanel panel = new ChartPanel(jfreechart, maxWidth, maxHeight, maxWidth, maxHeight,
+                                          maxWidth, maxHeight,
+                                          true, true, false, false, false, false, true);
+
+        statsPanel.setLayout(new FlowLayout());
+        statsPanel.removeAll();
+        statsPanel.add(panel);
+        statsPanel.validate();
+        statsPanel.revalidate();
+        panel.repaint();
+    }
+
+    /**
      * Updates the data that underlies the chart. This should fire an
      * event and force the chart to update
      */
-    public void updateInfectedCountGraph() {
-        System.out.println("Updating graphs");
+    public void updateChartUnderlyingData() {
         Integer[] xarr = new Integer[xValues.size()];
         Integer[] yarr = new Integer[yValues.size()];
         xarr = xValues.toArray(xarr);
@@ -234,38 +277,6 @@ public class Simulator {
             //put this vertex on the "waiting list" for recovery
             vertex.setNextEpiState(dynamics.getNextState(vertex));
         }
-    }
-
-    public void createInfectedCountGraph(JPanel statsPanel) {
-        Dimension maxSize = statsPanel.getSize();
-        updateInfectedCountGraph();
-        XYSeriesCollection dataset = new XYSeriesCollection();
-        dataset.addSeries(infectedXYSeries);
-
-        // create the chart
-        JFreeChart jfreechart = ChartFactory.createXYLineChart("", "", "Infected",
-                                                               dataset, PlotOrientation.VERTICAL, false, false, false);
-        XYPlot xyPlot = (XYPlot) jfreechart.getPlot();
-        NumberAxis yAxis = (NumberAxis) xyPlot.getRangeAxis();
-        yAxis.setRange(0, g.getVertexCount());
-
-        int tick = g.getVertexCount() / 5; // have around 5 ticks, but no less
-        yAxis.setTickUnit(new NumberTickUnit(Math.min(5, tick)));
-
-        int maxHeight = (int) (0.8 * maxSize.getHeight()); //save vertical space
-        int maxWidth = (int) maxSize.getWidth();
-
-        ChartPanel panel = new ChartPanel(jfreechart, maxWidth, maxHeight, maxWidth, maxHeight,
-                                          maxWidth, maxHeight,
-                                          true, true, false, false, false, false, true);
-
-
-        statsPanel.setLayout(new FlowLayout());
-        statsPanel.removeAll();
-        statsPanel.add(panel);
-        statsPanel.validate();
-        statsPanel.revalidate();
-        panel.repaint();
     }
 
 

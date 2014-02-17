@@ -77,7 +77,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -1598,14 +1597,8 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         mouseModeButtonGroup.clearSelection();
         select.doClick();
 
-        /**
-         * Generates an artificial mouse event to make the VisualizationViewer
-         * repaint
-         */
-        Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
-                new MouseEvent(pane, MouseEvent.MOUSE_MOVED, 0, 0, -1, -1, 2, false));
-        controller.getSimulator().resetSimulation();
         controller.getSimulator().createInfectedCountGraph(this.getStatsPanel());
+        controller.getSimulator().resetSimulation();
     }
 
     public static void redisplayPartially() {
@@ -1814,7 +1807,8 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     public void handleExtraGraphEvent(ExtraGraphEvent<MyVertex, MyEdge> evt) {
         if (this.handlingEvents) {
             if (evt.type == ExtraGraphEvent.ExtraEventTypes.SIM_STEP_COMPLETE) {
-                controller.getSimulator().updateInfectedCountGraph();
+                controller.getSimulator().updateChartUnderlyingData();
+                controller.getSimulator().updateChartAxisParameters();
                 redisplayPartially();
             }
             if (evt.type == ExtraGraphEvent.ExtraEventTypes.STATS_CHANGED) {
@@ -1823,6 +1817,8 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
             if (evt.type == ExtraGraphEvent.ExtraEventTypes.GRAPH_REPLACED) {
                 vv.getGraphLayout().setGraph(this.g);
                 changeLayout();
+
+                controller.getSimulator().resetSimulation();
             }
         }
     }
