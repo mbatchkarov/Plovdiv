@@ -63,7 +63,7 @@ public class InfectDisp extends javax.swing.JFrame {
         this.g = g;
         this.controller = controller;
         initComponents();
-        int numInf = Integer.parseInt(g.getUserDatum(Strings.numInfected, 0).toString());
+        int numInf = g.getNumInfected();
         max.setText("Value should be between 0 and " + (g.getVertexCount() - numInf));
         setVisible(true);
     }
@@ -245,16 +245,14 @@ public class InfectDisp extends javax.swing.JFrame {
                     throw new NumberFormatException();
                 }
                 //infect the number the user specified or as many as possible
-                int x = (Integer.parseInt(g.getUserDatum(Strings.numSus).toString()));
-                controller.infectNodes(g, Math.min(n, Integer.parseInt(g.getUserDatum
-                        (Strings.numSus).toString())));
+                int x = g.getNumSusceptible();
+                controller.infectNodes(g, Math.min(n, g.getNumSusceptible()));
             } catch (NumberFormatException nfe) {
                 System.out.println("Negative number entered!");
             }
         } else {
             //infect the number the user specified or as many as possible
-            int n = Math.min(slider.getValue() * g.getVertexCount() / 100,
-                             Integer.parseInt(g.getUserDatum(Strings.numSus).toString()));
+            int n = Math.min(slider.getValue() * g.getVertexCount() / 100, g.getNumSusceptible());
             controller.infectNodes(g, n);
         }
 

@@ -161,7 +161,7 @@ MouseListener, MouseMotionListener {
 				} else { // make a new vertex
 
 					final MyVertex newVertex = vertexFactory.create();
-					newVertex.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
+					newVertex.setEpiState(EpiState.SUSCEPTIBLE);
 					Layout layout = vv.getModel().getGraphLayout();
 					graph.addVertex(newVertex);
 					layout.setLocation(newVertex, vv.getRenderContext().

@@ -184,24 +184,12 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="vDistActionPerformed"/>
               </Events>
             </MenuItem>
-            <MenuItem class="javax.swing.JRadioButtonMenuItem" name="vGeneration">
-              <Properties>
-                <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
-                  <ComponentRef name="vertexLabel"/>
-                </Property>
-                <Property name="mnemonic" type="int" value="69"/>
-                <Property name="text" type="java.lang.String" value="Disease generation"/>
-              </Properties>
-              <Events>
-                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="vGenerationActionPerformed"/>
-              </Events>
-            </MenuItem>
             <MenuItem class="javax.swing.JRadioButtonMenuItem" name="vID">
               <Properties>
                 <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                   <ComponentRef name="vertexLabel"/>
                 </Property>
-                <Property name="mnemonic" type="int" value="70"/>
+                <Property name="mnemonic" type="int" value="69"/>
                 <Property name="selected" type="boolean" value="true"/>
                 <Property name="text" type="java.lang.String" value="ID"/>
               </Properties>
@@ -214,7 +202,7 @@
                 <Property name="buttonGroup" type="javax.swing.ButtonGroup" editor="org.netbeans.modules.form.RADComponent$ButtonGroupPropertyEditor">
                   <ComponentRef name="vertexLabel"/>
                 </Property>
-                <Property name="mnemonic" type="int" value="71"/>
+                <Property name="mnemonic" type="int" value="70"/>
                 <Property name="text" type="java.lang.String" value="Nothing"/>
               </Properties>
               <Events>
@@ -447,9 +435,6 @@
   <Properties>
     <Property name="defaultCloseOperation" type="int" value="3"/>
     <Property name="title" type="java.lang.String" value="Free Roam Mode"/>
-    <Property name="maximumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-      <Dimension value="[2560, 1440]"/>
-    </Property>
     <Property name="minimumSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
       <Dimension value="[1024, 768]"/>
     </Property>
@@ -496,8 +481,8 @@
                   </Group>
                   <Component id="jPanel3" alignment="1" max="32767" attributes="0"/>
                   <Component id="statsPanel" alignment="1" max="32767" attributes="0"/>
-                  <Component id="graphStatsPanel" alignment="1" max="-2" attributes="0"/>
                   <Component id="jPanel2" alignment="1" max="32767" attributes="0"/>
+                  <Component id="graphStatsPanel" alignment="1" max="32767" attributes="0"/>
               </Group>
               <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
           </Group>

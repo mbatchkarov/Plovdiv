@@ -69,23 +69,23 @@ import java.util.Set;
  */
 public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements MouseListener, MouseMotionListener {
 
-    private Controller controller;
-    protected Display d; // to trigger GUI updates when needed
-    protected MyVertex startVertex;
+    private   Controller controller;
+    protected Display    d; // to trigger GUI updates when needed
+    protected MyVertex   startVertex;
     protected CubicCurve2D rawEdge = new CubicCurve2D.Float();
-    protected Shape edgeShape;
-    protected Shape rawArrowShape;
-    protected Shape arrowShape;
+    protected Shape                         edgeShape;
+    protected Shape                         rawArrowShape;
+    protected Shape                         arrowShape;
     protected VisualizationServer.Paintable edgePaintable;
     protected VisualizationServer.Paintable arrowPaintable;
-    protected EdgeType edgeIsDirected;
+    protected EdgeType                      edgeIsDirected;
 
     public CustomPopupPlugin(Controller controller, Display d) {
         super(controller.getVertexFactory(), controller.getEdgeFactory());
         this.controller = controller;
         this.d = d;
         rawEdge.setCurve(0.0f, 0.0f, 0.33f, 100, .66f, -50,
-                1.0f, 0.0f);
+                         1.0f, 0.0f);
         rawArrowShape = ArrowFactory.getNotchedArrow(20, 16, 8);
 //        edgePaintable = new EdgePaintable();
 //        arrowPaintable = new ArrowPaintable();
@@ -124,7 +124,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                                     public void actionPerformed(ActionEvent e) {
                                         graph.addEdge(controller.getEdgeFactory().create(),
-                                                other, vertex, EdgeType.DIRECTED);
+                                                      other, vertex, EdgeType.DIRECTED);
                                         vv.repaint();
                                         CustomPopupPlugin.this.d.updateStatsDisplay();
                                     }
@@ -139,7 +139,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                                     public void actionPerformed(ActionEvent e) {
                                         graph.addEdge(controller.getEdgeFactory().create(),
-                                                other, vertex);
+                                                      other, vertex);
                                         vv.repaint();
                                         CustomPopupPlugin.this.d.updateStatsDisplay();
                                     }
@@ -162,7 +162,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                     popup1.add(new AbstractAction("Set susceptible") {
 
                         public void actionPerformed(ActionEvent e) {
-                            vertex.setUserDatum("state", EpiState.SUSCEPTIBLE);
+                            vertex.setEpiState(EpiState.SUSCEPTIBLE);
                             vv.repaint();
                             controller.updateCounts();
                             CustomPopupPlugin.this.d.updateStatsDisplay();
@@ -172,7 +172,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                     popup1.add(new AbstractAction("Set infected") {
 
                         public void actionPerformed(ActionEvent e) {
-                            vertex.setUserDatum("state", EpiState.INFECTED);
+                            vertex.setEpiState(EpiState.INFECTED);
                             vv.repaint();
                             controller.updateCounts();
                             CustomPopupPlugin.this.d.updateStatsDisplay();
@@ -182,7 +182,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                     popup1.add(new AbstractAction("Set resistant") {
 
                         public void actionPerformed(ActionEvent e) {
-                            vertex.setUserDatum("state", EpiState.RESISTANT);
+                            vertex.setEpiState(EpiState.RESISTANT);
                             vv.repaint();
                             controller.updateCounts();
                             CustomPopupPlugin.this.d.updateStatsDisplay();
@@ -206,8 +206,8 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                         public void actionPerformed(ActionEvent e) {
                             String s = (String) JOptionPane.showInputDialog(null, "Enter new weight",
-                                    "Input", JOptionPane.PLAIN_MESSAGE, null, null,
-                                    "" + edge.getWeigth());
+                                                                            "Input", JOptionPane.PLAIN_MESSAGE, null, null,
+                                                                            "" + edge.getWeigth());
                             if ((s != null) && (s.length() > 0)) {
                                 try {
                                     edge.setWeigth(Double.parseDouble(s));
@@ -225,7 +225,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                         public void actionPerformed(ActionEvent e) {
                             final MyVertex newV = controller.getVertexFactory().create();
-                            newV.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
+                            newV.setEpiState(EpiState.SUSCEPTIBLE);
                             graph.addVertex(newV);
                             layout.setLocation(newV, vv.getRenderContext().getMultiLayerTransformer().inverseTransform(ivp));
                             vv.repaint();

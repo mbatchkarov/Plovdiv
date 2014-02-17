@@ -36,8 +36,8 @@ import edu.uci.ics.jung.visualization.layout.PersistentLayout;
 import model.EpiState;
 import model.MyEdge;
 import model.MyVertex;
-import model.Strings;
 import model.dynamics.SIRDynamics;
+import model.dynamics.SISDynamics;
 import model.factories.EdgeFactory;
 import model.factories.GraphFactory;
 import model.factories.VertexFactory;
@@ -53,21 +53,20 @@ import java.util.Random;
  */
 public class Controller {
 
-    private EdgeFactory   ef;
+    private EdgeFactory ef;
     private VertexFactory vf;
-    private GraphFactory  gf;
-    private Display       gui;
-    private Simulator     sim;
+    private GraphFactory gf;
+    private Display gui;
+    private Simulator sim;
 
     private MyGraph g;
 
     private Controller(Stats stats, MyGraph g) {
         this.g = g;
-        g.setDefaultSimulationSettings();
+        g.setDynamics(new SISDynamics(0.1, 0.1, 0.1, 0.1));
         sim = new Simulator(g, stats, this);
         validateNodeStates();
     }
-
 
     public void setGui(Display w) {
         gui = w;
@@ -120,38 +119,31 @@ public class Controller {
     }
 
     //----------SIMULATION CONTROLS
-
-
     public void updateCounts() {
         this.g.updateCounts();
     }
 
     public void setAllSusceptible() {
         this.g.setAllSusceptible();
+        sim.resetSimulation();
     }
 
     /**
-     * Sets all undefined nodes to susceptible Sets all resistant nodes in a
+     * Sets all undefined nodes to susceptible. Sets all resistant nodes in a
      * non-SIR epidemic to susceptible
      */
     public void validateNodeStates() {
         Iterator i = this.g.getVertices().iterator();
         while (i.hasNext()) {
             MyVertex current = ((MyVertex) i.next());
-            if (current.getUserDatum(Strings.state) == null) {
-                current.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
-            }
-            if (current.getUserDatum(Strings.state).equals(EpiState.RESISTANT) &&
-                (this.g.getUserDatum(Strings.dynamics) instanceof SIRDynamics)) {
-                current.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
+            if (current.isResistant() && !(this.g.getDynamics() instanceof SIRDynamics)) {
+                current.setEpiState(EpiState.SUSCEPTIBLE);
             }
         }
 
     }
 
-
     //------------SAVE/ LOAD FUNCTIONALITY--------------
-
     /**
      * Asks the parser to create a graph from file, makes a frame and displays
      * the graph in it
@@ -160,8 +152,8 @@ public class Controller {
      */
     public void load(String path) throws IOException {
         MyGraph g = PajekParser.load(path, getGraphFactory(),
-                                     getVertexFactory().reset(),
-                                     getEdgeFactory().reset());
+                getVertexFactory().reset(),
+                getEdgeFactory().reset());
         this.g.setInstance(g);
         IOClass.loadLayout(getGui(), path);
 
@@ -232,15 +224,14 @@ public class Controller {
         int i = 0;
         while (i < number) {
             int next = rand.nextInt(v.length);
-            if (!v[next].getUserDatum(Strings.state).equals(EpiState.INFECTED)) {
-                v[next].setUserDatum(Strings.state, EpiState.INFECTED);
-                i++; //only increment if infection occured- number of infections guaranteed
+            if (!v[next].isInfected()) {
+                v[next].setEpiState(EpiState.INFECTED);
+                i++; //only increment if infection occurred- number of infections guaranteed
             }
         }
         updateCounts();
         updateDisplay();
     }
-
 
     public Simulator getSimulator() {
         return sim;
@@ -252,7 +243,6 @@ public class Controller {
 
     public static void main(String[] args) {
         MyGraph g = new GraphFactory().create();
-
 
         Stats stats = new Stats(g);
         Controller cont = new Controller(stats, g);  //controller
@@ -267,8 +257,8 @@ public class Controller {
         g.addGraphEventListener(stats); // so that stats will update on graph events
 
         //display a graph
-        cont.generateScaleFree(20, 1, 1);
         d.handlingEvents = true;
+        cont.generateScaleFree(20, 1, 1);
     }
 
 }

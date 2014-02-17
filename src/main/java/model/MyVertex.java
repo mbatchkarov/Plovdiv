@@ -38,18 +38,44 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 /**
- *
  * @author reseter
  */
 public class MyVertex implements Serializable {
 
-    private int id;
-    private HashMap userData;
+    private int      id;
+    private EpiState epiState; //current state
+    private EpiState nextEpiState; // what will happen to this guy next
 
 
     public MyVertex(int id) {
         this.id = id;
-        userData = new HashMap<Object, Object>();
+        epiState = EpiState.SUSCEPTIBLE;
+        nextEpiState = epiState;
+    }
+
+    public void setEpiState(EpiState epiState) {
+        this.epiState = epiState;
+        nextEpiState = epiState;
+    }
+
+    public void setNextEpiState(EpiState nextEpiState) {
+        this.nextEpiState = nextEpiState;
+    }
+
+    public void advanceEpiState() {
+        this.epiState = nextEpiState;
+    }
+
+    public boolean isSusceptible() {
+        return this.epiState.equals(EpiState.SUSCEPTIBLE);
+    }
+
+    public boolean isInfected() {
+        return this.epiState.equals(EpiState.INFECTED);
+    }
+
+    public boolean isResistant() {
+        return this.epiState.equals(EpiState.RESISTANT);
     }
 
     /**
@@ -59,32 +85,21 @@ public class MyVertex implements Serializable {
         return id;
     }
 
-     public void setUserDatum(Object key, Object value) {
-        if (key != null && value != null) {
-            userData.put(key, value);
-        }
-    }
-
-    public Object getUserDatum(Object key){
-        return userData.get(key);
-    }
-
-
-    public boolean equals(Object o){
-        if(o instanceof MyVertex){
+    public boolean equals(Object o) {
+        if (o instanceof MyVertex) {
             MyVertex v = (MyVertex) o;
             return v.id == this.id;
         }
         return false;
     }
-    public int hashCode(){
-        return 7*id;
-    }
-    public String toString(){
-        return ("[" + id + "]");
+
+    public int hashCode() {
+        return 7 * id;
     }
 
-
+    public String toString() {
+        return ("[" + id + "]=" + this.epiState);
+    }
 
 
 }

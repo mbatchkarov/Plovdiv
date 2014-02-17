@@ -38,40 +38,38 @@ package model.dynamics;
 import model.*;
 
 /**
- *
  * @author reseter
  */
-public class SISDynamics extends model.dynamics.Dynamics{
+public class SISDynamics extends model.dynamics.Dynamics {
 
     private double gama; //recovery rate
     private double edgeBreakingRate; //rate at which S-I connections break
 
-    public SISDynamics(double transmissionRate, double deltaT, double gama, double edgeBreakingRate){
+    public SISDynamics(double transmissionRate, double deltaT, double gama, double edgeBreakingRate) {
         super(transmissionRate, deltaT);
-        this.gama= gama;
+        this.gama = gama;
         this.edgeBreakingRate = edgeBreakingRate;
     }
 
 
-   public EpiState getNextState(MyVertex v) {
-        if(v.getUserDatum(Strings.state).equals(EpiState.SUSCEPTIBLE)){
+    public EpiState getNextState(MyVertex v) {
+        if (v.isSusceptible()) {
             return EpiState.INFECTED;
-        }
-        else {
+        } else {
             return EpiState.SUSCEPTIBLE;
         }
     }
 
-   
+
     public double getGama() {
-       return gama;
+        return gama;
     }
 
     public double getEdgeBreakingRate() {
-       return edgeBreakingRate;
+        return edgeBreakingRate;
     }
 
-    public String toString(){
+    public String toString() {
         return "SIS";
     }
 

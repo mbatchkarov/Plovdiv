@@ -58,7 +58,7 @@ import java.awt.geom.Point2D;
 public class CustomVertexRenderer implements Renderer.Vertex<MyVertex, MyEdge> {
 
     PickedState pickedState;
-    boolean cyclic;
+    boolean     cyclic;
 
     public CustomVertexRenderer(boolean cyclic) {
         this.cyclic = cyclic;
@@ -122,23 +122,22 @@ public class CustomVertexRenderer implements Renderer.Vertex<MyVertex, MyEdge> {
         if (pickedState != null && pickedState.isPicked(v)) {
             //if the vertex is picked, paint with universal colour
             fillPaint = new GradientPaint((float) r.getMinX(), (float) r.getMinY(), Color.BLUE,
-                    (float) r.getMinX(), y2, Color.white, cyclic);
+                                          (float) r.getMinX(), y2, Color.white, cyclic);
 
         } else {
             //if not picked, paint based on the state
-            EpiState state = (EpiState) v.getUserDatum(Strings.state);
-            if (state != null && state.equals(EpiState.SUSCEPTIBLE)) {
+            if (v.isSusceptible()) {
                 fillPaint = new GradientPaint((float) r.getMinX(), (float) r.getMinY(), Color.white,
-                        (float) r.getMinX(), y2, Color.yellow, cyclic);
-            } else if (state != null && state.equals(EpiState.INFECTED)) {
+                                              (float) r.getMinX(), y2, Color.yellow, cyclic);
+            } else if (v.isInfected()) {
                 fillPaint = new GradientPaint((float) r.getMinX(), (float) r.getMinY(), Color.white,
-                        (float) r.getMinX(), y2, Color.red, cyclic);
-            } else if (state != null && state.equals(EpiState.RESISTANT)) {
+                                              (float) r.getMinX(), y2, Color.red, cyclic);
+            } else if (v.isResistant()) {
                 fillPaint = new GradientPaint((float) r.getMinX(), (float) r.getMinY(), Color.white,
-                        (float) r.getMinX(), y2, Color.green, cyclic);
+                                              (float) r.getMinX(), y2, Color.green, cyclic);
             } else {//go black to indicate something's wrong
                 fillPaint = new GradientPaint((float) r.getMinX(), (float) r.getMinY(), Color.white,
-                        (float) r.getMinX(), y2, Color.BLACK, cyclic);
+                                              (float) r.getMinX(), y2, Color.BLACK, cyclic);
             }
         }
         if (fillPaint != null) {

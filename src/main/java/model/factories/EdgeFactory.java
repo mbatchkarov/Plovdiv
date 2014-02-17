@@ -48,7 +48,6 @@ public class EdgeFactory implements Factory<MyEdge> {
     public MyEdge create() {
         MyEdge e = new MyEdge(++i);
         e.setWeigth(1.0);
-        e.setUserDatum(Strings.infected, false);
         return e;
     }
 

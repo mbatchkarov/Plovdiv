@@ -36,13 +36,13 @@ package edu.uci.ics.jung.graph;
 
 import controller.ExtraGraphEvent;
 import controller.ExtraGraphEventListener;
+import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
-import edu.uci.ics.jung.visualization.layout.PersistentLayout;
 import model.EpiState;
-import model.MyEdge;
 import model.MyVertex;
 import model.Strings;
+import model.dynamics.Dynamics;
 import model.dynamics.SISDynamics;
 
 import java.io.Serializable;
@@ -52,14 +52,19 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
 
     List<ExtraGraphEventListener<V, E>> extraListenerList;
 
-
-    private HashMap<Object, Object> userData;
+    private Dynamics dynamics;
+    private int numSusceptible, numInfected, numResistant;
+    int sleepTimeBetweenSteps; // how long to wait before another simulation step is made (ms)
 
     public MyGraph(Graph<V, E> delegate) {
         super(delegate);
-        userData = new HashMap<Object, Object>();
+        this.dynamics = null;
         extraListenerList = Collections.synchronizedList(
                 new LinkedList<ExtraGraphEventListener<V, E>>());
+        numInfected = 0;
+        numResistant = 0;
+        numSusceptible = 0;
+        sleepTimeBetweenSteps = 0;
     }
 
     public void setInstance(MyGraph newInstance) {
@@ -71,6 +76,34 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
 
     public void addExtraGraphEventListener(ExtraGraphEventListener<V, E> l) {
         extraListenerList.add(l);
+    }
+
+    public Dynamics getDynamics() {
+        return dynamics;
+    }
+
+    public void setDynamics(Dynamics dynamics) {
+        this.dynamics = dynamics;
+    }
+
+    public int getNumSusceptible() {
+        return numSusceptible;
+    }
+
+    public int getNumInfected() {
+        return numInfected;
+    }
+
+    public int getNumResistant() {
+        return numResistant;
+    }
+
+    public int getSleepTimeBetweenSteps() {
+        return sleepTimeBetweenSteps;
+    }
+
+    public void setSleepTimeBetweenSteps(int newValue) {
+        this.sleepTimeBetweenSteps = newValue;
     }
 
 
@@ -94,41 +127,11 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         return listenerList;
     }
 
-    public void setDefaultSimulationSettings() {
-        setUserDatum("dynamics", new SISDynamics(0.1, 0.1, 0.1, 0.1));
-
-        //attach the running time to the graph
-        setUserDatum("time", new Integer(100));
-
-        //attach the speed multiplier to the graph
-        setUserDatum("speed", 200);
-        //make sure the graphs is in a proper state
-    }
-
-    public void setUserDatum(Object key, Object value) {
-        if (key != null && value != null) {
-            userData.put(key, value);
-        }
-    }
-
-    public Object getUserDatum(Object key) {
-        return userData.get(key);
-    }
-
-    public Object getUserDatum(Object key, Object defaultValue) {
-        if (userData.containsKey(key)) {
-            return userData.get(key);
-        } else {
-            return defaultValue;
-        }
-    }
-
     @Override
     public String toString() {
         return "MyGraph{" +
                "delegate=" + this.delegate +
                ", extraListenerList=" + extraListenerList +
-               ", userData=" + userData +
                '}';
     }
 
@@ -141,17 +144,17 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         int ns = 0, ni = 0, nr = 0;
         for (Object xx : delegate.getVertices()) {//count how many nodes are in each state
             MyVertex yy = (MyVertex) xx;
-            if (yy.getUserDatum(Strings.state).equals(EpiState.INFECTED)) {
+            if (yy.isInfected()) {
                 ni++;
-            } else if (yy.getUserDatum(Strings.state).equals(EpiState.RESISTANT)) {
+            } else if (yy.isResistant()) {
                 nr++;
             } else {
                 ns++;
             }
         }
-        this.setUserDatum(Strings.numInfected, ni);
-        this.setUserDatum(Strings.numRes, nr);
-        this.setUserDatum(Strings.numSus, ns);
+        this.numResistant = nr;
+        this.numInfected = ni;
+        this.numSusceptible = ns;
     }
 
     /**
@@ -159,19 +162,11 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
      * 0 (ie. not yet infected).
      */
     public void setAllSusceptible() {
-//        g.setUserDatum(Strings.steps, 0);
         Iterator i = delegate.getVertices().iterator();
         MyVertex x;
         while (i.hasNext()) {
             x = (MyVertex) i.next();
-            x.setUserDatum(Strings.state, EpiState.SUSCEPTIBLE);
-//            x.setUserDatum(Strings.generation, new Integer(0));
-        }
-        Iterator j = delegate.getEdges().iterator();
-        MyEdge e;
-        while (j.hasNext()) {
-            e = (MyEdge) j.next();
-            e.setUserDatum(Strings.infected, false);
+            x.setEpiState(EpiState.SUSCEPTIBLE);
         }
         updateCounts();
     }
