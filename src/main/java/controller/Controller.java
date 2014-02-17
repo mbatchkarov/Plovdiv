@@ -68,7 +68,6 @@ public class Controller {
         validateNodeStates();
     }
 
-
     public void setGui(Display w) {
         gui = w;
         w.setVisible(true);
@@ -120,8 +119,6 @@ public class Controller {
     }
 
     //----------SIMULATION CONTROLS
-
-
     public void updateCounts() {
         this.g.updateCounts();
     }
@@ -147,7 +144,6 @@ public class Controller {
     }
 
     //------------SAVE/ LOAD FUNCTIONALITY--------------
-
     /**
      * Asks the parser to create a graph from file, makes a frame and displays
      * the graph in it
@@ -156,8 +152,8 @@ public class Controller {
      */
     public void load(String path) throws IOException {
         MyGraph g = PajekParser.load(path, getGraphFactory(),
-                                     getVertexFactory().reset(),
-                                     getEdgeFactory().reset());
+                getVertexFactory().reset(),
+                getEdgeFactory().reset());
         this.g.setInstance(g);
         IOClass.loadLayout(getGui(), path);
 
@@ -237,7 +233,6 @@ public class Controller {
         updateDisplay();
     }
 
-
     public Simulator getSimulator() {
         return sim;
     }
@@ -248,7 +243,6 @@ public class Controller {
 
     public static void main(String[] args) {
         MyGraph g = new GraphFactory().create();
-
 
         Stats stats = new Stats(g);
         Controller cont = new Controller(stats, g);  //controller
