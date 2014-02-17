@@ -80,7 +80,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 
 import static view.Utils.round;
@@ -146,7 +145,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         }
     };
 
-
     /**
      * Recalculates and display the stats of the graph and of the vertex passed
      * in. If it is null, sets all local statistics to "N/A"
@@ -193,23 +191,20 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         }
     }
 
-    private void updateDegreeDistributionChart() {
-//        System.out.println("-----------------");
-//        System.out.println("Before adding " + degreeDistPanel.getSize());
-        JPanel degreeChart = stats.getDegreeDistributionChart(
+    private void initDegreeDistributionChart() {
+        JPanel degreeChart = stats.buildDegreeDistributionChart(
                 degDistCumulative.isSelected(),
                 degDistLogScale.isSelected(),
                 degreeDistPanel.getSize());
 
-//        System.out.println("composnent size " + degreeChart.getSize());
-        degreeDistPanel.setLayout(new BorderLayout(0, 0));
+        degreeDistPanel.setLayout(new FlowLayout());
         degreeDistPanel.removeAll();
-        degreeDistPanel.add(degreeChart, BorderLayout.SOUTH);
-//        System.out.println("After adding " + degreeDistPanel.getSize());
-//        degreeDistPanel.setPreferredSize(statsPanel.getPreferredSize());
-        degreeDistPanel.validate();
-        degreeDistPanel.revalidate();
-//        System.out.println("After repaint" + degreeDistPanel.getSize());
+        degreeDistPanel.add(degreeChart);
+    }
+
+    private void updateDegreeDistributionChart() {
+        stats.updateDegreeDistributionChartData(degDistCumulative.isSelected(),
+                degDistLogScale.isSelected());
     }
 
     public VisualizationViewer getVV() {
@@ -1182,8 +1177,8 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                         .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(statsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(graphStatsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(graphStatsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addGap(5, 5, 5))
         );
         layout.setVerticalGroup(
@@ -1566,7 +1561,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 
         //#########  MOUSE  PLUGINS  ###############
         graphMouse = new CustomGraphMouse(this, this.controller, this.stats, vv.getRenderContext(),
-                                          controller.getVertexFactory(), controller.getEdgeFactory());
+                controller.getVertexFactory(), controller.getEdgeFactory());
         graphMouse.loadPlugins();
         vv.setGraphMouse(graphMouse);
 
@@ -1597,6 +1592,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         redisplayPartially();
         parseSimulationParameters(null);
         //initially display nothing
+        initDegreeDistributionChart();
         updateStatsDisplay();
 
         mouseModeButtonGroup.clearSelection();
@@ -1609,8 +1605,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         Toolkit.getDefaultToolkit().getSystemEventQueue().postEvent(
                 new MouseEvent(pane, MouseEvent.MOUSE_MOVED, 0, 0, -1, -1, 2, false));
         controller.getSimulator().resetSimulation();
-        System.out.println("Before Display.updateInfectedCountGraph" + this.getStatsPanel().size());
-        controller.getSimulator().updateInfectedCountGraph(this.getStatsPanel());
+        controller.getSimulator().createInfectedCountGraph(this.getStatsPanel());
     }
 
     public static void redisplayPartially() {
@@ -1691,7 +1686,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         }
 
     }
-
 
     /**
      * returns the index of the selectedvertex labeling option in the menu
@@ -1824,7 +1818,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     public void handleExtraGraphEvent(ExtraGraphEvent<MyVertex, MyEdge> evt) {
         if (this.handlingEvents) {
             if (evt.type == ExtraGraphEvent.ExtraEventTypes.SIM_STEP_COMPLETE) {
-                controller.getSimulator().updateInfectedCountGraph(this.getStatsPanel());
+                controller.getSimulator().updateInfectedCountGraph();
                 redisplayPartially();
             }
             if (evt.type == ExtraGraphEvent.ExtraEventTypes.STATS_CHANGED) {

@@ -35,7 +35,6 @@
 package controller;
 
 import edu.uci.ics.jung.graph.MyGraph;
-import edu.uci.ics.jung.graph.ObservableGraph;
 import edu.uci.ics.jung.graph.util.Pair;
 import model.MyEdge;
 import model.MyVertex;
@@ -75,6 +74,7 @@ public class Simulator {
     private CircularFifoBuffer<Integer> yValues;
     private boolean doOneStepOnly;
     private final int WINDOW_WIDTH = 50;
+    private XYSeries infectedXYSeries;
     private MyGraph g;
     private Stats stats;
     private Controller controller;
@@ -86,7 +86,7 @@ public class Simulator {
         rng = new Random();
         sleepTime = 200;
         doOneStepOnly = false;
-
+        infectedXYSeries = new XYSeries("Infected", false, false);
         xValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
         yValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
 
@@ -100,10 +100,9 @@ public class Simulator {
         stepNumber = 0;
         xValues.clear();
         yValues.clear();
-
     }
 
-    private void doStep(double beta, ObservableGraph<MyVertex, MyEdge> g, Double recProb, Double infProb) {
+    private void doStep(double beta, MyGraph<MyVertex, MyEdge> g, Double recProb, Double infProb) {
         Collection<MyEdge> edges = g.getEdges();
         Collection<MyVertex> vertices = g.getVertices();
         HashMap<MyEdge, Pair> edgesToAdd = new HashMap<MyEdge, Pair>();
@@ -139,45 +138,26 @@ public class Simulator {
         }
         //record changes in number of inf/sus/res nodes
         controller.updateCounts();
+        xValues.add(stepNumber);
+        yValues.add(g.getNumInfected());
         this.stats.recalculateAll();
     }
 
     /**
-     * prepares the data
-     *
-     * @param x
-     * @param y
-     * @return
+     * Updates the data that underlies the chart. This should fire an
+     * event and force the chart to update
      */
-    private ChartPanel getInfectedCountChart(CircularFifoBuffer<Integer> x,
-                                             CircularFifoBuffer<Integer> y,
-                                             Dimension maxSize) {
+    public void updateInfectedCountGraph() {
+        System.out.println("Updating graphs");
+        Integer[] xarr = new Integer[xValues.size()];
+        Integer[] yarr = new Integer[yValues.size()];
+        xarr = xValues.toArray(xarr);
+        yarr = yValues.toArray(yarr);
 
-        Integer[] xarr = new Integer[x.size()];
-        Integer[] yarr = new Integer[y.size()];
-        xarr = x.toArray(xarr);
-        yarr = y.toArray(yarr);
-
-        XYSeries series1 = new XYSeries("Infected vertices");
+        infectedXYSeries.clear();
         for (int i = 0; i < xarr.length; i++) {
-            series1.add(xarr[i], yarr[i]);
+            infectedXYSeries.add(xarr[i], yarr[i]);
         }
-        XYSeriesCollection dataset = new XYSeriesCollection();
-        dataset.addSeries(series1);
-
-        // create the chart
-        JFreeChart jfreechart = ChartFactory.createXYLineChart("", "", "Infected",
-                                                               dataset, PlotOrientation.VERTICAL, false, false, false);
-        XYPlot xyPlot = (XYPlot) jfreechart.getPlot();
-        NumberAxis yAxis = (NumberAxis) xyPlot.getRangeAxis();
-        yAxis.setRange(0, g.getVertexCount());
-        yAxis.setTickUnit(new NumberTickUnit(5));
-
-        int maxHeight = (int) maxSize.getHeight() - 34;
-        int maxWidth = (int) maxSize.getWidth() - 34;
-
-        return new ChartPanel(jfreechart, maxWidth, maxHeight, 50, 50, maxWidth, maxHeight,
-                              true, true, false, false, false, false, true);
     }
 
     public void pauseSim() {
@@ -256,18 +236,38 @@ public class Simulator {
         }
     }
 
-    public void updateInfectedCountGraph(JPanel statsPanel) {
-        xValues.add(stepNumber);
-        yValues.add(g.getNumInfected());
-        Dimension maxChartSize = statsPanel.getSize();
-        ChartPanel panel = getInfectedCountChart(xValues, yValues, maxChartSize);
-        statsPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+    public void createInfectedCountGraph(JPanel statsPanel) {
+        Dimension maxSize = statsPanel.getSize();
+        updateInfectedCountGraph();
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(infectedXYSeries);
+
+        // create the chart
+        JFreeChart jfreechart = ChartFactory.createXYLineChart("", "", "Infected",
+                                                               dataset, PlotOrientation.VERTICAL, false, false, false);
+        XYPlot xyPlot = (XYPlot) jfreechart.getPlot();
+        NumberAxis yAxis = (NumberAxis) xyPlot.getRangeAxis();
+        yAxis.setRange(0, g.getVertexCount());
+
+        int tick = g.getVertexCount() / 5; // have around 5 ticks, but no less
+        yAxis.setTickUnit(new NumberTickUnit(Math.min(5, tick)));
+
+        int maxHeight = (int) (0.8 * maxSize.getHeight()); //save vertical space
+        int maxWidth = (int) maxSize.getWidth();
+
+        ChartPanel panel = new ChartPanel(jfreechart, maxWidth, maxHeight, maxWidth, maxHeight,
+                                          maxWidth, maxHeight,
+                                          true, true, false, false, false, false, true);
+
+
+        statsPanel.setLayout(new FlowLayout());
         statsPanel.removeAll();
         statsPanel.add(panel);
         statsPanel.validate();
         statsPanel.revalidate();
         panel.repaint();
     }
+
 
     /**
      * A thread to run the simulation in. Based on code from Green Light
@@ -387,15 +387,4 @@ public class Simulator {
         stepNumber++;
     }
 
-    private void updateStatisticsDisplay(JPanel statsPanel) {
-        xValues.add(stepNumber);
-        yValues.add(g.getNumInfected());
-        ChartPanel panel = getInfectedCountChart(xValues, yValues, statsPanel.getSize());
-        statsPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
-        statsPanel.removeAll();
-        statsPanel.add(panel);
-        statsPanel.validate();
-        statsPanel.revalidate();
-        panel.repaint();
-    }
 }

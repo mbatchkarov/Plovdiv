@@ -36,7 +36,6 @@ import edu.uci.ics.jung.visualization.layout.PersistentLayout;
 import model.EpiState;
 import model.MyEdge;
 import model.MyVertex;
-import model.Strings;
 import model.dynamics.SIRDynamics;
 import model.dynamics.SISDynamics;
 import model.factories.EdgeFactory;
@@ -264,8 +263,8 @@ public class Controller {
         g.addGraphEventListener(stats); // so that stats will update on graph events
 
         //display a graph
-        cont.generateScaleFree(20, 1, 1);
         d.handlingEvents = true;
+        cont.generateScaleFree(20, 1, 1);
     }
 
 }

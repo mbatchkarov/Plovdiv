@@ -81,25 +81,22 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
     private int[] cumulativeDegreeDistribution;
     private double assortativity;
     private double degreeCorrelation;
-    private BetweennessCentrality edgeBetweenness;
-    private BetweennessCentrality vertexBetweenness;
     private MyGraph<MyVertex, MyEdge> g;
 
+    private XYSeries degreeDistXYSeries;
 
     public Stats(MyGraph<MyVertex, MyEdge> g) {
         this.g = g;
         this.selectedNode = null;
         this.ccMap = new HashMap<MyVertex, Double>();
         this.avgCC = -1d;
-//        this.aplMap = aplMap;
         this.apl = -1;
         this.avgDegree = -1;
         this.degreeDistribution = new int[1];
         this.cumulativeDegreeDistribution = new int[1];
+        this.degreeDistXYSeries = new XYSeries("Degree", false, false);
         this.assortativity = -1d;
         this.degreeCorrelation = -1d;
-        this.edgeBetweenness = null;
-        this.vertexBetweenness = null;
 
         this.recalculateAll();
     }
@@ -483,6 +480,7 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
         return res;
     }
 
+
     /**
      * Returns a plot of the degree distribution of the graph
      *
@@ -491,22 +489,25 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
      * @param maxSize
      * @return
      */
-    public ChartPanel getDegreeDistributionChart(boolean cumulative, boolean logy, Dimension maxSize) {
+    public ChartPanel buildDegreeDistributionChart(boolean cumulative, boolean logy, Dimension maxSize) {
+        updateDegreeDistributionChartData(cumulative, logy);
+        XYSeriesCollection dataset = new XYSeriesCollection();
+        dataset.addSeries(this.degreeDistXYSeries);
+
         final JFreeChart chart = ChartFactory.createXYLineChart(
                 "", // chart title
                 "", // domain axis label
                 "", // range axis label
-                prepareData(cumulative, logy), // data
+                dataset, // data
                 PlotOrientation.VERTICAL,
                 false, // include legend
                 true,
                 false);
 
         XYPlot plot = chart.getXYPlot();
-
         plot.setRenderer(0, new XYSplineRenderer(1));
 
-        ValueAxis rangeAxis = null;
+        ValueAxis rangeAxis;
         if (logy) {
             rangeAxis = new LogarithmicAxis("Log(Count)");
         } else {
@@ -514,15 +515,12 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
             // todo the labels of this axis are out of whack
         }
         plot.setRangeAxis(rangeAxis);
-
         final NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
-        domainAxis.setRange(getMinDegree(), getMaxDegree());
         domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
-        int maxHeight = (int) maxSize.getHeight() - 24;
-        int maxWidth = (int) maxSize.getWidth() - 12;
-
-        return new ChartPanel(chart, maxWidth, maxHeight, 50, 50, maxWidth, maxHeight,
+        int maxHeight = (int) (0.8 * maxSize.getHeight()); //save vertical space
+        int maxWidth = (int) maxSize.getWidth();
+        return new ChartPanel(chart, maxWidth, maxHeight, maxWidth, maxHeight, maxWidth, maxHeight,
                               true, true, false, false, false, false, true);
     }
 
@@ -534,25 +532,22 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
      * @param logy
      * @return
      */
-    private XYSeriesCollection prepareData(boolean cumulative, boolean logy) {
-        final XYSeries s1 = new XYSeries("Degree");
+    public void updateDegreeDistributionChartData(boolean cumulative, boolean logy) {
         int[] buckets;
         if (!cumulative) {
             buckets = getDegreeDistribution();
         } else {
             buckets = getCumulativeDegreeDistribution();
         }
+        this.degreeDistXYSeries.clear();
         for (int i = 0; i < buckets.length; i++) {
             if (buckets[i] > 0) {
                 final double yValue = logy ? Math.log(buckets[i]) : buckets[i];
-                if (yValue > 0)
-                    s1.add(i, yValue); //0s not ok for log plotting
+                if (yValue > 0) {
+                    this.degreeDistXYSeries.add(i, yValue); //0s not ok for log plotting
+                }
             }
         }
-
-        final XYSeriesCollection dataset = new XYSeriesCollection();
-        dataset.addSeries(s1);
-        return dataset;
     }
 
     public MyGraph<MyVertex, MyEdge> getGraph() {
