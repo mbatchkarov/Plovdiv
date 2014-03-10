@@ -36,7 +36,6 @@ package controller;
 import edu.uci.ics.jung.algorithms.generators.random.BarabasiAlbertGenerator;
 import edu.uci.ics.jung.algorithms.generators.random.EppsteinPowerLawGenerator;
 import edu.uci.ics.jung.graph.MyGraph;
-import edu.uci.ics.jung.graph.util.Pair;
 import model.MyEdge;
 import model.MyVertex;
 import model.factories.EdgeFactory;
@@ -65,7 +64,6 @@ public class Generator {
         RandomGenerator r = new RandomGenerator(controller.getGraphFactory(), vf, ef, v, e);
         MyGraph g = r.create();
         System.out.println("Generator has created: " + g);
-        determineInitialNodeTypes(g);
         return g;
     }
 
@@ -114,7 +112,6 @@ public class Generator {
                         n - 1; i++) {
             g.addEdge(ef.create(), allNodes[m - 1][i], allNodes[m - 1][i + 1]);//TODO modify to include last row and last column
         }
-        determineInitialNodeTypes(g);
         return g;
     }
 
@@ -180,7 +177,6 @@ public class Generator {
         }
 
 //        MyGraph.setInstance(g);
-        determineInitialNodeTypes(g);
         return g;
     }
 
@@ -194,9 +190,7 @@ public class Generator {
                                                           controller.getVertexFactory().reset(),
                                                           controller.getEdgeFactory().reset(),
                                                           m, n, clusteringExponent);
-        MyGraph myGraph = (MyGraph) gen.create();
-        determineInitialNodeTypes(myGraph);
-        return myGraph;
+        return (MyGraph) gen.create();
     }
 
     public static MyGraph generateEppsteinPowerLaw(int numVert, int numEdges,
@@ -205,9 +199,7 @@ public class Generator {
         EdgeFactory ef = controller.getEdgeFactory().reset();
         EppsteinPowerLawGenerator<MyVertex, MyEdge> gen = new EppsteinPowerLawGenerator(
                 controller.getGraphFactory(), vf, ef, numVert, numEdges, r);
-        MyGraph myGraph = (MyGraph) gen.create();
-        determineInitialNodeTypes(myGraph);
-        return myGraph;
+        return (MyGraph) gen.create();
     }
 
     /**
@@ -232,16 +224,6 @@ public class Generator {
                 controller.getGraphFactory(), vf, ef,
                 numVertices, numEdgesToAttach, seeds);
         gen.evolveGraph(evolveSteps);
-        MyGraph myGraph = (MyGraph) gen.create();
-        determineInitialNodeTypes(myGraph);
-        return myGraph;
-    }
-    
-    private static void determineInitialNodeTypes(MyGraph graph){
-        for (Object edge : graph.getEdges().toArray()) {
-            Pair endpoints = graph.getEndpoints(edge);
-           ((MyVertex) endpoints.getFirst()).increaseNumberOfConnections();
-           ((MyVertex) endpoints.getSecond()).increaseNumberOfConnections();
-        }
+        return (MyGraph) gen.create();
     }
 }
