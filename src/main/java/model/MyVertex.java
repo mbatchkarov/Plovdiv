@@ -112,22 +112,24 @@ public class MyVertex implements Serializable {
      * @return the node type.
      */
     public int getNodeType() {
+        if (this.isTypeAutodetermined()) {
+            int nodeType = MyVertex.NODE_TYPE_MOBILE;
+            if (numberOfConnections > 2 && numberOfConnections < 4) {
+                nodeType = MyVertex.NODE_TYPE_COMPUTER;
+            } else if (numberOfConnections > 4) {
+                nodeType = MyVertex.NODE_TYPE_ACCESS_POINT;
+            }
+            this.setNodeType(nodeType);
+        }
         return nodeType;
     }
 
     /**
      * @param nodeType the type of node to set. Should be one of the static
-     * values predefined in the MyVertex class.
+     *                 values predefined in the MyVertex class.
      */
     public void setNodeType(int nodeType) {
         this.nodeType = nodeType;
-    }
-
-    /**
-     * @return the number of edges connecting to this vertex.
-     */
-    public int getNumberOfConnections() {
-        return numberOfConnections;
     }
 
     public void increaseNumberOfConnections() {
