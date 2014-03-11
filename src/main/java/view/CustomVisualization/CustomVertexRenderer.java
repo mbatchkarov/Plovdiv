@@ -206,6 +206,6 @@ public class CustomVertexRenderer implements Renderer.Vertex<MyVertex, MyEdge> {
 
         g.setColor(Color.WHITE);
         g.fill(shape);
-        g.drawImage(icon, (int) r.getMaxX(), (int) r.getMaxY() - icon.getHeight(null), null);
+        g.drawImage(icon, (int) (r.getMinX() + (r.getMaxX() - r.getMinX()) / 2) - icon.getWidth(null) / 2, (int) r.getMinY() - icon.getHeight(null), null);
     }
 }
