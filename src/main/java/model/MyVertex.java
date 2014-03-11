@@ -35,17 +35,24 @@
 package model;
 
 import java.io.Serializable;
-import java.util.HashMap;
 
 /**
  * @author reseter
  */
 public class MyVertex implements Serializable {
 
-    private int      id;
+    public final static int NODE_TYPE_GENERIC = 0x0;
+    public final static int NODE_TYPE_USER = 0x1;
+    public final static int NODE_TYPE_MOBILE = 0x2;
+    public final static int NODE_TYPE_COMPUTER = 0x3;
+    public final static int NODE_TYPE_ACCESS_POINT = 0x4;
+
+    private int id;
     private EpiState epiState; //current state
     private EpiState nextEpiState; // what will happen to this guy next
-
+    private int nodeType = NODE_TYPE_USER; // An abstract type for the node, used for determining the icon for the vertex.
+    private int numberOfConnections = 0;
+    private boolean typeAutodetermined = true;
 
     public MyVertex(int id) {
         this.id = id;
@@ -101,5 +108,45 @@ public class MyVertex implements Serializable {
         return ("[" + id + "]=" + this.epiState);
     }
 
+    /**
+     * @return the node type.
+     */
+    public int getNodeType() {
+        if (this.isTypeAutodetermined()) {
+            int nodeType = MyVertex.NODE_TYPE_MOBILE;
+            if (numberOfConnections > 2 && numberOfConnections < 4) {
+                nodeType = MyVertex.NODE_TYPE_COMPUTER;
+            } else if (numberOfConnections > 4) {
+                nodeType = MyVertex.NODE_TYPE_ACCESS_POINT;
+            }
+            this.setNodeType(nodeType);
+        }
+        return nodeType;
+    }
 
+    /**
+     * @param nodeType the type of node to set. Should be one of the static
+     *                 values predefined in the MyVertex class.
+     */
+    public void setNodeType(int nodeType) {
+        this.nodeType = nodeType;
+    }
+
+    public void increaseNumberOfConnections() {
+        numberOfConnections++;
+    }
+
+    /**
+     * @return the typeAutodetermined
+     */
+    public boolean isTypeAutodetermined() {
+        return typeAutodetermined;
+    }
+
+    /**
+     * @param typeAutodetermined the typeAutodetermined to set
+     */
+    public void setTypeAutodetermined(boolean typeAutodetermined) {
+        this.typeAutodetermined = typeAutodetermined;
+    }
 }

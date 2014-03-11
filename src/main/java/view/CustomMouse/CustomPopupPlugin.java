@@ -69,23 +69,23 @@ import java.util.Set;
  */
 public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements MouseListener, MouseMotionListener {
 
-    private   Controller controller;
-    protected Display    d; // to trigger GUI updates when needed
-    protected MyVertex   startVertex;
+    private Controller controller;
+    protected Display d; // to trigger GUI updates when needed
+    protected MyVertex startVertex;
     protected CubicCurve2D rawEdge = new CubicCurve2D.Float();
-    protected Shape                         edgeShape;
-    protected Shape                         rawArrowShape;
-    protected Shape                         arrowShape;
+    protected Shape edgeShape;
+    protected Shape rawArrowShape;
+    protected Shape arrowShape;
     protected VisualizationServer.Paintable edgePaintable;
     protected VisualizationServer.Paintable arrowPaintable;
-    protected EdgeType                      edgeIsDirected;
+    protected EdgeType edgeIsDirected;
 
     public CustomPopupPlugin(Controller controller, Display d) {
         super(controller.getVertexFactory(), controller.getEdgeFactory());
         this.controller = controller;
         this.d = d;
         rawEdge.setCurve(0.0f, 0.0f, 0.33f, 100, .66f, -50,
-                         1.0f, 0.0f);
+                1.0f, 0.0f);
         rawArrowShape = ArrowFactory.getNotchedArrow(20, 16, 8);
 //        edgePaintable = new EdgePaintable();
 //        arrowPaintable = new ArrowPaintable();
@@ -99,8 +99,8 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
     protected void handlePopup(MouseEvent e) {
         if (e.isPopupTrigger()) {//only show popup on right-click
             JPopupMenu popup1 = new JPopupMenu();
-            final VisualizationViewer<MyVertex, MyEdge> vv =
-                    (VisualizationViewer<MyVertex, MyEdge>) e.getSource();
+            final VisualizationViewer<MyVertex, MyEdge> vv
+                    = (VisualizationViewer<MyVertex, MyEdge>) e.getSource();
             final Layout<MyVertex, MyEdge> layout = vv.getGraphLayout();
             final Graph<MyVertex, MyEdge> graph = layout.getGraph();
             final Point2D ivp = e.getPoint();
@@ -124,7 +124,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                                     public void actionPerformed(ActionEvent e) {
                                         graph.addEdge(controller.getEdgeFactory().create(),
-                                                      other, vertex, EdgeType.DIRECTED);
+                                                other, vertex, EdgeType.DIRECTED);
                                         vv.repaint();
                                         CustomPopupPlugin.this.d.updateStatsDisplay();
                                     }
@@ -139,7 +139,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                                     public void actionPerformed(ActionEvent e) {
                                         graph.addEdge(controller.getEdgeFactory().create(),
-                                                      other, vertex);
+                                                other, vertex);
                                         vv.repaint();
                                         CustomPopupPlugin.this.d.updateStatsDisplay();
                                     }
@@ -147,6 +147,29 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             }
                         }
                     }
+                    JMenu nodeTypeMenu = new JMenu("Change Type");
+                    popup1.add(nodeTypeMenu);
+                    nodeTypeMenu.add(new AbstractAction("User") {
+                        public void actionPerformed(ActionEvent e) {
+                            changeNodeType(vv, vertex, MyVertex.NODE_TYPE_USER);
+                        }
+                    });
+                    nodeTypeMenu.add(new AbstractAction("Mobile") {
+                        public void actionPerformed(ActionEvent e) {
+                            changeNodeType(vv, vertex, MyVertex.NODE_TYPE_MOBILE);
+                        }
+                    });
+                    nodeTypeMenu.add(new AbstractAction("Computer") {
+                        public void actionPerformed(ActionEvent e) {
+                            changeNodeType(vv, vertex, MyVertex.NODE_TYPE_COMPUTER);
+                        }
+                    });
+                    nodeTypeMenu.add(new AbstractAction("Access Point") {
+                        public void actionPerformed(ActionEvent e) {
+                            changeNodeType(vv, vertex, MyVertex.NODE_TYPE_ACCESS_POINT);
+                        }
+                    });
+
                     popup1.add(new AbstractAction("Delete Node") {
 
                         public void actionPerformed(ActionEvent e) {
@@ -206,8 +229,8 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                         public void actionPerformed(ActionEvent e) {
                             String s = (String) JOptionPane.showInputDialog(null, "Enter new weight",
-                                                                            "Input", JOptionPane.PLAIN_MESSAGE, null, null,
-                                                                            "" + edge.getWeigth());
+                                    "Input", JOptionPane.PLAIN_MESSAGE, null, null,
+                                    "" + edge.getWeigth());
                             if ((s != null) && (s.length() > 0)) {
                                 try {
                                     edge.setWeigth(Double.parseDouble(s));
@@ -239,6 +262,12 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
         }
     }
 
+    private void changeNodeType(VisualizationViewer vv, MyVertex v, int nodeType){
+        v.setNodeType(nodeType);
+        v.setTypeAutodetermined(false);
+        vv.repaint();
+    }
+    
     public void mouseDragged(MouseEvent e) {
     }
 
