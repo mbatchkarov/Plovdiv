@@ -1681,7 +1681,8 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     public void changeLayout() {
         try {
             Layout oldLayout = vv.getGraphLayout();
-            Layout newLayout = getSelectedGraphLayout(g);
+            PersistentLayoutImpl newLayout =  new PersistentLayoutImpl<MyVertex, MyEdge>(getSelectedGraphLayout(g));
+            this.persistentLayout = newLayout;
             newLayout.setSize(oldLayout.getSize());
             oldLayout.initialize();
             Relaxer relaxer = new VisRunner((IterativeContext) oldLayout);
@@ -1836,7 +1837,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
             if (evt.type == ExtraGraphEvent.ExtraEventTypes.GRAPH_REPLACED) {
                 vv.getGraphLayout().setGraph(this.g);
                 changeLayout();
-
                 controller.getSimulator().resetSimulation();
             }
         }

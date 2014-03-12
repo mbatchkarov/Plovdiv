@@ -156,7 +156,6 @@ public class Controller {
                 getEdgeFactory().reset());
         this.g.setInstance(g);
         IOClass.loadLayout(getGui(), path);
-
     }
 
     public void save(String path, ObservableGraph g, PersistentLayout layout) throws IOException {
