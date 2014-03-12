@@ -1626,7 +1626,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         Layout<MyVertex, MyEdge> l = null;
         switch (type) {
             case 0: {
-                l = new KKLayout<MyVertex, MyEdge>(g);
+                l = getControlledKKLayout(g);
                 break;
             }
             case 1: {
@@ -1652,11 +1652,27 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                 break;
             }
             default: {
-                l = new KKLayout<MyVertex, MyEdge>(g);
-                break;
+                l = getControlledKKLayout(g);
             }
         }
         return l;
+    }
+    
+    // This method exists as a workaround for the 'unsettling graph' issue. It does two things:
+    // 1. Limits the maximum number of iterations the Kamada-Kawai vertex positioning algorithm will make
+    // before it settles down, based on the number of vertices in our generated graph.
+    // By default, the maximum number of iterations done in the step() method is 2000. Even with smaller graphs,
+    // sometimes the resulting distance between vertices does not satisfy the algorithm and it continues to displace 
+    // them until the iteration limit is reached.
+    // 2. Disables the local minimum escape technique used by the positioning algorhithm.
+    // This technique promotes a more aggresive approach to the vertex displacement, which in larger graphs
+    // could actually result in longer layout adjustment times.
+    // 
+    private Layout getControlledKKLayout(Graph g){
+        KKLayout kkLayout = new KKLayout<MyVertex, MyEdge>(g);
+        kkLayout.setMaxIterations(g.getVertexCount());
+        kkLayout.setExchangeVertices(false);
+        return kkLayout;
     }
 
     /**
