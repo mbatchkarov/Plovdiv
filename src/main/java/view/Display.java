@@ -132,6 +132,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 
         redisplayCompletely();
 
+        vNone.setSelected(true);
         parseSimulationParameters(null);//trigger parsing of default values for transmission params
     }
 

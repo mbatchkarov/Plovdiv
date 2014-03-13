@@ -43,37 +43,37 @@ public class IconsStore implements Transformer<MyVertex, Icon> {
 
     private void loadUserIcons() {
         Image[] userIcons = new Image[4];
-        userIcons[VERTEX_ICON_SELECTED] = loadImageFromResources("icons/ic_user.png");
-        userIcons[VERTEX_ICON_INFECTED] = loadImageFromResources("icons/ic_user_infected.png");
-        userIcons[VERTEX_ICON_SUSCEPTIBLE] = loadImageFromResources("icons/ic_user_susceptible.png");
-        userIcons[VERTEX_ICON_IMMUNE] = loadImageFromResources("icons/ic_user_immune.png");
+        userIcons[VERTEX_ICON_SELECTED] = loadImageFromResources("icons/ic_person_default.png");
+        userIcons[VERTEX_ICON_INFECTED] = loadImageFromResources("icons/ic_person_infected.png");
+        userIcons[VERTEX_ICON_SUSCEPTIBLE] = loadImageFromResources("icons/ic_person_susceptible.png");
+        userIcons[VERTEX_ICON_IMMUNE] = loadImageFromResources("icons/ic_person_immune.png");
         iconsMap.put(MyVertex.NODE_TYPE_USER, userIcons);
     }
 
     private void loadMobileIcons() {
         Image[] mobileIcons = new Image[4];
-        mobileIcons[VERTEX_ICON_SELECTED] = loadImageFromResources("icons/ic_mobile.png");
-        mobileIcons[VERTEX_ICON_INFECTED] = loadImageFromResources("icons/ic_mobile_infected.png");
-        mobileIcons[VERTEX_ICON_SUSCEPTIBLE] = loadImageFromResources("icons/ic_mobile_susceptible.png");
-        mobileIcons[VERTEX_ICON_IMMUNE] = loadImageFromResources("icons/ic_mobile_immune.png");
+        mobileIcons[VERTEX_ICON_SELECTED] = loadImageFromResources("icons/ic_iphone_default.png");
+        mobileIcons[VERTEX_ICON_INFECTED] = loadImageFromResources("icons/ic_iphone_infected.png");
+        mobileIcons[VERTEX_ICON_SUSCEPTIBLE] = loadImageFromResources("icons/ic_iphone_susceptible.png");
+        mobileIcons[VERTEX_ICON_IMMUNE] = loadImageFromResources("icons/ic_iphone_immune.png");
         iconsMap.put(MyVertex.NODE_TYPE_MOBILE, mobileIcons);
     }
 
     private void loadComputerIcons() {
         Image[] computerIcons = new Image[4];
-        computerIcons[VERTEX_ICON_SELECTED] = loadImageFromResources("icons/ic_computer.png");
-        computerIcons[VERTEX_ICON_INFECTED] = loadImageFromResources("icons/ic_computer_infected.png");
-        computerIcons[VERTEX_ICON_SUSCEPTIBLE] = loadImageFromResources("icons/ic_computer_susceptible.png");
-        computerIcons[VERTEX_ICON_IMMUNE] = loadImageFromResources("icons/ic_computer_immune.png");
+        computerIcons[VERTEX_ICON_SELECTED] = loadImageFromResources("icons/ic_notebook_default.png");
+        computerIcons[VERTEX_ICON_INFECTED] = loadImageFromResources("icons/ic_notebook_infected.png");
+        computerIcons[VERTEX_ICON_SUSCEPTIBLE] = loadImageFromResources("icons/ic_notebook_susceptible.png");
+        computerIcons[VERTEX_ICON_IMMUNE] = loadImageFromResources("icons/ic_notebook_immune.png");
         iconsMap.put(MyVertex.NODE_TYPE_COMPUTER, computerIcons);
     }
 
     private void loadAccessPointIcons() {
         Image[] accessPointIcons = new Image[4];
-        accessPointIcons[VERTEX_ICON_SELECTED] = loadImageFromResources("icons/ic_access_point.png");
-        accessPointIcons[VERTEX_ICON_INFECTED] = loadImageFromResources("icons/ic_access_point_infected.png");
-        accessPointIcons[VERTEX_ICON_SUSCEPTIBLE] = loadImageFromResources("icons/ic_access_point_susceptible.png");
-        accessPointIcons[VERTEX_ICON_IMMUNE] = loadImageFromResources("icons/ic_access_point_immune.png");
+        accessPointIcons[VERTEX_ICON_SELECTED] = loadImageFromResources("icons/ic_router_default.png");
+        accessPointIcons[VERTEX_ICON_INFECTED] = loadImageFromResources("icons/ic_router_infected.png");
+        accessPointIcons[VERTEX_ICON_SUSCEPTIBLE] = loadImageFromResources("icons/ic_router_susceptible.png");
+        accessPointIcons[VERTEX_ICON_IMMUNE] = loadImageFromResources("icons/ic_router_immune.png");
         iconsMap.put(MyVertex.NODE_TYPE_ACCESS_POINT, accessPointIcons);
     }
 
