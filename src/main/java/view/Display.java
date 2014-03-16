@@ -53,6 +53,7 @@ import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.annotations.AnnotationControls;
+import edu.uci.ics.jung.visualization.control.CrossoverScalingControl;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ScalingControl;
 import edu.uci.ics.jung.visualization.decorators.EllipseVertexShapeTransformer;
@@ -129,9 +130,10 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         actionMap.put("+Action", incrementWaitTime);
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "-Action");
         actionMap.put("-Action", decrementWaitTime);
-
+        scaler = new CrossoverScalingControl();
         redisplayCompletely();
 
+        vNone.setSelected(true);
         parseSimulationParameters(null);//trigger parsing of default values for transmission params
     }
 
@@ -1546,9 +1548,10 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         persistentLayout = new PersistentLayoutImpl<MyVertex, MyEdge>(getSelectedGraphLayout(g));
 
         vv = new VisualizationViewer<MyVertex, MyEdge>(persistentLayout, pane.getSize());
+        initDemoMap();
+
         this.icons = new IconsStore(vv.getPickedVertexState());
 //        vv.getRenderer().setVertexRenderer(new CustomVertexRenderer(vv.getPickedVertexState(), false));
-        vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(Color.black));
         vv.getRenderContext().setArrowFillPaintTransformer(new ConstantTransformer(Color.black));
         vv.getRenderContext().setArrowDrawPaintTransformer(new ConstantTransformer(Color.black));
         vv.getRenderContext().setVertexLabelTransformer(new CustomVertexLabeler(this.stats));
@@ -1582,9 +1585,9 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 
         }
 
-        final VertexIconShapeTransformer<Number> vertexIconShapeTransformer =
-                new CustomVertexIconShapeTransformer(new EllipseVertexShapeTransformer(),
-                                                     this.icons);
+        final VertexIconShapeTransformer<Number> vertexIconShapeTransformer
+                = new CustomVertexIconShapeTransformer(new EllipseVertexShapeTransformer(),
+                        this.icons);
 
         vv.getRenderContext().setVertexShapeTransformer(vertexIconShapeTransformer);
         vv.getRenderContext().setVertexIconTransformer(this.icons);
@@ -1605,6 +1608,13 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 
         controller.getSimulator().createInfectedCountGraph(this.getStatsPanel());
         controller.getSimulator().resetSimulation();
+    }
+
+    private void initDemoMap() {
+        BackgroundImageController.getInstance().setGraphBackgroundImage(vv, "maps/UK_Map.png",
+                1.45, 1.4, new Color(10, 20, 20));
+        scaler.scale(vv, .5f, vv.getCenter());
+        vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(Color.white));
     }
 
     public static void redisplayPartially() {
@@ -1657,7 +1667,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         }
         return l;
     }
-    
+
     // This method exists as a workaround for the 'unsettling graph' issue. It does two things:
     // 1. Limits the maximum number of iterations the Kamada-Kawai vertex positioning algorithm will make
     // before it settles down, based on the number of vertices in our generated graph.
@@ -1668,7 +1678,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     // This technique promotes a more aggresive approach to the vertex displacement, which in larger graphs
     // could actually result in longer layout adjustment times.
     // 
-    private Layout getControlledKKLayout(Graph g){
+    private Layout getControlledKKLayout(Graph g) {
         KKLayout kkLayout = new KKLayout<MyVertex, MyEdge>(g);
         kkLayout.setMaxIterations(g.getVertexCount());
         kkLayout.setExchangeVertices(false);

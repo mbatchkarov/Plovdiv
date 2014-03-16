@@ -11,9 +11,9 @@ import java.awt.*;
 import java.awt.geom.AffineTransform;
 
 /**
- * A vertex icon shape transformer that does not hold a map of vertex-> icon but instead
- * delegates this task to an IconsStore
- * Created by miroslavbatchkarov on 11/03/2014.
+ * A vertex icon shape transformer that does not hold a map of vertex-> icon but
+ * instead delegates this task to an IconsStore Created by miroslavbatchkarov on
+ * 11/03/2014.
  */
 public class CustomVertexIconShapeTransformer extends VertexIconShapeTransformer {
 
@@ -23,14 +23,14 @@ public class CustomVertexIconShapeTransformer extends VertexIconShapeTransformer
      * @param delegate
      */
     public CustomVertexIconShapeTransformer(Transformer delegate,
-                                            IconsStore icons) {
+            IconsStore icons) {
         super(delegate);
         this.icons = icons;
     }
 
     /**
-     * get the shape from the image. If not available, get
-     * the shape from the delegate VertexShapeFunction
+     * get the shape from the image. If not available, get the shape from the
+     * delegate VertexShapeFunction
      */
     @Override
     public Shape transform(Object v) {
@@ -42,8 +42,8 @@ public class CustomVertexIconShapeTransformer extends VertexIconShapeTransformer
             Shape shape = (Shape) shapeMap.get(image);
             if (shape == null) {
                 shape = FourPassImageShaper.getShape(image, 30);
-                if (shape.getBounds().getWidth() > 0 &&
-                    shape.getBounds().getHeight() > 0) {
+                if (shape.getBounds().getWidth() > 0
+                        && shape.getBounds().getHeight() > 0) {
                     // don't cache a zero-sized shape, wait for the image
                     // to be ready
                     int width = image.getWidth(null);

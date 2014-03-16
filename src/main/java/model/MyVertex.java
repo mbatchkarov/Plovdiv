@@ -46,11 +46,15 @@ public class MyVertex implements Serializable {
     public final static int NODE_TYPE_MOBILE = 0x2;
     public final static int NODE_TYPE_COMPUTER = 0x3;
     public final static int NODE_TYPE_ACCESS_POINT = 0x4;
+    
+    public final static int VERTEX_ICON_STYLE_SIMPLE = 0x1;
+    public final static int VERTEX_ICON_STYLE_PHOTOREALISTIC = 0x2;
 
     private int id;
     private EpiState epiState; //current state
     private EpiState nextEpiState; // what will happen to this guy next
     private int nodeType = NODE_TYPE_USER; // An abstract type for the node, used for determining the icon for the vertex.
+    private int vertexIconStyle = VERTEX_ICON_STYLE_PHOTOREALISTIC; // An abstract type for the vertex icon, used to select between the simple and photorealistic icon packs.
     private int numberOfConnections = 0;
     private boolean typeAutodetermined = true;
 
@@ -148,5 +152,19 @@ public class MyVertex implements Serializable {
      */
     public void setTypeAutodetermined(boolean typeAutodetermined) {
         this.typeAutodetermined = typeAutodetermined;
+    }
+
+    /**
+     * @return the vertexIconStyle
+     */
+    public int getVertexIconStyle() {
+        return vertexIconStyle;
+    }
+
+    /**
+     * @param vertexIconStyle the vertexIconStyle to set
+     */
+    public void setVertexIconStyle(int vertexIconStyle) {
+        this.vertexIconStyle = vertexIconStyle;
     }
 }
