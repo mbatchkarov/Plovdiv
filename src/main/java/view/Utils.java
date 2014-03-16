@@ -1,6 +1,11 @@
 package view;
 
+import java.awt.Image;
+import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.imageio.ImageIO;
 
 /**
  * Copyright
@@ -19,4 +24,16 @@ public class Utils {
             return "N/A";
         }
     }
+    
+    
+    public static Image loadImageFromResources(Logger logger, String imagePath){
+        Image image = null;
+        try {
+            image = ImageIO.read(ClassLoader.getSystemResource(imagePath));
+        } catch (IOException ex) {
+           logger.log(Level.SEVERE, ex.toString(), ex);
+        }
+        return image;
+    }
+
 }
