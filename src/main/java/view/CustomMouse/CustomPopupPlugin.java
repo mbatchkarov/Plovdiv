@@ -158,7 +158,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                     popup1.add(vertexIconMenu);
 
                     JMenu nodeTypeMenuSimple = new JMenu("Simple");
-                    JMenu nodeTypeMenuRealistic = new JMenu("Realistic");
+                    JMenu nodeTypeMenuRealistic = new JMenu("3D");
                     vertexIconMenu.add(nodeTypeMenuSimple);
                     vertexIconMenu.add(nodeTypeMenuRealistic);
 
@@ -299,7 +299,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                         public void actionPerformed(ActionEvent e) {
                             BackgroundImageController.getInstance().setGraphBackgroundImage(vv, "maps/UK_Map.png",
-                                    1.45, 1.4, new Color(10, 20, 20));
+                                    1.75, 1.7, new Color(10, 20, 20));
                             vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(Color.white));
                         }
                     });
@@ -307,7 +307,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                         public void actionPerformed(ActionEvent e) {
                             BackgroundImageController.getInstance().setGraphBackgroundImage(vv, "maps/World_Map.jpg",
-                                    1.95, 5.5, new Color(10, 10, 50));
+                                    2.05, 6.5, new Color(10, 10, 50));
                             vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(Color.white));
                         }
                     });

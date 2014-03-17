@@ -54,7 +54,7 @@ public class MyVertex implements Serializable {
     private EpiState epiState; //current state
     private EpiState nextEpiState; // what will happen to this guy next
     private int nodeType = NODE_TYPE_USER; // An abstract type for the node, used for determining the icon for the vertex.
-    private int vertexIconStyle = VERTEX_ICON_STYLE_PHOTOREALISTIC; // An abstract type for the vertex icon, used to select between the simple and photorealistic icon packs.
+    private int vertexIconStyle = VERTEX_ICON_STYLE_SIMPLE; // An abstract type for the vertex icon, used to select between the simple and photorealistic icon packs.
     private int numberOfConnections = 0;
     private boolean typeAutodetermined = true;
 

@@ -1612,7 +1612,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 
     private void initDemoMap() {
         BackgroundImageController.getInstance().setGraphBackgroundImage(vv, "maps/UK_Map.png",
-                1.45, 1.4, new Color(10, 20, 20));
+                1.75, 1.7, new Color(10, 20, 20));
         scaler.scale(vv, .5f, vv.getCenter());
         vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(Color.white));
     }
