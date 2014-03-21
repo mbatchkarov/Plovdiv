@@ -57,6 +57,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import java.awt.*;
+import java.awt.geom.Arc2D;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Collection;
@@ -234,14 +235,20 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
     private void calculateAveragePathLength() {
         //average path length
         if (g.getVertexCount() > 0) {
+            //todo DijkstraDistance uses a weight of 1 for all edges by default,
+            // pass in a transformer
             aplMap = DistanceStatistics.averageDistances(g, new DijkstraDistance(g));
             double sum = 0;
-            for (Object x : g.getVertices()) {
-                sum += getAPL((MyVertex) x);
+            for (MyVertex x : g.getVertices()) {
+                double val = getAPL(x);
+                if(new Double(val).isInfinite()){
+                    // graph is disconnected, do not bother with the rest
+                    apl = Double.NaN;
+                    return;
+                }
+                sum += val;
             }
-            BigDecimal total = new BigDecimal(sum);
-            BigDecimal res = total.divide(new BigDecimal(g.getVertexCount()), MathContext.DECIMAL32);
-            apl = (res.doubleValue());
+            apl = sum/g.getVertexCount();
         } else {
             apl = Double.NaN;
         }
@@ -255,8 +262,8 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
             for (Object x : g.getVertices()) {
                 sum += ccMap.get(x);
             }
-            double res = (sum) / (g.getVertexCount());
-            avgCC = (res);
+            double res = sum / g.getVertexCount();
+            avgCC = res;
         } else {
             avgCC = Double.NaN;
         }
@@ -275,9 +282,14 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
         return avgCC;
     }
 
+    /**
+     * Returns the local clustering coefficient of a vertex.
+     *
+     * @param vertex
+     * @return
+     */
     public double getCC(MyVertex vertex) {
-        double res = ccMap.get(vertex);
-        return (res);
+        return ccMap.get(vertex);
     }
 
     /**
@@ -293,7 +305,7 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
      * APL for the specified vertex
      *
      * @param vertex
-     * @return
+     * @return APL of this vertex, Infinity of vertex is disconnected from the rest of the graph
      */
     public double getAPL(MyVertex vertex) {
         Double result = aplMap.transform(vertex);
@@ -301,7 +313,10 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
         if (result.isNaN() || result.isInfinite()) {
             result = 0d;
         }
-        return result;
+        // JUNG insists on transforming the average path length to a score (higher is better)
+        // they do that by returning the reciprocal (DistanceCentralityScorer, line 244)
+        // this doesn't help us, so we should divide again
+        return 1./ result;
     }
 
     public double getAvgDegree() {
