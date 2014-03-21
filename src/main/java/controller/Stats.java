@@ -235,8 +235,6 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
     private void calculateAveragePathLength() {
         //average path length
         if (g.getVertexCount() > 0) {
-            //todo DijkstraDistance uses a weight of 1 for all edges by default,
-            // pass in a transformer
             Transformer<MyEdge, Double> t = new Transformer<MyEdge, Double>() {
                 @Override
                 public Double transform(MyEdge e) {
