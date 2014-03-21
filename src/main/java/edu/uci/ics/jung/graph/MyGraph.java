@@ -40,6 +40,7 @@ import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
 import model.EpiState;
+import model.MyEdge;
 import model.MyVertex;
 import model.Strings;
 import model.dynamics.Dynamics;
@@ -106,6 +107,14 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         this.sleepTimeBetweenSteps = newValue;
     }
 
+    public void setEdgeWeight(MyEdge e, double newWeight) {
+        if (this.getEdges().contains(e)) {
+            e.setWeigth(newWeight);
+            fireExtraEvent(new ExtraGraphEvent.GraphMetadataChangedEvent(this));
+        } else {
+            throw new IllegalStateException("Attempted to alter edge that does not belong to this graph");
+        }
+    }
 
     public void fireGraphEvent(GraphEvent evt) {
         for (GraphEventListener<V, E> listener : super.listenerList) {

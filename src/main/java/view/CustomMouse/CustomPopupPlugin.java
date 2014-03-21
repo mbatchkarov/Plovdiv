@@ -39,6 +39,7 @@ import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedGraph;
 import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.visualization.VisualizationServer;
@@ -109,7 +110,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
             final VisualizationViewer<MyVertex, MyEdge> vv
                     = (VisualizationViewer<MyVertex, MyEdge>) e.getSource();
             final Layout<MyVertex, MyEdge> layout = vv.getGraphLayout();
-            final Graph<MyVertex, MyEdge> graph = layout.getGraph();
+            final MyGraph<MyVertex, MyEdge> graph = (MyGraph<MyVertex, MyEdge>) layout.getGraph();
             final Point2D ivp = e.getPoint();
             GraphElementAccessor<MyVertex, MyEdge> pickSupport = vv.getPickSupport();
 
@@ -271,7 +272,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                                     "" + edge.getWeigth());
                             if ((s != null) && (s.length() > 0)) {
                                 try {
-                                    edge.setWeigth(Double.parseDouble(s));
+                                    graph.setEdgeWeight(edge, Double.parseDouble(s));
                                     vv.repaint();
                                 } catch (NumberFormatException ex) {
                                     //input is not a valid double

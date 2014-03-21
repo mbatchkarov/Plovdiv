@@ -237,18 +237,24 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
         if (g.getVertexCount() > 0) {
             //todo DijkstraDistance uses a weight of 1 for all edges by default,
             // pass in a transformer
-            aplMap = DistanceStatistics.averageDistances(g, new DijkstraDistance(g));
+            Transformer<MyEdge, Double> t = new Transformer<MyEdge, Double>() {
+                @Override
+                public Double transform(MyEdge e) {
+                    return e.getWeigth();
+                }
+            };
+            aplMap = DistanceStatistics.averageDistances(g, new DijkstraDistance(g, t));
             double sum = 0;
             for (MyVertex x : g.getVertices()) {
                 double val = getAPL(x);
-                if(new Double(val).isInfinite()){
+                if (new Double(val).isInfinite()) {
                     // graph is disconnected, do not bother with the rest
                     apl = Double.NaN;
                     return;
                 }
                 sum += val;
             }
-            apl = sum/g.getVertexCount();
+            apl = sum / g.getVertexCount();
         } else {
             apl = Double.NaN;
         }
@@ -316,7 +322,7 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
         // JUNG insists on transforming the average path length to a score (higher is better)
         // they do that by returning the reciprocal (DistanceCentralityScorer, line 244)
         // this doesn't help us, so we should divide again
-        return 1./ result;
+        return 1. / result;
     }
 
     public double getAvgDegree() {
@@ -578,6 +584,10 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
     @Override
     public void handleExtraGraphEvent(ExtraGraphEvent<MyVertex, MyEdge> evt) {
         if (evt.type == ExtraGraphEvent.ExtraEventTypes.GRAPH_REPLACED) {
+            recalculateAll();
+        }
+
+        if (evt.type == ExtraGraphEvent.ExtraEventTypes.METADATA_CHANGED) {
             recalculateAll();
         }
     }

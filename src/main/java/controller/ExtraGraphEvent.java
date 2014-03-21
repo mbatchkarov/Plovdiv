@@ -25,7 +25,8 @@ public abstract class ExtraGraphEvent<V, E>{
     public static enum ExtraEventTypes {
         GRAPH_REPLACED,
         SIM_STEP_COMPLETE,
-        STATS_CHANGED
+        STATS_CHANGED,
+        METADATA_CHANGED
         //todo add here as needed
     }
 
@@ -36,6 +37,12 @@ public abstract class ExtraGraphEvent<V, E>{
         }
     }
 
+    public static class GraphMetadataChangedEvent<V, E> extends ExtraGraphEvent<V, E> {
+
+        public GraphMetadataChangedEvent(Graph<V, E> source) {
+            super(source, ExtraEventTypes.METADATA_CHANGED);
+        }
+    }
     public static class SimStepCompleteEvent<V, E> extends ExtraGraphEvent<V, E> {
 
         public SimStepCompleteEvent(Graph<V, E> source) {

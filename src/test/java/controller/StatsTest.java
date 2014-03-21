@@ -52,8 +52,10 @@ public class StatsTest {
 
         triangleStats = new Stats(triangle);
         triangle.addGraphEventListener(triangleStats);
+        triangle.addExtraGraphEventListener(triangleStats);
         glassStats = new Stats(glass);
         glass.addGraphEventListener(glassStats);
+        glass.addExtraGraphEventListener(glassStats);
     }
 
     /**
@@ -95,6 +97,13 @@ public class StatsTest {
             assertEquals(1, triangleStats.getAPL(v(i)), 0.01);
         }
 
+        // try the weighted case
+        for (MyEdge e : triangle.getEdges()) {
+            triangle.setEdgeWeight(e, 3);
+        }
+        assertEquals(3, triangleStats.getAPL(), 0.01);// average value
+
+        // try a more complex case
         assertEquals(1.333, glassStats.getAPL(v(0)), 0.01);
         assertEquals(1.333, glassStats.getAPL(v(1)), 0.01);
         assertEquals(1, glassStats.getAPL(v(2)), 0.01);
