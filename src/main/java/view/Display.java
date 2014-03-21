@@ -1531,7 +1531,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         } else {
             g.setDynamics(new SIDynamics(tauValue, deltaTValue));
         }
-        g.setSleepTimeBetweenSteps(speedSlider.getValue());
+        g.setSleepTimeBetweenSteps(speedSlider.getValue()+20);
         //make sure the graphs is in a proper state
         controller.validateNodeStates();
     }
