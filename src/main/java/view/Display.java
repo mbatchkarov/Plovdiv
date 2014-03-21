@@ -1263,7 +1263,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         if (g != null) {
             controller.setAllSusceptible();
             // fire appropriate event to trigger an update of the Infected graph
-            g.fireExtraEvent(new ExtraGraphEvent.SimStepCompleteEvent(g));
+            g.fireExtraEvent(new ExtraGraphEvent(g, ExtraGraphEvent.SIM_STEP_COMPLETE));
             vv.repaint();
         } else {
             JOptionPane.showMessageDialog(this, "That makes no sense when the graph is empty!");
@@ -1836,15 +1836,15 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     @Override
     public void handleExtraGraphEvent(ExtraGraphEvent<MyVertex, MyEdge> evt) {
         if (this.handlingEvents) {
-            if (evt.type == ExtraGraphEvent.ExtraEventTypes.SIM_STEP_COMPLETE) {
+            if (evt.type == ExtraGraphEvent.SIM_STEP_COMPLETE) {
                 controller.getSimulator().updateChartUnderlyingData();
                 controller.getSimulator().updateChartAxisParameters();
                 redisplayPartially();
             }
-            if (evt.type == ExtraGraphEvent.ExtraEventTypes.STATS_CHANGED) {
+            if (evt.type == ExtraGraphEvent.STATS_CHANGED) {
                 updateStatsDisplay();
             }
-            if (evt.type == ExtraGraphEvent.ExtraEventTypes.GRAPH_REPLACED) {
+            if (evt.type == ExtraGraphEvent.GRAPH_REPLACED) {
                 vv.getGraphLayout().setGraph(this.g);
                 changeLayout();
                 controller.getSimulator().resetSimulation();

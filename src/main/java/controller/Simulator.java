@@ -253,7 +253,6 @@ public class Simulator {
                         int second = rng.nextInt(numSus);
                         if (first != second && !g.isNeighbor(v[first], v[second])) {
                             MyEdge e = controller.getEdgeFactory().create();
-                            e.setWeigth(1.0);
                             edgesToAdd.put(currentEdge, new Pair(v[first], v[second]));
                             controller.updateDisplay();
                             controller.updateCounts();
@@ -370,6 +369,7 @@ public class Simulator {
                     e.printStackTrace();
                 }
             }
+
             System.out.println("Alive: " + isAlive());
             System.out.println("Running: " + isRunning());
             System.out.println("Step no " + stepNumber);
@@ -394,7 +394,7 @@ public class Simulator {
 
     public void doStepWithCurrentSettings() {
         doStep(beta, g, recoveryProb, infectionProb);
-        g.fireExtraEvent(new ExtraGraphEvent.SimStepCompleteEvent(g));//todo fire event at the
+        g.fireExtraEvent(new ExtraGraphEvent(g, ExtraGraphEvent.SIM_STEP_COMPLETE));
         stepNumber++;
     }
 

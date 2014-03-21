@@ -72,7 +72,7 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         delegate = newInstance.delegate;
         setAllSusceptible();
         updateCounts();
-        fireExtraEvent(new ExtraGraphEvent.GraphReplacedEvent<V, E>(delegate));
+        fireExtraEvent(new ExtraGraphEvent(delegate, ExtraGraphEvent.GRAPH_REPLACED));
     }
 
     public void addExtraGraphEventListener(ExtraGraphEventListener<V, E> l) {
@@ -110,7 +110,7 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
     public void setEdgeWeight(MyEdge e, double newWeight) {
         if (this.getEdges().contains(e)) {
             e.setWeigth(newWeight);
-            fireExtraEvent(new ExtraGraphEvent.GraphMetadataChangedEvent(this));
+            fireExtraEvent(new ExtraGraphEvent(this, ExtraGraphEvent.METADATA_CHANGED));
         } else {
             throw new IllegalStateException("Attempted to alter edge that does not belong to this graph");
         }

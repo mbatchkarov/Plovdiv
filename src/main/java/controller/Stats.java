@@ -111,7 +111,7 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
         calculateAssortativity();
         calculateDegreeCorrelation();
 
-        g.fireExtraEvent(new ExtraGraphEvent.StatsChangedEvent<MyVertex, MyEdge>(g));
+        g.fireExtraEvent(new ExtraGraphEvent(g, ExtraGraphEvent.STATS_CHANGED));
     }
 
     private void calculateDegreeCorrelation() {
@@ -583,11 +583,11 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
 
     @Override
     public void handleExtraGraphEvent(ExtraGraphEvent<MyVertex, MyEdge> evt) {
-        if (evt.type == ExtraGraphEvent.ExtraEventTypes.GRAPH_REPLACED) {
+        if (evt.type == ExtraGraphEvent.GRAPH_REPLACED) {
             recalculateAll();
         }
 
-        if (evt.type == ExtraGraphEvent.ExtraEventTypes.METADATA_CHANGED) {
+        if (evt.type == ExtraGraphEvent.METADATA_CHANGED) {
             recalculateAll();
         }
     }
