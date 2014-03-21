@@ -479,30 +479,6 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
     }
 
     /**
-     * Returns a pair, containing the min and max edge weight of the network on
-     * the screen
-     *
-     * @return
-     */
-    public double[] getExtremaOfEdgeWeights() {
-        double[] res = new double[2];
-        double min = Double.MAX_VALUE, max = Double.MIN_VALUE;
-        for (Object x : g.getEdges()) {
-            MyEdge e = (MyEdge) x;
-            if (e.getWeigth() > max) {
-                max = e.getWeigth();
-            }
-            if (e.getWeigth() < min) {
-                min = e.getWeigth();
-            }
-        }
-        res[0] = (min);
-        res[1] = (max);
-        return res;
-    }
-
-
-    /**
      * Returns a plot of the degree distribution of the graph
      *
      * @param cumulative

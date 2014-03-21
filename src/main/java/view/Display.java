@@ -170,9 +170,8 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         globalAvgDegree.setText(round(stats.getAvgDegree()));
         globalDegreeCorrelation.setText(round(stats.getWeightedDegreeCorrelation()));
 
-        double[] degreeExtrema = stats.getExtremaOfEdgeWeights();
-        globalMinDegree.setText(round(degreeExtrema[0]));
-        globalMaxDegree.setText(round(degreeExtrema[1]));
+        globalMinDegree.setText(round(stats.getMinDegree()));
+        globalMaxDegree.setText(round(stats.getMaxDegree()));
 
         globalVertexCount.setText(round(stats.getVertexCount()));
         globalEdgeCount.setText(round(stats.getEdgeCount()));
