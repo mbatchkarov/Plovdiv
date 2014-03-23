@@ -857,7 +857,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         newDoc.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N,
                                                                  Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         newDoc.setMnemonic('N');
-        newDoc.setText("New document");
+        newDoc.setText("New graph");
         newDoc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 newDocActionPerformed(evt);
@@ -1278,6 +1278,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     }//GEN-LAST:event_helpAboutActionPerformed
 
     private void newDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newDocActionPerformed
+        this.getVV().getPickedVertexState().clear();
         controller.generateEmptyGraph();
     }//GEN-LAST:event_newDocActionPerformed
 
