@@ -437,7 +437,13 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
      */
     public String getDistFromSelectedTo(MyVertex target) {
         if (selectedNode != null && target != null) {
-            DijkstraDistance d = new DijkstraDistance(g);
+            Transformer<MyEdge, Double> t = new Transformer<MyEdge, Double>() {
+                @Override
+                public Double transform(MyEdge e) {
+                    return e.getWeigth();
+                }
+            };
+            DijkstraDistance d = new DijkstraDistance(g, t);
             Double dist = (Double) d.getDistance(getSelectedNode(), target);
             if (dist != null) {
                 return (round(dist)).toString();
