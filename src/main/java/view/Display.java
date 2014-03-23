@@ -632,6 +632,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         degreeDistPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Degree distribution"));
         degreeDistPanel.setMaximumSize(new java.awt.Dimension(349, 117));
         degreeDistPanel.setMinimumSize(new java.awt.Dimension(349, 117));
+        degreeDistPanel.setSize(new java.awt.Dimension(349, 0));
 
         javax.swing.GroupLayout degreeDistPanelLayout = new javax.swing.GroupLayout(degreeDistPanel);
         degreeDistPanel.setLayout(degreeDistPanelLayout);
@@ -641,7 +642,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         );
         degreeDistPanelLayout.setVerticalGroup(
             degreeDistPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
+            .addGap(0, 93, Short.MAX_VALUE)
         );
 
         degDistLogScale.setText("Log scale");
@@ -754,6 +755,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         pauseSimToolbarButton.setText("Resume");
         pauseSimToolbarButton.setFocusable(false);
         pauseSimToolbarButton.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+        pauseSimToolbarButton.setSize(new java.awt.Dimension(93, 29));
         pauseSimToolbarButton.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         pauseSimToolbarButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -852,9 +854,10 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         menuFile.setMnemonic('F');
         menuFile.setText("File");
 
-        newDoc.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        newDoc.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N,
+                                                                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         newDoc.setMnemonic('N');
-        newDoc.setText("New graph");
+        newDoc.setText("New document");
         newDoc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 newDocActionPerformed(evt);
@@ -862,7 +865,8 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         });
         menuFile.add(newDoc);
 
-        fileSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        fileSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S,
+                                                                   Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         fileSave.setMnemonic('S');
         fileSave.setText("Save...");
         fileSave.addActionListener(new java.awt.event.ActionListener() {
@@ -872,7 +876,8 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         });
         menuFile.add(fileSave);
 
-        fileLoad.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        fileLoad.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O,
+                                                                   Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         fileLoad.setMnemonic('L');
         fileLoad.setText("Load...");
         fileLoad.addActionListener(new java.awt.event.ActionListener() {
@@ -882,7 +887,8 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         });
         menuFile.add(fileLoad);
 
-        fileGenerate1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        fileGenerate1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G,
+                                                                        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         fileGenerate1.setMnemonic('G');
         fileGenerate1.setText("Generate...");
         fileGenerate1.addActionListener(new java.awt.event.ActionListener() {
@@ -892,7 +898,8 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         });
         menuFile.add(fileGenerate1);
 
-        fileQuit1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+        fileQuit1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q,
+                                                                    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         fileQuit1.setMnemonic('Q');
         fileQuit1.setText("Quit");
         fileQuit1.addActionListener(new java.awt.event.ActionListener() {
@@ -1271,7 +1278,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     }//GEN-LAST:event_helpAboutActionPerformed
 
     private void newDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newDocActionPerformed
-        this.getVV().getPickedVertexState().clear();
         controller.generateEmptyGraph();
     }//GEN-LAST:event_newDocActionPerformed
 
