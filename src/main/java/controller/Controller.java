@@ -155,6 +155,7 @@ public class Controller {
                 getVertexFactory().reset(),
                 getEdgeFactory().reset());
         this.g.setInstance(g);
+        updateDisplay();
         IOClass.loadLayout(getGui(), path);
     }
 

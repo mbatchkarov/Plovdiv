@@ -36,15 +36,12 @@ package edu.uci.ics.jung.graph;
 
 import controller.ExtraGraphEvent;
 import controller.ExtraGraphEventListener;
-import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
 import model.EpiState;
 import model.MyEdge;
 import model.MyVertex;
-import model.Strings;
 import model.dynamics.Dynamics;
-import model.dynamics.SISDynamics;
 
 import java.io.Serializable;
 import java.util.*;
@@ -70,7 +67,6 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
 
     public void setInstance(MyGraph newInstance) {
         delegate = newInstance.delegate;
-        setAllSusceptible();
         updateCounts();
         fireExtraEvent(new ExtraGraphEvent(delegate, ExtraGraphEvent.GRAPH_REPLACED));
     }

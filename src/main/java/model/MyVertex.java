@@ -109,7 +109,7 @@ public class MyVertex implements Serializable {
     }
 
     public String toString() {
-        return ("[" + id + "]=" + this.epiState);
+        return (epiState+","+vertexIconStyle+","+nodeType);
     }
 
     /**
