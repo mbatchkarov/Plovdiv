@@ -57,6 +57,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import java.awt.*;
+import java.awt.geom.Arc2D;
 import java.math.BigDecimal;
 import java.math.MathContext;
 import java.util.Collection;
@@ -110,7 +111,7 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
         calculateAssortativity();
         calculateDegreeCorrelation();
 
-        g.fireExtraEvent(new ExtraGraphEvent.StatsChangedEvent<MyVertex, MyEdge>(g));
+        g.fireExtraEvent(new ExtraGraphEvent(g, ExtraGraphEvent.STATS_CHANGED));
     }
 
     private void calculateDegreeCorrelation() {
@@ -234,14 +235,24 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
     private void calculateAveragePathLength() {
         //average path length
         if (g.getVertexCount() > 0) {
-            aplMap = DistanceStatistics.averageDistances(g, new DijkstraDistance(g));
+            Transformer<MyEdge, Double> t = new Transformer<MyEdge, Double>() {
+                @Override
+                public Double transform(MyEdge e) {
+                    return e.getWeigth();
+                }
+            };
+            aplMap = DistanceStatistics.averageDistances(g, new DijkstraDistance(g, t));
             double sum = 0;
-            for (Object x : g.getVertices()) {
-                sum += getAPL((MyVertex) x);
+            for (MyVertex x : g.getVertices()) {
+                double val = getAPL(x);
+                if (new Double(val).isInfinite()) {
+                    // graph is disconnected, do not bother with the rest
+                    apl = Double.NaN;
+                    return;
+                }
+                sum += val;
             }
-            BigDecimal total = new BigDecimal(sum);
-            BigDecimal res = total.divide(new BigDecimal(g.getVertexCount()), MathContext.DECIMAL32);
-            apl = (res.doubleValue());
+            apl = sum / g.getVertexCount();
         } else {
             apl = Double.NaN;
         }
@@ -255,8 +266,8 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
             for (Object x : g.getVertices()) {
                 sum += ccMap.get(x);
             }
-            double res = (sum) / (g.getVertexCount());
-            avgCC = (res);
+            double res = sum / g.getVertexCount();
+            avgCC = res;
         } else {
             avgCC = Double.NaN;
         }
@@ -275,9 +286,14 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
         return avgCC;
     }
 
+    /**
+     * Returns the local clustering coefficient of a vertex.
+     *
+     * @param vertex
+     * @return
+     */
     public double getCC(MyVertex vertex) {
-        double res = ccMap.get(vertex);
-        return (res);
+        return ccMap.get(vertex);
     }
 
     /**
@@ -293,7 +309,7 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
      * APL for the specified vertex
      *
      * @param vertex
-     * @return
+     * @return APL of this vertex, Infinity of vertex is disconnected from the rest of the graph
      */
     public double getAPL(MyVertex vertex) {
         Double result = aplMap.transform(vertex);
@@ -301,7 +317,10 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
         if (result.isNaN() || result.isInfinite()) {
             result = 0d;
         }
-        return result;
+        // JUNG insists on transforming the average path length to a score (higher is better)
+        // they do that by returning the reciprocal (DistanceCentralityScorer, line 244)
+        // this doesn't help us, so we should divide again
+        return 1. / result;
     }
 
     public double getAvgDegree() {
@@ -418,7 +437,13 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
      */
     public String getDistFromSelectedTo(MyVertex target) {
         if (selectedNode != null && target != null) {
-            DijkstraDistance d = new DijkstraDistance(g);
+            Transformer<MyEdge, Double> t = new Transformer<MyEdge, Double>() {
+                @Override
+                public Double transform(MyEdge e) {
+                    return e.getWeigth();
+                }
+            };
+            DijkstraDistance d = new DijkstraDistance(g, t);
             Double dist = (Double) d.getDistance(getSelectedNode(), target);
             if (dist != null) {
                 return (round(dist)).toString();
@@ -456,30 +481,6 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
             return Double.NaN;
         }
     }
-
-    /**
-     * Returns a pair, containing the min and max edge weight of the network on
-     * the screen
-     *
-     * @return
-     */
-    public double[] getExtremaOfEdgeWeights() {
-        double[] res = new double[2];
-        double min = Double.MAX_VALUE, max = Double.MIN_VALUE;
-        for (Object x : g.getEdges()) {
-            MyEdge e = (MyEdge) x;
-            if (e.getWeigth() > max) {
-                max = e.getWeigth();
-            }
-            if (e.getWeigth() < min) {
-                min = e.getWeigth();
-            }
-        }
-        res[0] = (min);
-        res[1] = (max);
-        return res;
-    }
-
 
     /**
      * Returns a plot of the degree distribution of the graph
@@ -562,7 +563,11 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
 
     @Override
     public void handleExtraGraphEvent(ExtraGraphEvent<MyVertex, MyEdge> evt) {
-        if (evt.type == ExtraGraphEvent.ExtraEventTypes.GRAPH_REPLACED) {
+        if (evt.type == ExtraGraphEvent.GRAPH_REPLACED) {
+            recalculateAll();
+        }
+
+        if (evt.type == ExtraGraphEvent.METADATA_CHANGED) {
             recalculateAll();
         }
     }

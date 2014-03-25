@@ -53,10 +53,14 @@ import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.annotations.AnnotationControls;
+import edu.uci.ics.jung.visualization.control.CrossoverScalingControl;
 import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ScalingControl;
+import edu.uci.ics.jung.visualization.decorators.EllipseVertexShapeTransformer;
+import edu.uci.ics.jung.visualization.decorators.VertexIconShapeTransformer;
 import edu.uci.ics.jung.visualization.layout.LayoutTransition;
 import edu.uci.ics.jung.visualization.layout.PersistentLayoutImpl;
+import edu.uci.ics.jung.visualization.renderers.DefaultVertexLabelRenderer;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 import edu.uci.ics.jung.visualization.util.Animator;
 import model.MyEdge;
@@ -70,7 +74,7 @@ import view.CustomMouse.CustomGraphMouse;
 import view.CustomVisualization.CenterLabelPositioner;
 import view.CustomVisualization.CustomEdgeLabeller;
 import view.CustomVisualization.CustomVertexLabeler;
-import view.CustomVisualization.CustomVertexRenderer;
+import view.CustomVisualization.CustomVertexIconShapeTransformer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -103,6 +107,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     private Stats stats;
     private Controller controller;
     private MyGraph g;
+    private IconsStore icons;
 
     /**
      * Creates new form Display
@@ -125,9 +130,10 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         actionMap.put("+Action", incrementWaitTime);
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "-Action");
         actionMap.put("-Action", decrementWaitTime);
-
+        scaler = new CrossoverScalingControl();
         redisplayCompletely();
 
+        vNone.setSelected(true);
         parseSimulationParameters(null);//trigger parsing of default values for transmission params
     }
 
@@ -164,9 +170,8 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         globalAvgDegree.setText(round(stats.getAvgDegree()));
         globalDegreeCorrelation.setText(round(stats.getWeightedDegreeCorrelation()));
 
-        double[] degreeExtrema = stats.getExtremaOfEdgeWeights();
-        globalMinDegree.setText(round(degreeExtrema[0]));
-        globalMaxDegree.setText(round(degreeExtrema[1]));
+        globalMinDegree.setText(round(stats.getMinDegree()));
+        globalMaxDegree.setText(round(stats.getMaxDegree()));
 
         globalVertexCount.setText(round(stats.getVertexCount()));
         globalEdgeCount.setText(round(stats.getEdgeCount()));
@@ -852,7 +857,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         newDoc.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N,
                                                                  Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         newDoc.setMnemonic('N');
-        newDoc.setText("New document");
+        newDoc.setText("New graph");
         newDoc.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 newDocActionPerformed(evt);
@@ -1257,7 +1262,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         if (g != null) {
             controller.setAllSusceptible();
             // fire appropriate event to trigger an update of the Infected graph
-            g.fireExtraEvent(new ExtraGraphEvent.SimStepCompleteEvent(g));
+            g.fireExtraEvent(new ExtraGraphEvent(g, ExtraGraphEvent.SIM_STEP_COMPLETE));
             vv.repaint();
         } else {
             JOptionPane.showMessageDialog(this, "That makes no sense when the graph is empty!");
@@ -1273,6 +1278,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     }//GEN-LAST:event_helpAboutActionPerformed
 
     private void newDocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_newDocActionPerformed
+        this.getVV().getPickedVertexState().clear();
         controller.generateEmptyGraph();
     }//GEN-LAST:event_newDocActionPerformed
 
@@ -1526,7 +1532,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         } else {
             g.setDynamics(new SIDynamics(tauValue, deltaTValue));
         }
-        g.setSleepTimeBetweenSteps(speedSlider.getValue());
+        g.setSleepTimeBetweenSteps(speedSlider.getValue()+20);
         //make sure the graphs is in a proper state
         controller.validateNodeStates();
     }
@@ -1542,14 +1548,15 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         persistentLayout = new PersistentLayoutImpl<MyVertex, MyEdge>(getSelectedGraphLayout(g));
 
         vv = new VisualizationViewer<MyVertex, MyEdge>(persistentLayout, pane.getSize());
-        vv.getRenderer().setVertexRenderer(new CustomVertexRenderer(
-                vv.getPickedVertexState(), false));
-        vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(Color.black));
+        initDemoMap();
+
+        this.icons = new IconsStore(vv.getPickedVertexState());
+//        vv.getRenderer().setVertexRenderer(new CustomVertexRenderer(vv.getPickedVertexState(), false));
         vv.getRenderContext().setArrowFillPaintTransformer(new ConstantTransformer(Color.black));
         vv.getRenderContext().setArrowDrawPaintTransformer(new ConstantTransformer(Color.black));
         vv.getRenderContext().setVertexLabelTransformer(new CustomVertexLabeler(this.stats));
         vv.getRenderContext().setEdgeLabelTransformer(new CustomEdgeLabeller(this.stats));
-//        vv.getRenderer().getVertexLabelRenderer().setPositioner(new InsidePositioner());
+        vv.getRenderContext().setVertexLabelRenderer(new DefaultVertexLabelRenderer(Color.black));
         vv.getRenderer().getVertexLabelRenderer().setPositioner(new CenterLabelPositioner());
         vv.getRenderer().getVertexLabelRenderer().setPosition(Renderer.VertexLabel.Position.AUTO);
 
@@ -1578,6 +1585,13 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 
         }
 
+        final VertexIconShapeTransformer<Number> vertexIconShapeTransformer
+                = new CustomVertexIconShapeTransformer(new EllipseVertexShapeTransformer(),
+                        this.icons);
+
+        vv.getRenderContext().setVertexShapeTransformer(vertexIconShapeTransformer);
+        vv.getRenderContext().setVertexIconTransformer(this.icons);
+
         mouseModeToolbar.add(annotationControlsToolbar, BorderLayout.SOUTH);
         annotationControlsToolbar.setVisible(annotate.isSelected());
 
@@ -1594,6 +1608,13 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 
         controller.getSimulator().createInfectedCountGraph(this.getStatsPanel());
         controller.getSimulator().resetSimulation();
+    }
+
+    private void initDemoMap() {
+        BackgroundImageController.getInstance().setGraphBackgroundImage(vv, "maps/UK_Map.png",
+                1.75, 1.7, new Color(10, 20, 20));
+        scaler.scale(vv, .5f, vv.getCenter());
+        vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(Color.white));
     }
 
     public static void redisplayPartially() {
@@ -1615,7 +1636,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         Layout<MyVertex, MyEdge> l = null;
         switch (type) {
             case 0: {
-                l = new KKLayout<MyVertex, MyEdge>(g);
+                l = getControlledKKLayout(g);
                 break;
             }
             case 1: {
@@ -1641,11 +1662,27 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                 break;
             }
             default: {
-                l = new KKLayout<MyVertex, MyEdge>(g);
-                break;
+                l = getControlledKKLayout(g);
             }
         }
         return l;
+    }
+
+    // This method exists as a workaround for the 'unsettling graph' issue. It does two things:
+    // 1. Limits the maximum number of iterations the Kamada-Kawai vertex positioning algorithm will make
+    // before it settles down, based on the number of vertices in our generated graph.
+    // By default, the maximum number of iterations done in the step() method is 2000. Even with smaller graphs,
+    // sometimes the resulting distance between vertices does not satisfy the algorithm and it continues to displace 
+    // them until the iteration limit is reached.
+    // 2. Disables the local minimum escape technique used by the positioning algorhithm.
+    // This technique promotes a more aggresive approach to the vertex displacement, which in larger graphs
+    // could actually result in longer layout adjustment times.
+    // 
+    private Layout getControlledKKLayout(Graph g) {
+        KKLayout kkLayout = new KKLayout<MyVertex, MyEdge>(g);
+        kkLayout.setMaxIterations(g.getVertexCount());
+        kkLayout.setExchangeVertices(false);
+        return kkLayout;
     }
 
     /**
@@ -1654,7 +1691,8 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     public void changeLayout() {
         try {
             Layout oldLayout = vv.getGraphLayout();
-            Layout newLayout = getSelectedGraphLayout(g);
+            PersistentLayoutImpl newLayout =  new PersistentLayoutImpl<MyVertex, MyEdge>(getSelectedGraphLayout(g));
+            this.persistentLayout = newLayout;
             newLayout.setSize(oldLayout.getSize());
             oldLayout.initialize();
             Relaxer relaxer = new VisRunner((IterativeContext) oldLayout);
@@ -1798,18 +1836,17 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     @Override
     public void handleExtraGraphEvent(ExtraGraphEvent<MyVertex, MyEdge> evt) {
         if (this.handlingEvents) {
-            if (evt.type == ExtraGraphEvent.ExtraEventTypes.SIM_STEP_COMPLETE) {
+            if (evt.type == ExtraGraphEvent.SIM_STEP_COMPLETE) {
                 controller.getSimulator().updateChartUnderlyingData();
                 controller.getSimulator().updateChartAxisParameters();
                 redisplayPartially();
             }
-            if (evt.type == ExtraGraphEvent.ExtraEventTypes.STATS_CHANGED) {
+            if (evt.type == ExtraGraphEvent.STATS_CHANGED) {
                 updateStatsDisplay();
             }
-            if (evt.type == ExtraGraphEvent.ExtraEventTypes.GRAPH_REPLACED) {
+            if (evt.type == ExtraGraphEvent.GRAPH_REPLACED) {
                 vv.getGraphLayout().setGraph(this.g);
                 changeLayout();
-
                 controller.getSimulator().resetSimulation();
             }
         }

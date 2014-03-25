@@ -47,7 +47,6 @@ public class EdgeFactory implements Factory<MyEdge> {
 
     public MyEdge create() {
         MyEdge e = new MyEdge(++i);
-        e.setWeigth(1.0);
         return e;
     }
 

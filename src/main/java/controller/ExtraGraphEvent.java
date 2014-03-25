@@ -5,49 +5,23 @@ import edu.uci.ics.jung.graph.Graph;
 /**
  * Created by miroslavbatchkarov on 26/01/2014.
  */
-public abstract class ExtraGraphEvent<V, E>{
+public class ExtraGraphEvent<V, E> {
 
     public Graph<V, E> source;
-    public ExtraEventTypes type;
+    public int type;
+
+    public static final int GRAPH_REPLACED = 0;
+    public static final int SIM_STEP_COMPLETE = 1;
+    public static final int STATS_CHANGED = 2;
+    public static final int METADATA_CHANGED = 3;
+    //todo add here as needed
 
     /**
      * Creates an instance with the specified {@code source} graph and {@code Type}
      * (vertex/edge addition/removal).
      */
-    public ExtraGraphEvent(Graph<V, E> source, ExtraEventTypes type) {
+    public ExtraGraphEvent(Graph<V, E> source, int type) {
         this.source = source;
         this.type = type;
     }
-
-    /**
-     * Extra types of graph events.
-     */
-    public static enum ExtraEventTypes {
-        GRAPH_REPLACED,
-        SIM_STEP_COMPLETE,
-        STATS_CHANGED
-        //todo add here as needed
-    }
-
-    public static class GraphReplacedEvent<V, E> extends ExtraGraphEvent<V, E> {
-
-        public GraphReplacedEvent(Graph<V, E> source) {
-            super(source, ExtraEventTypes.GRAPH_REPLACED);
-        }
-    }
-
-    public static class SimStepCompleteEvent<V, E> extends ExtraGraphEvent<V, E> {
-
-        public SimStepCompleteEvent(Graph<V, E> source) {
-            super(source, ExtraEventTypes.SIM_STEP_COMPLETE);
-        }
-    }
-
-    public static class StatsChangedEvent<V, E> extends ExtraGraphEvent<V, E> {
-
-        public StatsChangedEvent(Graph<V, E> source) {
-            super(source, ExtraEventTypes.STATS_CHANGED);
-        }
-    }
-
 }

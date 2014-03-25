@@ -52,10 +52,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @author reseter
@@ -108,16 +105,18 @@ public class Simulator {
         Collection<MyEdge> edges = g.getEdges();
         Collection<MyVertex> vertices = g.getVertices();
         HashMap<MyEdge, Pair> edgesToAdd = new HashMap<MyEdge, Pair>();
+        HashSet<MyEdge> edgesToRemove = new HashSet<MyEdge>();
+
         for (MyEdge current : edges) { //for all edges check for infection if I-S or S-I
             MyVertex first = g.getEndpoints(current).getFirst();
             MyVertex second = g.getEndpoints(current).getSecond();
             //I-S
             if (first.isInfected() && second.isSusceptible()) {
-                this.checkForInfection(second, current, infProb, beta, edgesToAdd);
+                this.checkForInfection(second, current, infProb, beta, edgesToAdd, edgesToRemove);
             }
             //S-I
             if (second.isInfected() && first.isSusceptible()) {
-                this.checkForInfection(first, current, infProb, beta, edgesToAdd);
+                this.checkForInfection(first, current, infProb, beta, edgesToAdd, edgesToRemove);
             }
         }
 
@@ -128,8 +127,10 @@ public class Simulator {
             }
         }
         //modify graph structure
-        for (MyEdge e : edgesToAdd.keySet()) {
+        for (MyEdge e : edgesToRemove) {
             g.removeEdge(e);
+        }
+        for (MyEdge e : edgesToAdd.keySet()) {
             g.addEdge(e, edgesToAdd.get(e));
         }
 
@@ -140,6 +141,7 @@ public class Simulator {
         }
         //record changes in number of inf/sus/res nodes
         controller.updateCounts();
+//        g.fireExtraEvent(new ExtraGraphEvent(g, ExtraGraphEvent.METADATA_CHANGED));
         xValues.add(stepNumber);
         yValues.add(g.getNumInfected());
         this.stats.recalculateAll();
@@ -223,7 +225,7 @@ public class Simulator {
      * node
      */
     private void checkForInfection(MyVertex vertex, MyEdge currentEdge, double infProb, double beta,
-                                   HashMap<MyEdge, Pair> edgesToAdd) {
+                                   HashMap<MyEdge, Pair> edgesToAdd, Set<MyEdge> edgesToRemove) {
         //compute a random probability
         Double randomProb = Math.abs((double) rng.nextInt() / new Double(Integer.MAX_VALUE));
         //if this chap is unlucky
@@ -252,11 +254,11 @@ public class Simulator {
                     while (!done) {
                         int second = rng.nextInt(numSus);
                         if (first != second && !g.isNeighbor(v[first], v[second])) {
-                            MyEdge e = controller.getEdgeFactory().create();
-                            e.setWeigth(1.0);
-                            edgesToAdd.put(currentEdge, new Pair(v[first], v[second]));
-                            controller.updateDisplay();
-                            controller.updateCounts();
+                            // mark old edge for removal
+                            edgesToRemove.add(currentEdge);
+                            // make new edge for insertion
+                            edgesToAdd.put(controller.getEdgeFactory().create(),
+                                           new Pair(v[first], v[second]));
                             done = true;
                         }
                     }
@@ -370,6 +372,7 @@ public class Simulator {
                     e.printStackTrace();
                 }
             }
+
             System.out.println("Alive: " + isAlive());
             System.out.println("Running: " + isRunning());
             System.out.println("Step no " + stepNumber);
@@ -394,7 +397,9 @@ public class Simulator {
 
     public void doStepWithCurrentSettings() {
         doStep(beta, g, recoveryProb, infectionProb);
-        g.fireExtraEvent(new ExtraGraphEvent.SimStepCompleteEvent(g));//todo fire event at the
+        g.fireExtraEvent(new ExtraGraphEvent(g, ExtraGraphEvent.SIM_STEP_COMPLETE));
+//        controller.updateDisplay(); // todo this should happen automatically via event handling
+//        controller.updateCounts();
         stepNumber++;
     }
 

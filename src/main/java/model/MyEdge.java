@@ -38,7 +38,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 /**
- *
  * @author reseter
  */
 public class MyEdge implements Serializable {
@@ -47,7 +46,7 @@ public class MyEdge implements Serializable {
     private double weigth;
 
     public MyEdge(int id) {
-        this.id = id;
+        this(id, 1.0);
     }
 
     public MyEdge(int id, double weigth) {
@@ -70,23 +69,26 @@ public class MyEdge implements Serializable {
     }
 
     /**
-     * @param weigth the weigth to set
+     * @deprecated Do not use this method!!! Call MyGraph.setEdgeWeight instead
+     * @param weigth the weight to set
      */
     public void setWeigth(double weigth) {
         this.weigth = weigth;
     }
 
-    public boolean equals(Object o){
-        if(o instanceof MyEdge){
+    public boolean equals(Object o) {
+        if (o instanceof MyEdge) {
             MyEdge e = (MyEdge) o;
             return e.id == this.id;
         }
         return false;
     }
-    public int hashCode(){
-        return 7*id;
+
+    public int hashCode() {
+        return 7 * id;
     }
-    public String toString(){
+
+    public String toString() {
         return ("(" + id + ")");
     }
 }
