@@ -283,24 +283,37 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                         }
                     });
                 } else {
+                    final JMenu nodeIconsMenu = new JMenu("Node Icons");
                     final JMenu iconStyleMenu = new JMenu("Icon Style");
                     final JMenu backgroundImageMenu = new JMenu("Background Image");
-                    final JMenu setColorsMenu = new JMenu("Change Color");
-                    popup1.add(iconStyleMenu);
+                    final JMenu setColorsMenu = new JMenu("Change Colors");
+                    popup1.add(nodeIconsMenu);
                     popup1.add(backgroundImageMenu);
                     popup1.add(setColorsMenu);
+                    
+                    nodeIconsMenu.add(iconStyleMenu);
+
+                    String toggleNodeIconsText = graph.areNodeIconsAllowed() ? "Hide Icons" : "Show Icons";
+                    
+                    nodeIconsMenu.add(new AbstractAction(toggleNodeIconsText) {
+                        public void actionPerformed(ActionEvent e) {
+                            toggleNodeIcons(graph);
+                        }
+                    });
 
                     iconStyleMenu.add(new AbstractAction("Simple") {
 
                         public void actionPerformed(ActionEvent e) {
-                            changeIconStyle(graph, MyVertex.VERTEX_ICON_STYLE_SIMPLE);}
+                            changeIconStyle(graph, MyVertex.VERTEX_ICON_STYLE_SIMPLE);
+                        }
                     });
 
                     iconStyleMenu.add(new AbstractAction("3D") {
 
                         public void actionPerformed(ActionEvent e) {
-                       
-                            changeIconStyle(graph, MyVertex.VERTEX_ICON_STYLE_PHOTOREALISTIC);}
+
+                            changeIconStyle(graph, MyVertex.VERTEX_ICON_STYLE_PHOTOREALISTIC);
+                        }
                     });
 
                     backgroundImageMenu.add(new AbstractAction("<NONE>") {
@@ -413,6 +426,11 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
         }
     }
 
+    private void toggleNodeIcons(MyGraph graph){
+        graph.setAllowNodeIcons(!graph.areNodeIconsAllowed());
+        d.setVertexRenderer(graph.areNodeIconsAllowed());
+    }
+    
     private void changeIconStyle(MyGraph graph, int iconStyle) {
         for (Object vertex : graph.getVertices()) {
             ((MyVertex) vertex).setVertexIconStyle(iconStyle);

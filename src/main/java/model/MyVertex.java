@@ -72,6 +72,10 @@ public class MyVertex implements Serializable {
     public void setNextEpiState(EpiState nextEpiState) {
         this.nextEpiState = nextEpiState;
     }
+    
+    public EpiState getEpiState(){
+        return epiState;
+    }
 
     public void advanceEpiState() {
         this.epiState = nextEpiState;

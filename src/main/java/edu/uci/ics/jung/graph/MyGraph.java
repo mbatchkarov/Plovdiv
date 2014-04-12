@@ -50,6 +50,8 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
 
     List<ExtraGraphEventListener<V, E>> extraListenerList;
 
+    private boolean allowNodeIcons = true;
+    
     private Dynamics dynamics;
     private int numSusceptible, numInfected, numResistant;
     int sleepTimeBetweenSteps; // how long to wait before another simulation step is made (ms)
@@ -174,5 +176,19 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
             x.setEpiState(EpiState.SUSCEPTIBLE);
         }
         updateCounts();
+    }
+
+    /**
+     * @return the allowNodeIcons
+     */
+    public boolean areNodeIconsAllowed() {
+        return allowNodeIcons;
+    }
+
+    /**
+     * @param allowNodeIcons the allowNodeIcons to set
+     */
+    public void setAllowNodeIcons(boolean allowNodeIcons) {
+        this.allowNodeIcons = allowNodeIcons;
     }
 }
