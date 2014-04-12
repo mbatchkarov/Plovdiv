@@ -283,10 +283,25 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                         }
                     });
                 } else {
+                    final JMenu iconStyleMenu = new JMenu("Icon Style");
                     final JMenu backgroundImageMenu = new JMenu("Background Image");
                     final JMenu setColorsMenu = new JMenu("Change Color");
+                    popup1.add(iconStyleMenu);
                     popup1.add(backgroundImageMenu);
                     popup1.add(setColorsMenu);
+
+                    iconStyleMenu.add(new AbstractAction("Simple") {
+
+                        public void actionPerformed(ActionEvent e) {
+                            changeIconStyle(graph, MyVertex.VERTEX_ICON_STYLE_SIMPLE);}
+                    });
+
+                    iconStyleMenu.add(new AbstractAction("3D") {
+
+                        public void actionPerformed(ActionEvent e) {
+                       
+                            changeIconStyle(graph, MyVertex.VERTEX_ICON_STYLE_PHOTOREALISTIC);}
+                    });
 
                     backgroundImageMenu.add(new AbstractAction("<NONE>") {
 
@@ -396,6 +411,13 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                 vv.repaint();
             }
         }
+    }
+
+    private void changeIconStyle(MyGraph graph, int iconStyle) {
+        for (Object vertex : graph.getVertices()) {
+            ((MyVertex) vertex).setVertexIconStyle(iconStyle);
+        }
+        vv.repaint();
     }
 
     private void changeNodeType(VisualizationViewer vv, MyVertex v, int nodeType, int vertexIconStyle) {
