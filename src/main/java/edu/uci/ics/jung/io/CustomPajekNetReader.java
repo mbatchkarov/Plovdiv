@@ -3,12 +3,13 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package controller;
+package edu.uci.ics.jung.io;
 
 import edu.uci.ics.jung.algorithms.util.MapSettableTransformer;
 import edu.uci.ics.jung.algorithms.util.SettableTransformer;
 import edu.uci.ics.jung.graph.DirectedGraph;
 import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import java.awt.geom.Point2D;
@@ -145,7 +146,14 @@ public class CustomPajekNetReader<G extends Graph<V, E>, V, E> {
         // create appropriate number of vertices
         StringTokenizer st = new StringTokenizer(curLine);
         st.nextToken(); // skip past "*vertices";
-        int num_vertices = Integer.parseInt(st.nextToken());
+        
+        String[] vertexMetadata = st.nextToken().split(",");
+                
+        int num_vertices = Integer.parseInt(vertexMetadata[0]);
+        boolean areVertexIconsAllowed = Boolean.parseBoolean(vertexMetadata[1]);
+        
+        ((MyGraph) g).setAllowNodeIcons(areVertexIconsAllowed);
+        
         List<V> id = null;
         if (vertex_factory != null) {
             for (int i = 1; i <= num_vertices; i++) {

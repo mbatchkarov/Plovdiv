@@ -1590,7 +1590,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
             
         }
         
-        setVertexRenderer(g.areNodeIconsAllowed());
+        setVertexRenderer();
         
         mouseModeToolbar.add(annotationControlsToolbar, BorderLayout.SOUTH);
         annotationControlsToolbar.setVisible(annotate.isSelected());
@@ -1610,12 +1610,12 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         controller.getSimulator().resetSimulation();
     }
     
-    public void setVertexRenderer(boolean iconsAllowed) {
+    public void setVertexRenderer() {
         Transformer vertexShapeTransformer = new EllipseVertexShapeTransformer();
         Transformer vertexIconShapeTransformer = defaultVertexIconShapeTransformer;
         Renderer.Vertex vertexRenderer = defaultRenderer;
         
-        if (iconsAllowed) {
+        if (g.areNodeIconsAllowed()) {
             vertexShapeTransformer = icons;
             vertexIconShapeTransformer = new CustomVertexIconShapeTransformer(new EllipseVertexShapeTransformer(), icons);
         } else {

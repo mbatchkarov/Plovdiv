@@ -69,6 +69,7 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
 
     public void setInstance(MyGraph newInstance) {
         delegate = newInstance.delegate;
+        setAllowNodeIcons(newInstance.areNodeIconsAllowed());
         updateCounts();
         fireExtraEvent(new ExtraGraphEvent(delegate, ExtraGraphEvent.GRAPH_REPLACED));
     }

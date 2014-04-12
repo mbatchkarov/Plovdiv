@@ -73,7 +73,7 @@ public class CustomVertexRenderer implements Renderer.Vertex<MyVertex, MyEdge> {
         if (rc.getVertexIncludePredicate().evaluate(Context.<Graph, MyVertex>getInstance(graph, v))) {
             boolean vertexHit = true;
             // get the shape to be rendered
-            Shape shape = new Ellipse2D.Float(-16.0f, -16.0f, 32.0f, 32.0f);
+            Shape shape = new Ellipse2D.Float(-14.0f, -14.0f, 30.0f, 30.0f);
                     
             Point2D p = (Point2D) layout.transform(v);
             p = rc.getMultiLayerTransformer().transform(Layer.LAYOUT, p);
