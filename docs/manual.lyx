@@ -1,0 +1,1330 @@
+#LyX 2.0 created this file. For more info see http://www.lyx.org/
+\lyxformat 413
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language british
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref true
+\pdf_bookmarks true
+\pdf_bookmarksnumbered false
+\pdf_bookmarksopen false
+\pdf_bookmarksopenlevel 1
+\pdf_breaklinks false
+\pdf_pdfborder false
+\pdf_colorlinks false
+\pdf_backref false
+\pdf_pdfusetitle true
+\papersize default
+\use_geometry false
+\use_amsmath 1
+\use_esint 1
+\use_mhchem 1
+\use_mathdots 1
+\cite_engine basic
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+Project Plovdiv 3.1 user manual 
+\end_layout
+
+\begin_layout Author
+Miroslav Batchkarov
+\end_layout
+
+\begin_layout Section
+General 
+\end_layout
+
+\begin_layout Standard
+Project Plovdiv is a network epidemiology simulator and can be used to teach
+ basic graph theory.
+ It is primarily aimed at students and demonstrates some of the basic concepts
+ of graph theory and epidemiology.
+ You can manually create a contact network or load one from a standard format.
+ Nodes in the graph (individuals) can be set in one of three state- susceptible
+ to the infection, infected or vaccinated.
+ You can now run a simulation with a single keystroke! 
+\end_layout
+
+\begin_layout Subsection
+History and attributions
+\end_layout
+
+\begin_layout Standard
+Plovdiv started in 2009 and is based on two separate pieces of software.
+ The first one was developed under the York Transit Bursary Scheme under
+ the supervision of Dr Daniel Franks, and the second at the University of
+ Sussex under Dr Istvan Kiss.
+ It is not intended for detailed modelling or efficient calculations but
+ rather as a supplementary course resource.
+ Our main goals throughout the development process were simplicity and ease
+ of use as well as mathematical correctness.
+ 
+\end_layout
+
+\begin_layout Standard
+Plovdiv is hosted on Github and is distributed under a three-clause BSD
+ license.
+ Please submit bug reports and feature requests to the our issue tracker
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset ERT
+status open
+
+\begin_layout Plain Layout
+
+
+\backslash
+url{https://github.com/mbatchkarov/Plovdiv/issues}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+.
+ We welcome contributions from the community.
+\end_layout
+
+\begin_layout Section
+User interface
+\end_layout
+
+\begin_layout Standard
+The overall appearance of the application is shown in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:overall"
+
+\end_inset
+
+.
+ The window is divided into three main areas, annotated with A, B and C
+ respectively.
+ Area A holds controls for the mouse mode.
+ Area B holds a number of information panels.
+ Area C is a rendering of the currently loaded graph.
+ Each of these is discussed separately below.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/overall.png
+	lyxscale 20
+	width 110text%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Overall appearance
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:overall"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Graph rendering
+\end_layout
+
+\begin_layout Standard
+Plovdiv features several rendering modes, shown in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:view-options"
+
+\end_inset
+
+.
+ Vertices can be rendered as simple coloured circles or as icons.
+ For instance, when presenting a model of a computer network you can render
+ all vertices as computers and mobiles.
+ Alternatively, icons can be rendered as humans in the context of social
+ networks.
+ To change the icon of a single node, right-click it and select 
+\series bold
+Change icon
+\series default
+.
+ To switch from icons to circles, right-click the background and select
+ 
+\series bold
+Node icons> Enable/Disable icons
+\series default
+.
+\end_layout
+
+\begin_layout Standard
+The colour of a vertex encodes it state.
+ Yellow stands for susceptible, red stands for infected and green for resistant/
+immune.
+ Selected nodes (Section 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Mouse-modes"
+
+\end_inset
+
+) are blue.
+ Edges are not colour coded.
+ Their colour can be change by right-clicking the background and selecting
+ 
+\series bold
+Change colors> Edges
+\series default
+.
+\end_layout
+
+\begin_layout Standard
+To change the background image, right-click it and select 
+\series bold
+Background image
+\series default
+.
+ Plovdiv ships with a map of the world and a map of the United Kingdom,
+ but you can choose an image from file.
+ The background image can also be disabled by selecting 
+\series bold
+Background image> None
+\series default
+.
+ When no background image is used, you might want to change the colour of
+ the background by right-clicking it and selecting 
+\series bold
+Change colors> Background
+\series default
+.
+ 
+\end_layout
+
+\begin_layout Standard
+TODO
+\end_layout
+
+\begin_layout Itemize
+vertices and edges, colour coding of infection state and selection
+\end_layout
+
+\begin_layout Itemize
+vertex icon types, icon autodetermination, changing types
+\end_layout
+
+\begin_layout Itemize
+changing background image and colour
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/1.jpg
+	lyxscale 30
+	width 45text%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Background image, simple icons
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \enskip{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/2.jpg
+	lyxscale 30
+	width 45text%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Background image, 3D icons
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset VSpace medskip
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/3.jpg
+	lyxscale 30
+	width 45text%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Background image, no icons
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \enskip{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/4.jpg
+	lyxscale 30
+	width 45text%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+No background image, no icons
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset VSpace medskip
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+The same graph with different rendering styles
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:view-options"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Mouse modes
+\begin_inset CommandInset label
+LatexCommand label
+name "sub:Mouse-modes"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The mouse is can be used to control how the graph is visualised.
+ It can operate in four different modes:
+\end_layout
+
+\begin_layout Enumerate
+Selection mode allows the user to select vertices and change their characteristi
+cs (see Vertex data).
+ 
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Left- clicking a vertex will select it
+\end_layout
+
+\begin_layout Enumerate
+Left- clicking the background will deselect all vertices 
+\end_layout
+
+\begin_layout Enumerate
+Ctrl + left click over a vertex will select it and move it the the centre
+ of the screen 
+\begin_inset Note Note
+status collapsed
+
+\begin_layout Plain Layout
+note this doesnt seem to work on the mac, ctrl+click is interpreted as right
+ click
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Shift + left click will select multiple vertices Click and drag will draw
+ a selection rectangle- when the mouse button is released, all vertices
+ inside the rectangle are selected.
+ Selection by dragging is also supported.
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Editing mode: allows the user to create vertices and edges
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Left clicking anywhere on the screen will create a new vertex at that location
+ 
+\end_layout
+
+\begin_layout Enumerate
+Dragging a line from a vertex to another will connect them with an undirected
+ edge, unless they are already connected or you are trying to connect a
+ vertex to itself 
+\end_layout
+
+\begin_layout Enumerate
+Holding Shift while dragging will create a directed edge 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Transforming mode: changes the way the graph is drawn (also see Layouts)
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Dragging will move the portion of the graph that is displayed on screen
+\end_layout
+
+\begin_layout Enumerate
+Ctrl + drag will skew the graph 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+doesn't work on os x
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Shift + drag will rotate the graph 
+\end_layout
+
+\end_deeper
+\begin_layout Enumerate
+Annotation mode: this mode allows the user to draw annotations on the screen,
+ for example for teaching or demonstration purposes.
+ In this mode an additional tool bar will appear at the bottom of the screen,
+ allowing control over the way the annotations are created 
+\end_layout
+
+\begin_deeper
+\begin_layout Enumerate
+Dragging will create a new annotation with the selected shape, colour and
+ position relative to the other elements in the graph 
+\end_layout
+
+\begin_layout Enumerate
+Shift + left click over an annotation will delete it 
+\end_layout
+
+\begin_layout Enumerate
+Right click anywhere on the screen will let the user enter some text, which
+ will be drawn on the scree.
+ Please note: clicking the right mouse button in annotation mode overrides
+ the default behaviour of the right mouse button (see below)
+\end_layout
+
+\end_deeper
+\begin_layout Standard
+The additional panel that appears when the mouse is in Annotation mode has
+ four adjustable parameters:
+\end_layout
+
+\begin_layout Enumerate
+Shape of the annotation (rectangle by default)
+\end_layout
+
+\begin_layout Enumerate
+Colour of the annotation
+\end_layout
+
+\begin_layout Enumerate
+Fill.
+ If this button is not toggled, an annotation will appear as a coloured
+ frame.
+ If it is toggled, the annotation area will be filled with the chosen colour.
+ See Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:annotations"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Enumerate
+Z-order (lower or upper).
+ When lower is selected, the annotation appear behind the graph.
+ When upper is selected, the annotation appear in front of the graph.
+ See Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:annotations-1"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/annotations.png
+	lyxscale 20
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Annotations with and without fill
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:annotations"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/annotations2.png
+	lyxscale 20
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Annotations in lower (blue) and upper (red) position
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:annotations-1"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The following actions work in all mouse modes: 
+\end_layout
+
+\begin_layout Enumerate
+Scrolling the mouse wheel up will zoom out and scrolling down will zoom
+ in 
+\end_layout
+
+\begin_layout Enumerate
+Right clicking a non- selected vertex will allow you to remove it or modify
+ its characteristics (see Vertex data) 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+todo ref
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Enumerate
+Right clicking a selected vertex will pop up a context- sensitive menu,
+ which allows you to create edges as well as to modify the vertex characteristic
+s (see Vertex data) 
+\begin_inset Note Note
+status open
+
+\begin_layout Plain Layout
+todo ref
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Information panel
+\end_layout
+
+\begin_layout Standard
+A close-up of the information panel normally located on the right hand side
+ of the application window is shown in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:infobar"
+
+\end_inset
+
+.
+ This consists of six parts, labelled A to F in the figure.
+ Each of these is described separately below.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/infobar.png
+	lyxscale 20
+	height 95theight%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+The information panel and its components
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:infobar"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+A: Simulation controls 
+\end_layout
+
+\begin_layout Standard
+This toolbar control the simulation of disease transmission.
+ When the application starts, a simulation is initialised with default settings,
+ and is paused.
+ The 
+\series bold
+Do step 
+\series default
+(keyboard shortcut 
+\series bold
+S
+\series default
+)  button will perform a single step of the simulation.
+ The 
+\series bold
+Resume (R)
+\series default
+ button will start the simulation and will then change to 
+\series bold
+Pause
+\series default
+.
+ The 
+\series bold
+Pause
+\series default
+ button can be used to temporarily pause the simulation--- it can be resumed
+ by clicking 
+\series bold
+Resume
+\series default
+.
+ The 
+\series bold
+Heal all (H)
+\series default
+ resets the simulation to its initial state and heals all vertices.
+\end_layout
+
+\begin_layout Standard
+The 
+\series bold
+Infect (I) 
+\series default
+button brings up the Infect window (Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:infect"
+
+\end_inset
+
+), which is used to randomly infect a number of vertices.
+ You can either specify a proportion of the vertices that should be infected
+ by using the top slider, or enter a number in the bottom input field.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/infect.png
+	lyxscale 20
+	width 100text%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+The information panel and its components
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:infect"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsubsection
+B: Infection parameters
+\end_layout
+
+\begin_layout Standard
+This panel controls various parameters of the infection, such as its type
+ (SI, SIS, SIR), transmissions rate, recovery rate (where applicable), etc.
+ Input validation is performed on the fly and the text will change to red
+ if invalid data is entered (e.g.
+ string instead of a number).
+ 
+\end_layout
+
+\begin_layout Subsubsection
+C: Simulation speed
+\end_layout
+
+\begin_layout Standard
+When the simulation is running, this slider controls how much time should
+ pass before the next simulation step.
+ Use the left and right arrow keys to adjust this value.
+\end_layout
+
+\begin_layout Subsubsection
+D: Infection statistics 
+\end_layout
+
+\begin_layout Standard
+Displays a graph of the number of infected vertices over the past 100 time
+ steps.
+ This updates dynamically as the simulation runs.
+\end_layout
+
+\begin_layout Subsubsection
+E: Graph statistics
+\end_layout
+
+\begin_layout Standard
+Displays statistics for the whole graph.
+ These include average clustering coefficient, the average, min and max
+ degree, average weighted path length, etc.
+ There is also a chart of the degree distribution of the graph, which can
+ be switched to cumulative degree distribution.
+ The y-axis of the chart can be switched to log scale.
+\end_layout
+
+\begin_layout Subsubsection
+F: Selected node statistics 
+\end_layout
+
+\begin_layout Standard
+This tool bar displays information about the selected node, such as in and
+ out degree, betweenness centrality, clustering coefficient and average
+ path length.
+ If you select a number of vertices other than one, all fields will read
+ 
+\series bold
+N/A
+\series default
+.
+\end_layout
+
+\begin_layout Section
+Using the menu options
+\end_layout
+
+\begin_layout Subsection
+The File menu
+\end_layout
+
+\begin_layout Standard
+Contains the following commands:
+\end_layout
+
+\begin_layout Description
+New Creates a new graph with no vertices and no edges.
+ Keyboard shortcut is 
+\series bold
+CTRL+N
+\series default
+ (or 
+\series bold
+CMD+N
+\series default
+ on OS X) 
+\end_layout
+
+\begin_layout Description
+Save Saves the graph to a file.
+ This creates two files, one with a .graph extension and one with a .layout.
+ The first one contains a description of the graph in Pajek plain text format.
+ Information about the state of each vertex (infected, susceptible of resistant)
+ is also encoded in this file.
+ This is editable in any text editor.
+ The second file is binary (not editable) and describes where each vertex
+ of the graph should be positioned on screen.
+ The two files should be thought of as one for all intents an purposes.
+ Keyboard shortcut is 
+\series bold
+CTRL+S.
+
+\series default
+ 
+\end_layout
+
+\begin_layout Description
+Load Loads a .graph file that has been previously saved.
+ If a .layout file is present, it will be loaded and all vertices will be
+ restored to their previous position.
+ Otherwise an the graph will be laid out using one of the built-in algorithms.
+ Keyboard shortcut is 
+\series bold
+CTRL+O.
+\end_layout
+
+\begin_layout Description
+Generate Generates a new graph.
+ Keyboard shortcut is 
+\series bold
+CTRL+G.
+
+\series default
+ The program currently employs the following algorithms: 
+\end_layout
+
+\begin_layout Enumerate
+Rectangular lattice: a lattice in which each vertex has for local connections
+ 
+\end_layout
+
+\begin_layout Enumerate
+Hexagonal lattice: a lattice with six local connections per vertex
+\end_layout
+
+\begin_layout Enumerate
+Scale-free generator: Starts with a single vertex an creates the specified
+ number of vertices, attaching them to existing ones based on the principle
+ of preferential attachment.
+\end_layout
+
+\begin_layout Enumerate
+Small world generator- starts with a circular lattice of the specified size,
+ connecting each vertex it its k closest neighbours on each side.
+ Then traverses all edges, and rewires some of them with probability p.
+\end_layout
+
+\begin_layout Enumerate
+Random, with a pre-defined number of vertices and edges.
+\end_layout
+
+\begin_layout Standard
+Note on performance: depending on your machine's specification, working
+ with large graphs may be very slow.
+ For demonstration purposes it is recommended that you do not generate a
+ graph with more than 
+\series bold
+100
+\series default
+ vertices.
+ 
+\end_layout
+
+\begin_layout Standard
+An example of each kind of graph Plovdiv can generate is shown in Figure
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:generated_graphs"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/rectangular.png
+	lyxscale 30
+	width 45text%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Rectangular lattice
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \enskip{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/hexagonal.png
+	lyxscale 30
+	width 45text%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Hexagonal lattice
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset VSpace medskip
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/scalefree.png
+	lyxscale 30
+	width 45text%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Scale free
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset space \enskip{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/smallworld.png
+	lyxscale 30
+	width 45text%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Small world
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset VSpace medskip
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/random.png
+	lyxscale 30
+	width 45text%
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Random
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption
+
+\begin_layout Plain Layout
+Example generated graphs
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:generated_graphs"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+The View menu
+\end_layout
+
+\begin_layout Standard
+This menu currently contain a single command.
+ To save the what is currently on the screen to a jpg file, click View>
+ Save to .jpg.
+\end_layout
+
+\begin_layout Subsection
+The Label edges/vertices menu 
+\end_layout
+
+\begin_layout Standard
+By default edges and vertices are not labelled.
+ Vertex features include degree, local clustering coefficient, betweenness
+ centrality, distance from the currently selected vertex.
+ Edge features include weight and centrality.
+\end_layout
+
+\begin_layout Subsection
+Layouts: The Change Layout menu 
+\end_layout
+
+\begin_layout Standard
+If the graph looks cluttered or unordered, try changing the layout.
+ Different algorithms will produce different results, and sometimes dynamic
+ algorithms, when applied on the same graph more than once, can produce
+ significantly different results.
+ Some algorithms will work better than others on certain types of graphs.
+ This is still an open research area, so there is no optimal layout- try
+ which one looks best for you.
+\end_layout
+
+\begin_layout Standard
+ 
+\end_layout
+
+\begin_layout Subsection
+The Simulation menu
+\end_layout
+
+\begin_layout Standard
+This menu provides another way of accessing the buttons in the Simulation
+ panel (A in Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:infobar"
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Subsection
+The Help menu
+\end_layout
+
+\begin_layout Standard
+The Help menu contains a copy of the mouse modes documentation (Section
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "sub:Mouse-modes"
+
+\end_inset
+
+) as well as information about the version of the software you are running.
+\end_layout
+
+\end_body
+\end_document
