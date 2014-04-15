@@ -155,10 +155,11 @@ public class Controller {
                 getVertexFactory().reset(),
                 getEdgeFactory().reset());
         this.g.setInstance(g);
-        IOClass.loadLayout(getGui(), path);
+        gui.setVertexRenderer();
+        IOClass.loadLayout(gui, path);
     }
 
-    public void save(String path, ObservableGraph g, PersistentLayout layout) throws IOException {
+    public void save(String path, MyGraph g, PersistentLayout layout) throws IOException {
         if (path != "nullnull") {
             //if the user pressed cancel, nullnull will be passed to this method
             PajekParser.save(path + ".graph", g);
@@ -203,6 +204,7 @@ public class Controller {
      * accessing the display directly
      */
     public void updateDisplay() {
+
         Display.vv.repaint();
     }
 

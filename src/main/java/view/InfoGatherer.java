@@ -27,20 +27,12 @@
  * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package view;
 
 import controller.Controller;
+import controller.IOClass;
 import edu.uci.ics.jung.graph.MyGraph;
-import edu.uci.ics.jung.graph.ObservableGraph;
 import edu.uci.ics.jung.visualization.layout.PersistentLayout;
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.JFreeChart;
-import org.jfree.chart.plot.PlotOrientation;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
-import org.jfree.ui.ApplicationFrame;
 import view.generatorSettings.GeneratorSettings;
 
 import javax.swing.*;
@@ -56,7 +48,7 @@ import java.io.IOException;
 public class InfoGatherer {
 
     private Controller controller;
-    private Display    d;
+    private Display d;
 
     public InfoGatherer(Controller controller, Display d) {
         this.controller = controller;
@@ -67,9 +59,9 @@ public class InfoGatherer {
      * Shows a standard save window and sends the settings to the controller
      *
      * @param parent the window that this dialog was evoked from
-     * @param g      the graph to save
+     * @param g the graph to save
      */
-    public void showSave(Frame parent, ObservableGraph g, PersistentLayout layout) {
+    public void showSave(Frame parent, MyGraph g, PersistentLayout layout) {
         FileDialog window = new FileDialog(parent, "Save", FileDialog.SAVE);
         window.setSize(500, 500);
         window.setVisible(true);

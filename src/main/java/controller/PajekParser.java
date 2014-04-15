@@ -34,9 +34,10 @@
  */
 package controller;
 
+import edu.uci.ics.jung.io.CustomPajekNetReader;
+import edu.uci.ics.jung.io.CustomPajekNetWriter;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.MyGraph;
-import edu.uci.ics.jung.io.PajekNetReader;
 import edu.uci.ics.jung.io.PajekNetWriter;
 import model.MyEdge;
 import model.factories.EdgeFactory;
@@ -56,12 +57,12 @@ public class PajekParser {
     }
 
     public static MyGraph load(String path, GraphFactory gf, VertexFactory vf, EdgeFactory ef) throws IOException {
-        PajekNetReader reader = new PajekNetReader(vf, ef);
+        CustomPajekNetReader reader = new CustomPajekNetReader(vf, ef);
         return (MyGraph) reader.load(path, gf);
     }
 
-    public static void save(String path, Graph g) throws IOException {
-        PajekNetWriter writer = new PajekNetWriter();
+    public static void save(String path, MyGraph g) throws IOException {
+        CustomPajekNetWriter writer = new CustomPajekNetWriter();
         writer.save(g, path, new Transformer<Object, String>() {
 
                         @Override

@@ -135,7 +135,7 @@ public class IconsStore implements Transformer<MyVertex, Icon> {
         if (v.getVertexIconStyle() == MyVertex.VERTEX_ICON_STYLE_SIMPLE){
             iconsPack = simpleIconsMap;
         }
-        
+
         Image image = null;
         if (pickedState != null && pickedState.isPicked(v)) {
             image = iconsPack.get(v.getNodeType())[VERTEX_ICON_SELECTED];

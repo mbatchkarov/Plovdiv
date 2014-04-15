@@ -84,6 +84,8 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import org.apache.commons.collections15.Transformer;
+import view.CustomVisualization.CustomVertexRenderer;
 
 import static view.Utils.round;
 
@@ -93,7 +95,7 @@ import static view.Utils.round;
 @SuppressWarnings({"MagicNumber", "AssignmentToStaticFieldFromInstanceMethod", "OverlyLongMethod", "MethodOnlyUsedFromInnerClass"})
 public class Display extends JFrame implements GraphEventListener<MyVertex, MyEdge>,
         ExtraGraphEventListener<MyVertex, MyEdge> {
-
+    
     private static InfoGatherer gatherer;
     //declared as fields rather than as local variables so that their value can be altered by listeners
     public static VisualizationViewer vv;
@@ -106,6 +108,8 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     public boolean handlingEvents;
     private Stats stats;
     private Controller controller;
+    private Renderer.Vertex defaultRenderer;
+    private Transformer defaultVertexIconShapeTransformer;
     private MyGraph g;
     private IconsStore icons;
 
@@ -119,32 +123,32 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         this.controller = cont;
         this.g = g;
         this.handlingEvents = false;
-
+        
         gatherer = new InfoGatherer(controller, this);
 
         //set shortcuts for controlling the simulation speed
         InputMap inputMap = getRootPane().getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
         ActionMap actionMap = getRootPane().getActionMap();
-
+        
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, 0), "+Action");
         actionMap.put("+Action", incrementWaitTime);
         inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, 0), "-Action");
         actionMap.put("-Action", decrementWaitTime);
         scaler = new CrossoverScalingControl();
         redisplayCompletely();
-
+        
         vNone.setSelected(true);
         parseSimulationParameters(null);//trigger parsing of default values for transmission params
     }
-
+    
     private AbstractAction incrementWaitTime = new AbstractAction() {
-
+        
         public void actionPerformed(ActionEvent e) {
             speedSlider.setValue(speedSlider.getValue() + 100);
         }
     };
     private AbstractAction decrementWaitTime = new AbstractAction() {
-
+        
         public void actionPerformed(ActionEvent e) {
             speedSlider.setValue(speedSlider.getValue() - 100);
         }
@@ -169,13 +173,13 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         globalAPL.setText(round(stats.getAPL()));
         globalAvgDegree.setText(round(stats.getAvgDegree()));
         globalDegreeCorrelation.setText(round(stats.getWeightedDegreeCorrelation()));
-
+        
         globalMinDegree.setText(round(stats.getMinDegree()));
         globalMaxDegree.setText(round(stats.getMaxDegree()));
-
+        
         globalVertexCount.setText(round(stats.getVertexCount()));
         globalEdgeCount.setText(round(stats.getEdgeCount()));
-
+        
         updateDegreeDistributionChart();
 
         //information about a certain node
@@ -185,7 +189,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
             localBC.setText(round(stats.getBetweennessCentrality(selectedVertex)));
             in.setText(round(g.inDegree(selectedVertex)));
             out.setText(round(g.outDegree(selectedVertex)));
-
+            
         } else {
             localCC.setText("N/A");
             localAPL.setText("N/A");
@@ -194,23 +198,23 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
             out.setText("N/A");
         }
     }
-
+    
     private void initDegreeDistributionChart() {
         JPanel degreeChart = stats.buildDegreeDistributionChart(
                 degDistCumulative.isSelected(),
                 degDistLogScale.isSelected(),
                 degreeDistPanel.getSize());
-
+        
         degreeDistPanel.setLayout(new FlowLayout());
         degreeDistPanel.removeAll();
         degreeDistPanel.add(degreeChart);
     }
-
+    
     private void updateDegreeDistributionChart() {
         stats.updateDegreeDistributionChartData(degDistCumulative.isSelected(),
                 degDistLogScale.isSelected());
     }
-
+    
     public VisualizationViewer getVV() {
         return vv;
     }
@@ -1360,7 +1364,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
             }
         }
     }//GEN-LAST:event_pauseSimToolbarButtonActionPerformed
-
+    
     public boolean checkEmptyPopupError() {
         if (g.getVertexCount() < 1) {
             JOptionPane.showMessageDialog(this, "That makes no sense when the graph is empty!");
@@ -1492,7 +1496,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     private void degDistCumulativeItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_degDistCumulativeItemStateChanged
         updateDegreeDistributionChart();
     }//GEN-LAST:event_degDistCumulativeItemStateChanged
-
+    
     public JPanel getStatsPanel() {
         return statsPanel;
     }
@@ -1524,7 +1528,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         double gamaValue = parseValueOrColourComponentOnError(gama);
         double deltaTValue = parseValueOrColourComponentOnError(deltaT);
         double brakingRateValue = parseValueOrColourComponentOnError(breakingRate);
-
+        
         if (dynamics.getSelectedItem().toString().equals("SIR")) {
             g.setDynamics(new SIRDynamics(tauValue, deltaTValue, gamaValue));
         } else if (dynamics.getSelectedItem().toString().equals("SIS")) {
@@ -1532,7 +1536,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         } else {
             g.setDynamics(new SIDynamics(tauValue, deltaTValue));
         }
-        g.setSleepTimeBetweenSteps(speedSlider.getValue()+20);
+        g.setSleepTimeBetweenSteps(speedSlider.getValue() + 20);
         //make sure the graphs is in a proper state
         controller.validateNodeStates();
     }
@@ -1544,14 +1548,15 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         //clear all previous content
         pane.removeAll();
         pane.setLayout(new BorderLayout());
-
+        
         persistentLayout = new PersistentLayoutImpl<MyVertex, MyEdge>(getSelectedGraphLayout(g));
-
+        
         vv = new VisualizationViewer<MyVertex, MyEdge>(persistentLayout, pane.getSize());
         initDemoMap();
-
-        this.icons = new IconsStore(vv.getPickedVertexState());
-//        vv.getRenderer().setVertexRenderer(new CustomVertexRenderer(vv.getPickedVertexState(), false));
+        
+        icons = new IconsStore(vv.getPickedVertexState());
+        defaultRenderer = vv.getRenderer().getVertexRenderer();
+        defaultVertexIconShapeTransformer = vv.getRenderContext().getVertexShapeTransformer();
         vv.getRenderContext().setArrowFillPaintTransformer(new ConstantTransformer(Color.black));
         vv.getRenderContext().setArrowDrawPaintTransformer(new ConstantTransformer(Color.black));
         vv.getRenderContext().setVertexLabelTransformer(new CustomVertexLabeler(this.stats));
@@ -1565,7 +1570,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                 controller.getVertexFactory(), controller.getEdgeFactory());
         graphMouse.loadPlugins();
         vv.setGraphMouse(graphMouse);
-
+        
         annotationControls = new AnnotationControls<MyVertex, MyEdge>(
                 graphMouse.getAnnotatingPlugin());
         annotationControlsToolbar = annotationControls.getAnnotationsToolBar();
@@ -1576,25 +1581,20 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
             component.setFocusTraversalKeysEnabled(false);
             component.setFocusable(false);
         }
-
+        
         for (int i = 0; i < mouseModeToolbar.getComponents().length; i++) {
             Component comp = mouseModeToolbar.getComponents()[i];
             if (comp instanceof JToolBar) {
                 mouseModeToolbar.remove(comp);
             }
-
+            
         }
-
-        final VertexIconShapeTransformer<Number> vertexIconShapeTransformer
-                = new CustomVertexIconShapeTransformer(new EllipseVertexShapeTransformer(),
-                        this.icons);
-
-        vv.getRenderContext().setVertexShapeTransformer(vertexIconShapeTransformer);
-        vv.getRenderContext().setVertexIconTransformer(this.icons);
-
+        
+        setVertexRenderer();
+        
         mouseModeToolbar.add(annotationControlsToolbar, BorderLayout.SOUTH);
         annotationControlsToolbar.setVisible(annotate.isSelected());
-
+        
         pane.add(vv, BorderLayout.CENTER);
         pane.setVisible(true);
         redisplayPartially();
@@ -1602,21 +1602,39 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         //initially display nothing
         initDegreeDistributionChart();
         updateStatsDisplay();
-
+        
         mouseModeButtonGroup.clearSelection();
         select.doClick();
-
+        
         controller.getSimulator().createInfectedCountGraph(this.getStatsPanel());
         controller.getSimulator().resetSimulation();
     }
-
+    
+    public void setVertexRenderer() {
+        Transformer vertexShapeTransformer = new EllipseVertexShapeTransformer();
+        Transformer vertexIconShapeTransformer = defaultVertexIconShapeTransformer;
+        Renderer.Vertex vertexRenderer = defaultRenderer;
+        
+        if (g.areNodeIconsAllowed()) {
+            vertexShapeTransformer = icons;
+            vertexIconShapeTransformer = new CustomVertexIconShapeTransformer(new EllipseVertexShapeTransformer(), icons);
+        } else {
+            vertexRenderer = new CustomVertexRenderer(vv.getPickedVertexState(), false);
+        }
+        
+        vv.getRenderer().setVertexRenderer(vertexRenderer);
+        vv.getRenderContext().setVertexShapeTransformer(vertexIconShapeTransformer);
+        vv.getRenderContext().setVertexIconTransformer(vertexShapeTransformer);
+        vv.repaint();
+    }
+    
     private void initDemoMap() {
         BackgroundImageController.getInstance().setGraphBackgroundImage(vv, "maps/UK_Map.png",
                 1.75, 1.7, new Color(10, 20, 20));
         scaler.scale(vv, .5f, vv.getCenter());
         vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(Color.white));
     }
-
+    
     public static void redisplayPartially() {
         pane.validate();
         vv.repaint();
@@ -1691,7 +1709,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     public void changeLayout() {
         try {
             Layout oldLayout = vv.getGraphLayout();
-            PersistentLayoutImpl newLayout =  new PersistentLayoutImpl<MyVertex, MyEdge>(getSelectedGraphLayout(g));
+            PersistentLayoutImpl newLayout = new PersistentLayoutImpl<MyVertex, MyEdge>(getSelectedGraphLayout(g));
             this.persistentLayout = newLayout;
             newLayout.setSize(oldLayout.getSize());
             oldLayout.initialize();
@@ -1704,9 +1722,9 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
             vv.repaint();
         } catch (Exception ex) {
             System.out.println("Error while changing layout: " + ex.getMessage());
-
+            
         }
-
+        
     }
 
     /**
@@ -1720,7 +1738,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         //mnemonics here are set to A,B,C,D, so subtract 65 to get the selected index
         return vertexLabel.getSelection().getMnemonic() - 65;
     }
-
+    
     public static int getSelectedEdgeLabelingOption() {
         //first one is H, so subtract 72
         return edgeLabel.getSelection().getMnemonic() - 72;
@@ -1832,7 +1850,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
             updateStatsDisplay();
         }
     }
-
+    
     @Override
     public void handleExtraGraphEvent(ExtraGraphEvent<MyVertex, MyEdge> evt) {
         if (this.handlingEvents) {
@@ -1851,7 +1869,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
             }
         }
     }
-
+    
     public Controller getController() {
         return controller;
     }

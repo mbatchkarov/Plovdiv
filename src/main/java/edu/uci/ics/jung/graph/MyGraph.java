@@ -36,15 +36,12 @@ package edu.uci.ics.jung.graph;
 
 import controller.ExtraGraphEvent;
 import controller.ExtraGraphEventListener;
-import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
 import model.EpiState;
 import model.MyEdge;
 import model.MyVertex;
-import model.Strings;
 import model.dynamics.Dynamics;
-import model.dynamics.SISDynamics;
 
 import java.io.Serializable;
 import java.util.*;
@@ -53,6 +50,8 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
 
     List<ExtraGraphEventListener<V, E>> extraListenerList;
 
+    private boolean allowNodeIcons = true;
+    
     private Dynamics dynamics;
     private int numSusceptible, numInfected, numResistant;
     int sleepTimeBetweenSteps; // how long to wait before another simulation step is made (ms)
@@ -70,7 +69,7 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
 
     public void setInstance(MyGraph newInstance) {
         delegate = newInstance.delegate;
-        setAllSusceptible();
+        setAllowNodeIcons(newInstance.areNodeIconsAllowed());
         updateCounts();
         fireExtraEvent(new ExtraGraphEvent(delegate, ExtraGraphEvent.GRAPH_REPLACED));
     }
@@ -178,5 +177,19 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
             x.setEpiState(EpiState.SUSCEPTIBLE);
         }
         updateCounts();
+    }
+
+    /**
+     * @return the allowNodeIcons
+     */
+    public boolean areNodeIconsAllowed() {
+        return allowNodeIcons;
+    }
+
+    /**
+     * @param allowNodeIcons the allowNodeIcons to set
+     */
+    public void setAllowNodeIcons(boolean allowNodeIcons) {
+        this.allowNodeIcons = allowNodeIcons;
     }
 }
