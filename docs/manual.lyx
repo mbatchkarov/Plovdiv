@@ -220,6 +220,18 @@ reference "fig:view-options"
 Change icon
 \series default
 .
+ To change the icons of all nodes, right-click the background and select
+ 
+\series bold
+Node Icons> Icon Type> Human/Computer
+\series default
+.
+ When 
+\series bold
+Computer
+\series default
+ is chosen, the exact icon (mobile phone, desktop computer, access point)
+ is determined based on the degree of the vertex.
  To switch from icons to circles, right-click the background and select
  
 \series bold
@@ -269,22 +281,6 @@ Change colors> Background
 \series default
 .
  
-\end_layout
-
-\begin_layout Standard
-TODO
-\end_layout
-
-\begin_layout Itemize
-vertices and edges, colour coding of infection state and selection
-\end_layout
-
-\begin_layout Itemize
-vertex icon types, icon autodetermination, changing types
-\end_layout
-
-\begin_layout Itemize
-changing background image and colour
 \end_layout
 
 \begin_layout Standard
@@ -470,15 +466,15 @@ cs (see Vertex data).
 
 \begin_deeper
 \begin_layout Enumerate
-Left- clicking a vertex will select it
+Left-clicking a vertex will select it
 \end_layout
 
 \begin_layout Enumerate
-Left- clicking the background will deselect all vertices 
+Left-clicking the background will deselect all vertices 
 \end_layout
 
 \begin_layout Enumerate
-Ctrl + left click over a vertex will select it and move it the the centre
+Ctrl+left click over a vertex will select it and move it the the centre
  of the screen 
 \begin_inset Note Note
 status collapsed
@@ -494,7 +490,7 @@ note this doesnt seem to work on the mac, ctrl+click is interpreted as right
 \end_layout
 
 \begin_layout Enumerate
-Shift + left click will select multiple vertices Click and drag will draw
+Shift+left click will select multiple vertices Click and drag will draw
  a selection rectangle- when the mouse button is released, all vertices
  inside the rectangle are selected.
  Selection by dragging is also supported.
@@ -532,7 +528,7 @@ Dragging will move the portion of the graph that is displayed on screen
 \end_layout
 
 \begin_layout Enumerate
-Ctrl + drag will skew the graph 
+Ctrl+drag will skew the graph 
 \begin_inset Note Note
 status open
 
@@ -546,7 +542,7 @@ doesn't work on os x
 \end_layout
 
 \begin_layout Enumerate
-Shift + drag will rotate the graph 
+Shift+drag will rotate the graph 
 \end_layout
 
 \end_deeper
@@ -564,7 +560,7 @@ Dragging will create a new annotation with the selected shape, colour and
 \end_layout
 
 \begin_layout Enumerate
-Shift + left click over an annotation will delete it 
+Shift+left click over an annotation will delete it 
 \end_layout
 
 \begin_layout Enumerate
@@ -703,34 +699,14 @@ Scrolling the mouse wheel up will zoom out and scrolling down will zoom
 \end_layout
 
 \begin_layout Enumerate
-Right clicking a non- selected vertex will allow you to remove it or modify
- its characteristics (see Vertex data) 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-todo ref
-\end_layout
-
-\end_inset
-
-
+Right clicking a currently deselected vertex will allow you to remove it
+ or modify its characteristics, such as infection status, icon type, etc.
 \end_layout
 
 \begin_layout Enumerate
-Right clicking a selected vertex will pop up a context- sensitive menu,
- which allows you to create edges as well as to modify the vertex characteristic
-s (see Vertex data) 
-\begin_inset Note Note
-status open
-
-\begin_layout Plain Layout
-todo ref
-\end_layout
-
-\end_inset
-
-
+Right clicking a selected vertex will pop up a context-sensitive menu, which
+ allows you to create edges as well as to modify the vertex characteristics
+ 
 \end_layout
 
 \begin_layout Subsection
