@@ -416,6 +416,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                         public void actionPerformed(ActionEvent e) {
                             final MyVertex newV = controller.getVertexFactory().create();
+                            newV.setVertexIconStyle(graph.getDominantIconType());
                             newV.setEpiState(EpiState.SUSCEPTIBLE);
                             graph.addVertex(newV);
                             layout.setLocation(newV, vv.getRenderContext().getMultiLayerTransformer().inverseTransform(ivp));
