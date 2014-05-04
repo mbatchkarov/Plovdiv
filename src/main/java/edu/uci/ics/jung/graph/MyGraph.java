@@ -196,7 +196,7 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
     /**
      * Analyzes all of the vertices and returns the predominant type of icons used.
      */
-    public int getDominantIconType() {
+    public int getDominantIconStyle() {
         int simpleIconCount = 0;
         int otherIconCount = 0;
         for (Object vertex : getVertices()) {
