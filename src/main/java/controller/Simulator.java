@@ -174,7 +174,7 @@ public class Simulator {
 
         updateChartAxisParameters();
 
-        int maxHeight = (int) (0.8 * maxSize.getHeight()); //save vertical space
+        int maxHeight = (int) (0.6 * maxSize.getHeight()); //save vertical space
         int maxWidth = (int) maxSize.getWidth();
 
         ChartPanel panel = new ChartPanel(jfreechart, maxWidth, maxHeight, maxWidth, maxHeight,
