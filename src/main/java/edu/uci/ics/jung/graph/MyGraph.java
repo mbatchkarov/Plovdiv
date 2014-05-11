@@ -30,10 +30,11 @@
 package edu.uci.ics.jung.graph;
 
 /**
- * A singleton graph decorator which is observable and provides a mechanism for adding user data to the graph.
+ * A singleton graph decorator which is observable and provides a mechanism for
+ * adding user data to the graph.
+ *
  * @author Miroslav Batchkarov
  */
-
 import controller.ExtraGraphEvent;
 import controller.ExtraGraphEventListener;
 import edu.uci.ics.jung.graph.event.GraphEvent;
@@ -51,7 +52,7 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
     List<ExtraGraphEventListener<V, E>> extraListenerList;
 
     private boolean allowNodeIcons = true;
-    
+
     private Dynamics dynamics;
     private int numSusceptible, numInfected, numResistant;
     int sleepTimeBetweenSteps; // how long to wait before another simulation step is made (ms)
@@ -137,12 +138,11 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
 
     @Override
     public String toString() {
-        return "MyGraph{" +
-               "delegate=" + this.delegate +
-               ", extraListenerList=" + extraListenerList +
-               '}';
+        return "MyGraph{"
+                + "delegate=" + this.delegate
+                + ", extraListenerList=" + extraListenerList
+                + '}';
     }
-
 
     /**
      * Attaches counters of the numbers of infected/susceptible/resistant to all
@@ -191,5 +191,26 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
      */
     public void setAllowNodeIcons(boolean allowNodeIcons) {
         this.allowNodeIcons = allowNodeIcons;
+    }
+
+    /**
+     * Analyzes all of the vertices and returns the predominant type of icons used.
+     */
+    public int getDominantIconStyle() {
+        int simpleIconCount = 0;
+        int otherIconCount = 0;
+        for (Object vertex : getVertices()) {
+            int iconStyle = ((MyVertex) vertex).getVertexIconStyle();
+            if (iconStyle == MyVertex.VERTEX_ICON_STYLE_SIMPLE){
+                simpleIconCount++;
+            } else {
+                otherIconCount++;
+            }
+        }
+        if (simpleIconCount >= otherIconCount){
+            return MyVertex.VERTEX_ICON_STYLE_SIMPLE;
+        } else {
+            return MyVertex.VERTEX_ICON_STYLE_PHOTOREALISTIC;
+        }
     }
 }
