@@ -348,7 +348,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                         public void actionPerformed(ActionEvent e) {
                             final JFileChooser fc = new JFileChooser();
-                            FileNameExtensionFilter imagesFilter = new FileNameExtensionFilter("Images (*.jpg, *.jpeg; *.png)", new String[]{"jpg", "jpeg", "png"});
+                            FileNameExtensionFilter imagesFilter = new FileNameExtensionFilter("Images (*.jpg, *.jpeg; *.png; *.bmp)", new String[]{"jpg", "jpeg", "png", "bmp"});
                             fc.setFileFilter(imagesFilter);
 
                             int returnVal = fc.showOpenDialog(backgroundImageMenu.getMenuComponent(3));
@@ -358,6 +358,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                                 ImageIcon selectedBackgroundImage = new ImageIcon(file.getPath());
 
                                 BackgroundImageController.getInstance().setGraphBackgroundImage(vv, selectedBackgroundImage, 2, 2, new Color(240, 240, 240));
+                                BackgroundImageController.getInstance().setBackgroundImagePath(file.getPath());
                             }
                         }
                     });

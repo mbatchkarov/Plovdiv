@@ -30,34 +30,15 @@
 
 package controller;
 
-import cern.colt.matrix.DoubleMatrix2D;
-import cern.colt.matrix.impl.SparseDoubleMatrix2D;
-import edu.uci.ics.jung.algorithms.generators.random.BarabasiAlbertGenerator;
-import edu.uci.ics.jung.algorithms.matrix.GraphMatrixOperations;
-import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.LineNumberReader;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JOptionPane;
 
-import model.*;
-import model.factories.*;
 import org.apache.commons.io.FilenameUtils;
-import view.generatorSettings.GeneratorSettings;
 import view.Display;
 
 /**
