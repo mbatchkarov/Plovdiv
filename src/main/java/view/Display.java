@@ -420,8 +420,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         });
 
         mouseModeToolbar.setBorder(javax.swing.BorderFactory.createTitledBorder("Mouse mode"));
-        mouseModeToolbar.setRollover(true);
-        //mouseModeToolbar.setEnabled(false);
+        mouseModeToolbar.setFloatable(false);
 
         mouseModeButtonGroup.add(select);
         select.setSelected(true);
@@ -1662,6 +1661,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 
         mouseModeToolbar.add(annotationControlsToolbar, BorderLayout.SOUTH);
         annotationControlsToolbar.setVisible(annotate.isSelected());
+        annotationControlsToolbar.setFloatable(false);
         
         pane.add(vv, BorderLayout.CENTER);
         pane.setVisible(true);
