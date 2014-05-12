@@ -203,10 +203,10 @@ public class GeneratorSettings extends javax.swing.JFrame {
         if (index == 3) {
             pane.add(new SmallWorldSettings(this));
         }
+        help.setText("Parameters:");
         if (index == 4) {
             pane.add(new RandomSettings(this));
-            help.setText("Generates a random graph with the"
-                    + "specified number of nodes and edges");
+            help.setText("<html>Parameters:<br>* Generates a new random graph with the specified number of nodes<br>and edges.</html>");
         }
         pane.setVisible(true);
         pane.validate();
