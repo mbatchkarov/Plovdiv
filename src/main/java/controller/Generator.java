@@ -45,9 +45,11 @@ import model.factories.VertexFactory;
 import java.util.HashSet;
 
 /**
- * This class handles provides my own lattice/ random generators, and the other generators are taken from JUNG 2.0,
- * with each Factory replaced by a MyFactory to enable me to use .create(graph), which takes into account the contents
- * of the internal buffer of the generator when issuing numbers to newly added graph elements
+ * This class handles provides my own lattice/ random generators, and the other
+ * generators are taken from JUNG 2.0, with each Factory replaced by a MyFactory
+ * to enable me to use .create(graph), which takes into account the contents of
+ * the internal buffer of the generator when issuing numbers to newly added
+ * graph elements
  *
  * @author reseter
  */
@@ -57,7 +59,7 @@ public class Generator {
         //static methods only
     }
 
-    public static MyGraph generateRandom(int v, int e, Controller controller) {
+    public static MyGraph generateRandom(int v, int e, Controller controller, boolean autodetermineIconType) {
         VertexFactory vf = controller.getVertexFactory().reset();
         EdgeFactory ef = controller.getEdgeFactory().reset();
         vf.reset();
@@ -65,17 +67,21 @@ public class Generator {
         RandomGenerator r = new RandomGenerator(controller.getGraphFactory(), vf, ef, v, e);
         MyGraph g = r.create();
         System.out.println("Generator has created: " + g);
-        determineInitialNodeTypes(g);
+        
+        if (autodetermineIconType) {
+            determineInitialNodeTypes(g);
+        }
         return g;
     }
 
     /**
-     * Generates a "rectangular" lattice, where the nodes form little rectangles/squares
+     * Generates a "rectangular" lattice, where the nodes form little
+     * rectangles/squares
      *
      * @param m
      * @param n
      */
-    public static MyGraph generateRectangularLattice(int m, int n, Controller controller) {
+    public static MyGraph generateRectangularLattice(int m, int n, Controller controller, boolean autodetermineIconType) {
         //@see notes 17 JUL 2009
         MyGraph g = controller.getGraphFactory().create();
         System.out.println(g);
@@ -86,35 +92,38 @@ public class Generator {
 
         //feed stuff to the buffer
         MyVertex[][] allNodes = new MyVertex[m][n];
-        for (int i = 0; i <
-                        m; i++) {//give vertices and ID and add them to the graph
-            for (int j = 0; j <
-                            n; j++) {
+        for (int i = 0; i
+                < m; i++) {//give vertices and ID and add them to the graph
+            for (int j = 0; j
+                    < n; j++) {
                 allNodes[i][j] = vf.create();
                 g.addVertex(allNodes[i][j]);
             }
 
         }
-        for (int i = 0; i <
-                        m - 1; i++) {//initialize it
-            for (int j = 0; j <
-                            n - 1; j++) {
+        for (int i = 0; i
+                < m - 1; i++) {//initialize it
+            for (int j = 0; j
+                    < n - 1; j++) {
                 g.addEdge(ef.create(), allNodes[i][j], allNodes[i][j + 1]);//link to the right
                 g.addEdge(ef.create(), allNodes[i][j], allNodes[i + 1][j]);// link down
             }
 
         }
         //last row and column not initialized yet
-        for (int i = 0; i <
-                        m - 1; i++) {
+        for (int i = 0; i
+                < m - 1; i++) {
             g.addEdge(ef.create(), allNodes[i][n - 1], allNodes[i + 1][n - 1]);//TODO modify to include last row and last column
         }
 
-        for (int i = 0; i <
-                        n - 1; i++) {
+        for (int i = 0; i
+                < n - 1; i++) {
             g.addEdge(ef.create(), allNodes[m - 1][i], allNodes[m - 1][i + 1]);//TODO modify to include last row and last column
         }
-        determineInitialNodeTypes(g);
+        
+        if (autodetermineIconType) {
+            determineInitialNodeTypes(g);
+        }
         return g;
     }
 
@@ -124,7 +133,7 @@ public class Generator {
      * @param m
      * @param n
      */
-    public static MyGraph generateHexagonalLattice(int m, int n, Controller controller) {
+    public static MyGraph generateHexagonalLattice(int m, int n, Controller controller, boolean autodetermineIconType) {
         //@see notes 17 JUL 2009
         MyGraph g = controller.getGraphFactory().create();
         VertexFactory vf = controller.getVertexFactory().reset();
@@ -132,10 +141,10 @@ public class Generator {
         EdgeFactory ef = controller.getEdgeFactory().reset();
         ef.reset();
         MyVertex[][] nodes = new MyVertex[m][n];
-        for (int i = 0; i <
-                        m; i++) {//initialize vertices and add them to the graph
-            for (int j = 0; j <
-                            n; j++) {
+        for (int i = 0; i
+                < m; i++) {//initialize vertices and add them to the graph
+            for (int j = 0; j
+                    < n; j++) {
                 nodes[i][j] = vf.create();
                 g.addVertex(nodes[i][j]);
             }
@@ -143,10 +152,10 @@ public class Generator {
         }
 
         //link to the right
-        for (int i = 0; i <
-                        m; i++) {
-            for (int j = 0; j <
-                            n; j++) {
+        for (int i = 0; i
+                < m; i++) {
+            for (int j = 0; j
+                    < n; j++) {
                 try {
                     g.addEdge(ef.create(), nodes[i][j], nodes[i][j + 1]);
                 } catch (ArrayIndexOutOfBoundsException e) {
@@ -156,10 +165,10 @@ public class Generator {
 
         //link to bottom right/ left, depending on the row number- see paper notes
         //link to left for even row numbers, link to left for odd rows
-        for (int i = 0; i <
-                        m; i++) {
-            for (int j = 0; j <
-                            n; j++) {
+        for (int i = 0; i
+                < m; i++) {
+            for (int j = 0; j
+                    < n; j++) {
                 try {
                     g.addEdge(ef.create(), nodes[i][j], nodes[i + 1][j - 1 + 2 * (i % 2)]);
                 } catch (ArrayIndexOutOfBoundsException e) {
@@ -168,10 +177,10 @@ public class Generator {
         }
 
         //link to bottom left
-        for (int i = 0; i <
-                        m; i++) {
-            for (int j = 0; j <
-                            n; j++) {
+        for (int i = 0; i
+                < m; i++) {
+            for (int j = 0; j
+                    < n; j++) {
                 try {
                     g.addEdge(ef.create(), nodes[i][j], nodes[i + 1][j]);
                 } catch (ArrayIndexOutOfBoundsException e) {
@@ -180,48 +189,57 @@ public class Generator {
         }
 
 //        MyGraph.setInstance(g);
-        determineInitialNodeTypes(g);
+        
+        if (autodetermineIconType) {
+            determineInitialNodeTypes(g);
+        }
         return g;
     }
 
     public static MyGraph generateKleinbergSmallWorld(int m, int n,
-                                                      double clusteringExponent,
-                                                      Controller controller) {
+            double clusteringExponent,
+            Controller controller, boolean autodetermineIconType) {
         //make sure numbering starts from 1
         controller.getEdgeFactory().reset();
         controller.getVertexFactory().reset();
         SmallWorldGenerator gen = new SmallWorldGenerator(controller.getGraphFactory(),
-                                                          controller.getVertexFactory().reset(),
-                                                          controller.getEdgeFactory().reset(),
-                                                          m, n, clusteringExponent);
+                controller.getVertexFactory().reset(),
+                controller.getEdgeFactory().reset(),
+                m, n, clusteringExponent);
         MyGraph myGraph = (MyGraph) gen.create();
-        determineInitialNodeTypes(myGraph);
+        
+        if (autodetermineIconType) {
+            determineInitialNodeTypes(myGraph);
+        }
         return myGraph;
     }
 
     public static MyGraph generateEppsteinPowerLaw(int numVert, int numEdges,
-                                                   int r, Controller controller) {
+            int r, Controller controller, boolean autodetermineIconType) {
         VertexFactory vf = controller.getVertexFactory().reset();
         EdgeFactory ef = controller.getEdgeFactory().reset();
         EppsteinPowerLawGenerator<MyVertex, MyEdge> gen = new EppsteinPowerLawGenerator(
                 controller.getGraphFactory(), vf, ef, numVert, numEdges, r);
         MyGraph myGraph = (MyGraph) gen.create();
-        determineInitialNodeTypes(myGraph);
+        
+        if (autodetermineIconType) {
+            determineInitialNodeTypes(myGraph);
+        }
         return myGraph;
     }
 
     /**
      * Simple evolving scale-free random graph generator. At each time step, a
-     * new vertex is created and is connected to existing vertices according
-     * to the principle of "preferential attachment", whereby vertices with
-     * higher degree have a higher probability of being selected for attachment.
+     * new vertex is created and is connected to existing vertices according to
+     * the principle of "preferential attachment", whereby vertices with higher
+     * degree have a higher probability of being selected for attachment.
      *
      * @param evolveSteps
      * @param numVertices
      * @param numEdgesToAttach
      */
     public static MyGraph generateScaleFree(int evolveSteps, int numVertices,
-                                            int numEdgesToAttach, Controller controller) {
+            int numEdgesToAttach, Controller controller, boolean autodetermineIconType) {
         VertexFactory vf = controller.getVertexFactory().reset();
         EdgeFactory ef = controller.getEdgeFactory().reset();
         vf.reset();
@@ -233,15 +251,18 @@ public class Generator {
                 numVertices, numEdgesToAttach, seeds);
         gen.evolveGraph(evolveSteps);
         MyGraph myGraph = (MyGraph) gen.create();
-        determineInitialNodeTypes(myGraph);
+        
+        if (autodetermineIconType) {
+            determineInitialNodeTypes(myGraph);
+        }
         return myGraph;
     }
-    
-    private static void determineInitialNodeTypes(MyGraph graph){
+
+    private static void determineInitialNodeTypes(MyGraph graph) {
         for (Object edge : graph.getEdges().toArray()) {
             Pair endpoints = graph.getEndpoints(edge);
-           ((MyVertex) endpoints.getFirst()).increaseNumberOfConnections();
-           ((MyVertex) endpoints.getSecond()).increaseNumberOfConnections();
+            ((MyVertex) endpoints.getFirst()).increaseNumberOfConnections();
+            ((MyVertex) endpoints.getSecond()).increaseNumberOfConnections();
         }
     }
 }

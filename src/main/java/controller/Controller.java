@@ -174,28 +174,28 @@ public class Controller {
 
     //=========!!!all generated/loaded graphs will appear in a new window!!!=========
     //-----------GENERATION FUNCTIONALITY-------------------
-    public void generateRandom(int a, int b) {
-        this.g.setInstance(Generator.generateRandom(a, b, this));
+    public void generateRandom(int a, int b, boolean autodetermineIconType) {
+        this.g.setInstance(Generator.generateRandom(a, b, this, autodetermineIconType));
     }
     
-    public void generate4Lattice(int a, int b) {
-        this.g.setInstance(Generator.generateRectangularLattice(a, b, this));
+    public void generate4Lattice(int a, int b, boolean autodetermineIconType) {
+        this.g.setInstance(Generator.generateRectangularLattice(a, b, this, autodetermineIconType));
     }
     
-    public void generate6Lattice(int a, int b) {
-        this.g.setInstance(Generator.generateHexagonalLattice(a, b, this));
+    public void generate6Lattice(int a, int b, boolean autodetermineIconType) {
+        this.g.setInstance(Generator.generateHexagonalLattice(a, b, this, autodetermineIconType));
     }
     
-    public void generateKleinbergSmallWorld(int m, int n, double c) {
-        this.g.setInstance(Generator.generateKleinbergSmallWorld(m, n, c, this));
+    public void generateKleinbergSmallWorld(int m, int n, double c, boolean autodetermineIconType) {
+        this.g.setInstance(Generator.generateKleinbergSmallWorld(m, n, c, this, autodetermineIconType));
     }
     
-    public void generateScaleFree(int a, int b, int c) {
-        this.g.setInstance(Generator.generateScaleFree(a, 1, c, this));
+    public void generateScaleFree(int a, int b, int c, boolean autodetermineIconType) {
+        this.g.setInstance(Generator.generateScaleFree(a, 1, c, this, autodetermineIconType));
     }
     
-    public void generateEppsteinPowerLaw(int numVert, int numEdges, int r) {
-        this.g.setInstance(Generator.generateEppsteinPowerLaw(numVert, numEdges, r, this));
+    public void generateEppsteinPowerLaw(int numVert, int numEdges, int r, boolean autodetermineIconType) {
+        this.g.setInstance(Generator.generateEppsteinPowerLaw(numVert, numEdges, r, this, autodetermineIconType));
     }
     
     public void generateEmptyGraph() {
@@ -264,7 +264,7 @@ public class Controller {
 
         //display a graph
         d.handlingEvents = true;
-        cont.generateScaleFree(20, 1, 1);
+        cont.generateScaleFree(20, 1, 1, true);
     }
     
 }
