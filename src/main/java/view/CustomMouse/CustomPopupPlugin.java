@@ -324,24 +324,25 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                         public void actionPerformed(ActionEvent e) {
                             BackgroundImageController.getInstance().removeBackgroundImage(vv);
-                            vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(Color.black));
-                            vv.setBackground(new Color(240, 240, 240));
                         }
                     });
+
                     backgroundImageMenu.add(new AbstractAction("<UK Map>") {
 
                         public void actionPerformed(ActionEvent e) {
-                            BackgroundImageController.getInstance().setGraphBackgroundImage(vv, "maps/UK_Map.png",
-                                    2, 2, new Color(10, 20, 20));
-                            vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(Color.white));
+                            BackgroundImageController.getInstance().setGraphBackgroundImage(vv, "maps/UK_Map.png", 2, 2);
+
+                            setGraphBackgroundColor(vv, graph, new Color(10, 20, 20));
+                            setGraphEdgeColor(vv, graph, Color.WHITE);
                         }
                     });
                     backgroundImageMenu.add(new AbstractAction("<World Map>") {
 
                         public void actionPerformed(ActionEvent e) {
-                            BackgroundImageController.getInstance().setGraphBackgroundImage(vv, "maps/World_Map.jpg",
-                                    2, 2, new Color(10, 10, 50));
-                            vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(Color.white));
+                            BackgroundImageController.getInstance().setGraphBackgroundImage(vv, "maps/World_Map.jpg", 2, 2);
+
+                            setGraphBackgroundColor(vv, graph, new Color(10, 20, 50));
+                            setGraphEdgeColor(vv, graph, Color.WHITE);
                         }
                     });
                     backgroundImageMenu.add(new AbstractAction("From File...") {
@@ -357,8 +358,9 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                                 file = fc.getSelectedFile();
                                 ImageIcon selectedBackgroundImage = new ImageIcon(file.getPath());
 
-                                BackgroundImageController.getInstance().setGraphBackgroundImage(vv, selectedBackgroundImage, 2, 2, new Color(240, 240, 240));
+                                BackgroundImageController.getInstance().setGraphBackgroundImage(vv, selectedBackgroundImage, 2, 2);
                                 BackgroundImageController.getInstance().setBackgroundImagePath(file.getPath());
+                                vv.repaint();
                             }
                         }
                     });
@@ -370,7 +372,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             colorChooser.getSelectionModel().addChangeListener(new ChangeListener() {
 
                                 public void stateChanged(ChangeEvent e) {
-                                    vv.setBackground(colorChooser.getColor());
+                                    setGraphBackgroundColor(vv, graph, colorChooser.getColor());
                                 }
                             });
                             final Color initialBackgroundColor = vv.getBackground();
@@ -395,17 +397,24 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                         public void actionPerformed(ActionEvent e) {
                             final JColorChooser colorChooser = new JColorChooser();
+                            colorChooser.getSelectionModel().addChangeListener(new ChangeListener() {
+
+                                public void stateChanged(ChangeEvent e) {
+                                    setGraphEdgeColor(vv, graph, colorChooser.getColor());
+                                }
+                            });
+                            final Color initialEdgeColor = new Color(graph.getEdgeColorRgb());
 
                             ActionListener okListener = new ActionListener() {
 
                                 public void actionPerformed(ActionEvent e) {
-                                    vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(colorChooser.getColor()));
-                                    vv.repaint();
+
                                 }
                             };
                             ActionListener cancelListener = new ActionListener() {
 
                                 public void actionPerformed(ActionEvent e) {
+                                    vv.setBackground(initialEdgeColor);
                                 }
                             };
                             JDialog colorSelectionDialog = JColorChooser.createDialog(setColorsMenu.getMenuComponent(0), "Select edge color:", true, colorChooser, okListener, cancelListener);
@@ -430,6 +439,18 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                 vv.repaint();
             }
         }
+    }
+
+    private void setGraphBackgroundColor(VisualizationViewer vv, MyGraph g, Color color) {
+        g.setBackgroundColor(color.getRGB());
+        vv.setBackground(color);
+        vv.repaint();
+    }
+
+    private void setGraphEdgeColor(VisualizationViewer vv, MyGraph g, Color color) {
+        g.setEdgeColor(color.getRGB());
+        vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(color));
+        vv.repaint();
     }
 
     private void toggleNodeIcons(MyGraph graph) {

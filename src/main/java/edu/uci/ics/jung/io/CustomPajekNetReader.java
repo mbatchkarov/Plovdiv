@@ -53,6 +53,7 @@ public class CustomPajekNetReader<G extends Graph<V, E>, V, E> {
      * Used to specify whether the most recently read line is a Pajek-specific
      * tag.
      */
+    private static final Predicate<String> cc_pred = new StartsWithPredicate("*colors");
     private static final Predicate<String> v_pred = new StartsWithPredicate("*vertices");
     private static final Predicate<String> a_pred = new StartsWithPredicate("*arcs");
     private static final Predicate<String> e_pred = new StartsWithPredicate("*edges");
@@ -135,25 +136,34 @@ public class CustomPajekNetReader<G extends Graph<V, E>, V, E> {
     public G load(Reader reader, G g) throws IOException {
         BufferedReader br = new BufferedReader(reader);
 
+        // ignore everything until we see '*Colors'
+        String curLine = skip(br, cc_pred);
+
+        StringTokenizer st = new StringTokenizer(curLine);
+        st.nextToken(); // skip past "*colors";
+        String[] colorMetadata = st.nextToken().split(",");
+        ((MyGraph) g).setBackgroundColor(Integer.parseInt(colorMetadata[0]));
+        ((MyGraph) g).setEdgeColor(Integer.parseInt(colorMetadata[1]));
+
         // ignore everything until we see '*Vertices'
-        String curLine = skip(br, v_pred);
+        curLine = skip(br, v_pred);
 
         if (curLine == null) // no vertices in the graph; return empty graph
         {
             return g;
         }
-
-        // create appropriate number of vertices
-        StringTokenizer st = new StringTokenizer(curLine);
-        st.nextToken(); // skip past "*vertices";
         
+        // create appropriate number of vertices
+        st = new StringTokenizer(curLine);
+        st.nextToken(); // skip past "*vertices";
+
         String[] vertexMetadata = st.nextToken().split(",");
-                
+
         int num_vertices = Integer.parseInt(vertexMetadata[0]);
         boolean areVertexIconsAllowed = Boolean.parseBoolean(vertexMetadata[1]);
-        
+
         ((MyGraph) g).setAllowNodeIcons(areVertexIconsAllowed);
-        
+
         List<V> id = null;
         if (vertex_factory != null) {
             for (int i = 1; i <= num_vertices; i++) {

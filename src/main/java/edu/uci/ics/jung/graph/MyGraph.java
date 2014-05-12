@@ -39,6 +39,7 @@ import controller.ExtraGraphEvent;
 import controller.ExtraGraphEventListener;
 import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
+import java.awt.Color;
 import model.EpiState;
 import model.MyEdge;
 import model.MyVertex;
@@ -56,6 +57,9 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
     private Dynamics dynamics;
     private int numSusceptible, numInfected, numResistant;
     int sleepTimeBetweenSteps; // how long to wait before another simulation step is made (ms)
+
+    private Color backgroundColor = new Color(240, 240, 240);
+    private Color edgeColor = Color.BLACK;
 
     public MyGraph(Graph<V, E> delegate) {
         super(delegate);
@@ -194,23 +198,40 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
     }
 
     /**
-     * Analyzes all of the vertices and returns the predominant type of icons used.
+     * Analyzes all of the vertices and returns the predominant type of icons
+     * used.
      */
     public int getDominantIconStyle() {
         int simpleIconCount = 0;
         int otherIconCount = 0;
         for (Object vertex : getVertices()) {
             int iconStyle = ((MyVertex) vertex).getVertexIconStyle();
-            if (iconStyle == MyVertex.VERTEX_ICON_STYLE_SIMPLE){
+            if (iconStyle == MyVertex.VERTEX_ICON_STYLE_SIMPLE) {
                 simpleIconCount++;
             } else {
                 otherIconCount++;
             }
         }
-        if (simpleIconCount >= otherIconCount){
+        if (simpleIconCount >= otherIconCount) {
             return MyVertex.VERTEX_ICON_STYLE_SIMPLE;
         } else {
             return MyVertex.VERTEX_ICON_STYLE_PHOTOREALISTIC;
         }
+    }
+
+    public int getBackgroundColorRgb() {
+        return backgroundColor.getRGB();
+    }
+
+    public void setBackgroundColor(int rgb) {
+        backgroundColor = new Color(rgb);
+    }
+
+    public int getEdgeColorRgb() {
+        return edgeColor.getRGB();
+    }
+
+    public void setEdgeColor(int rgb) {
+        edgeColor = new Color(rgb);
     }
 }

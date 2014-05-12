@@ -5,6 +5,7 @@
  */
 package view;
 
+import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.visualization.Layer;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import java.awt.Color;
@@ -21,6 +22,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
+import org.apache.commons.collections15.functors.ConstantTransformer;
 import org.apache.commons.io.FilenameUtils;
 
 /**
@@ -28,37 +30,37 @@ import org.apache.commons.io.FilenameUtils;
  * @author User
  */
 public class BackgroundImageController {
-
+    
     private static BackgroundImageController instance;
     private VisualizationViewer.Paintable preRender;
     private String resourceImagePath;
-
+    
     private BackgroundImageController() {
     }
-
+    
     public static BackgroundImageController getInstance() {
         if (instance == null) {
             instance = new BackgroundImageController();
         }
         return instance;
     }
-
+    
     public void setBackgroundImagePath(String backgroundImagePath) {
         resourceImagePath = backgroundImagePath;
     }
-
-    public void setGraphBackgroundImage(final VisualizationViewer vv, String resourceImagePath, final double xOffset, final double yOffset, Color backgroundColor) {
+    
+    public void setGraphBackgroundImage(final VisualizationViewer vv, String resourceImagePath, final double xOffset, final double yOffset) {
         ImageIcon backgroundImage = new ImageIcon(Utils.loadImageFromResources(Logger.getLogger(getClass().getName()), resourceImagePath));
-        setGraphBackgroundImage(vv, backgroundImage, xOffset, yOffset, backgroundColor);
+        setGraphBackgroundImage(vv, backgroundImage, xOffset, yOffset);
         backgroundImage.getImage().flush();
         Runtime.getRuntime().gc();
         this.resourceImagePath = resourceImagePath;
     }
-
-    public void setGraphBackgroundImage(final VisualizationViewer vv, final ImageIcon background, final double xOffset, final double yOffset, Color backgroundColor) {
-
+    
+    public void setGraphBackgroundImage(final VisualizationViewer vv, final ImageIcon background, final double xOffset, final double yOffset) {
+        
         removeBackgroundImage(vv);
-
+        
         preRender = new VisualizationViewer.Paintable() {
             public void paint(Graphics g) {
                 Graphics2D g2d = (Graphics2D) g;
@@ -76,19 +78,18 @@ public class BackgroundImageController {
                         background.getIconWidth(), background.getIconHeight(), vv);
                 g2d.setTransform(oldXform);
             }
-
+            
             public boolean useTransform() {
                 return false;
             }
         };
-
-        vv.setBackground(backgroundColor);
+        
         vv.addPreRenderPaintable(preRender);
-
+        
         background.getImage().flush();
         Runtime.getRuntime().gc();
     }
-
+    
     public void removeBackgroundImage(VisualizationViewer vv) {
         if (preRender != null) {
             vv.removePreRenderPaintable(preRender);
@@ -97,7 +98,7 @@ public class BackgroundImageController {
             resourceImagePath = null;
         }
     }
-
+    
     public void saveBackgroundImage(String savePath) {
         if (resourceImagePath == null) {
             return;
@@ -117,16 +118,21 @@ public class BackgroundImageController {
         }
     }
     
-    public void checkForAndLoadBackgroundImage(VisualizationViewer vv, String loadPath){        
+    public void checkForAndLoadBackgroundImage(VisualizationViewer vv, String loadPath) {        
         String fileName = FilenameUtils.removeExtension(loadPath);
         fileName += ".background";
         Path sourcePath = Paths.get(fileName);
         
-        if (Files.exists(sourcePath, LinkOption.NOFOLLOW_LINKS)){
-            setGraphBackgroundImage(vv, new ImageIcon(fileName), 2, 2, new Color(240, 240, 240));
+        if (Files.exists(sourcePath, LinkOption.NOFOLLOW_LINKS)) {
+            setGraphBackgroundImage(vv, new ImageIcon(fileName), 2, 2);
             setBackgroundImagePath(fileName);
         } else {
             removeBackgroundImage(vv);
-        }
+        }        
+    }
+    
+    public void loadCustomColors(VisualizationViewer vv, MyGraph g) {
+        vv.setBackground(new Color(g.getBackgroundColorRgb()));
+        vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(new Color(g.getEdgeColorRgb())));
     }
 }

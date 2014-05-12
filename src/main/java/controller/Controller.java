@@ -160,6 +160,7 @@ public class Controller {
         gui.setVertexRenderer();
         IOClass.loadLayout(gui, path);        
         BackgroundImageController.getInstance().checkForAndLoadBackgroundImage(vv, path);
+        BackgroundImageController.getInstance().loadCustomColors(vv, g);
     }
     
     public void save(String path, MyGraph g, PersistentLayout layout) throws IOException {

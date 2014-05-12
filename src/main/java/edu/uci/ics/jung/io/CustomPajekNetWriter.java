@@ -131,6 +131,8 @@ public class CustomPajekNetWriter<V,E>
         BufferedWriter writer = new BufferedWriter(w);
         if (nev == null)
             nev = new Transformer<E, Number>() { public Number transform(E e) { return 1; } };
+        writer.write("*Colors " + graph.getBackgroundColorRgb()+","+graph.getEdgeColorRgb());
+        writer.newLine();
         writer.write("*Vertices " + graph.getVertexCount()+","+graph.areNodeIconsAllowed());
         writer.newLine();
          

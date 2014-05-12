@@ -1698,9 +1698,15 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 
     private void initDemoMap() {
         BackgroundImageController.getInstance().setGraphBackgroundImage(vv, "maps/UK_Map.png",
-                2, 2, new Color(10, 20, 20));
+                2, 2);
         scaler.scale(vv, .5f, vv.getCenter());
-        vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(Color.white));
+        
+        Color backgroundColor = new Color(10, 20, 20);
+        Color edgeColor = Color.WHITE;
+        g.setBackgroundColor(backgroundColor.getRGB());
+        g.setEdgeColor(edgeColor.getRGB());       
+        vv.setBackground(backgroundColor);
+        vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(edgeColor));
     }
 
     public static void redisplayPartially() {
