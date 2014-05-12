@@ -375,7 +375,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                                     setGraphBackgroundColor(vv, graph, colorChooser.getColor());
                                 }
                             });
-                            final Color initialBackgroundColor = vv.getBackground();
+                            final Color initialBackgroundColor = new Color(graph.getBackgroundColorRgb());
 
                             ActionListener okListener = new ActionListener() {
 
@@ -386,7 +386,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             ActionListener cancelListener = new ActionListener() {
 
                                 public void actionPerformed(ActionEvent e) {
-                                    vv.setBackground(initialBackgroundColor);
+                                    setGraphBackgroundColor(vv, graph, initialBackgroundColor);
                                 }
                             };
                             JDialog colorSelectionDialog = JColorChooser.createDialog(setColorsMenu.getMenuComponent(0), "Select background color:", true, colorChooser, okListener, cancelListener);
@@ -414,7 +414,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             ActionListener cancelListener = new ActionListener() {
 
                                 public void actionPerformed(ActionEvent e) {
-                                    vv.setBackground(initialEdgeColor);
+                                    setGraphEdgeColor(vv, graph, initialEdgeColor);
                                 }
                             };
                             JDialog colorSelectionDialog = JColorChooser.createDialog(setColorsMenu.getMenuComponent(0), "Select edge color:", true, colorChooser, okListener, cancelListener);
