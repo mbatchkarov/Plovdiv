@@ -176,32 +176,39 @@ public class Controller {
     //-----------GENERATION FUNCTIONALITY-------------------
     public void generateRandom(int a, int b, boolean autodetermineIconType) {
         this.g.setInstance(Generator.generateRandom(a, b, this, autodetermineIconType));
+        gui.setVertexRenderer();
     }
     
     public void generate4Lattice(int a, int b, boolean autodetermineIconType) {
         this.g.setInstance(Generator.generateRectangularLattice(a, b, this, autodetermineIconType));
+        gui.setVertexRenderer();
     }
     
     public void generate6Lattice(int a, int b, boolean autodetermineIconType) {
         this.g.setInstance(Generator.generateHexagonalLattice(a, b, this, autodetermineIconType));
+        gui.setVertexRenderer();
     }
     
     public void generateKleinbergSmallWorld(int m, int n, double c, boolean autodetermineIconType) {
         this.g.setInstance(Generator.generateKleinbergSmallWorld(m, n, c, this, autodetermineIconType));
+        gui.setVertexRenderer();
     }
     
     public void generateScaleFree(int a, int b, int c, boolean autodetermineIconType) {
         this.g.setInstance(Generator.generateScaleFree(a, 1, c, this, autodetermineIconType));
+        gui.setVertexRenderer();
     }
     
     public void generateEppsteinPowerLaw(int numVert, int numEdges, int r, boolean autodetermineIconType) {
         this.g.setInstance(Generator.generateEppsteinPowerLaw(numVert, numEdges, r, this, autodetermineIconType));
+        gui.setVertexRenderer();
     }
     
     public void generateEmptyGraph() {
         getEdgeFactory().reset();
         getVertexFactory().reset();
         this.g.setInstance(getGraphFactory().create());
+        gui.setVertexRenderer();
     }
 
     /**
