@@ -198,8 +198,9 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
     }
 
     /**
-     * Analyzes all of the vertices and returns the predominant type of icons
-     * used.
+     * Analyzes all of the vertices and returns the predominant style of icons
+     * used. The simple icons are preferred if both styles are used in equal
+     * amount of vertices.
      */
     public int getDominantIconStyle() {
         int simpleIconCount = 0;
@@ -212,11 +213,39 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
                 otherIconCount++;
             }
         }
+
         if (simpleIconCount >= otherIconCount) {
             return MyVertex.VERTEX_ICON_STYLE_SIMPLE;
         } else {
-            return MyVertex.VERTEX_ICON_STYLE_PHOTOREALISTIC;
+            return MyVertex.VERTEX_ICON_STYLE_3D;
         }
+    }
+
+    /**
+     * Analyzes all of the vertices and returns the predominant type of icon
+     * used. If there are two types of icons used in equal amount of vertices,
+     * the first one (in order of declaration) is selected.
+     */
+    public int getDominantIconType() {
+        HashMap<Integer, Integer> iconTypeCounts = new HashMap<Integer, Integer>();
+        for (Object vertex : getVertices()) {
+            int iconType = ((MyVertex) vertex).getVertexIconType();
+            Integer iconTypeCount = iconTypeCounts.get(iconType);
+            if (iconTypeCount == null) {
+                iconTypeCounts.put(iconType, 1);
+            } else {
+                iconTypeCounts.put(iconType, iconTypeCount + 1);
+            }
+        }
+
+        Map.Entry<Integer, Integer> maxEntry = null;
+        for (Map.Entry<Integer, Integer> entry : iconTypeCounts.entrySet()) {
+            if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0) {
+                maxEntry = entry;
+            }
+        }
+
+        return maxEntry.getKey();
     }
 
     public int getBackgroundColorRgb() {

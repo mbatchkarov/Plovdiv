@@ -162,6 +162,7 @@ MouseListener, MouseMotionListener {
 
 					final MyVertex newVertex = vertexFactory.create();
                                         newVertex.setVertexIconStyle(((MyGraph) graph).getDominantIconStyle());
+                                        newVertex.setVertexIconType(((MyGraph) graph).getDominantIconType());
 					newVertex.setEpiState(EpiState.SUSCEPTIBLE);
 					Layout layout = vv.getModel().getGraphLayout();
 					graph.addVertex(newVertex);

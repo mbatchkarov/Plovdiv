@@ -187,22 +187,22 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                         nodeTypeMenuRealistic.add(new AbstractAction("User") {
                             public void actionPerformed(ActionEvent e) {
-                                changeNodeType(vv, vertex, MyVertex.NODE_TYPE_USER, MyVertex.VERTEX_ICON_STYLE_PHOTOREALISTIC);
+                                changeNodeType(vv, vertex, MyVertex.NODE_TYPE_USER, MyVertex.VERTEX_ICON_STYLE_3D);
                             }
                         });
                         nodeTypeMenuRealistic.add(new AbstractAction("Mobile") {
                             public void actionPerformed(ActionEvent e) {
-                                changeNodeType(vv, vertex, MyVertex.NODE_TYPE_MOBILE, MyVertex.VERTEX_ICON_STYLE_PHOTOREALISTIC);
+                                changeNodeType(vv, vertex, MyVertex.NODE_TYPE_MOBILE, MyVertex.VERTEX_ICON_STYLE_3D);
                             }
                         });
                         nodeTypeMenuRealistic.add(new AbstractAction("Computer") {
                             public void actionPerformed(ActionEvent e) {
-                                changeNodeType(vv, vertex, MyVertex.NODE_TYPE_COMPUTER, MyVertex.VERTEX_ICON_STYLE_PHOTOREALISTIC);
+                                changeNodeType(vv, vertex, MyVertex.NODE_TYPE_COMPUTER, MyVertex.VERTEX_ICON_STYLE_3D);
                             }
                         });
                         nodeTypeMenuRealistic.add(new AbstractAction("Access Point") {
                             public void actionPerformed(ActionEvent e) {
-                                changeNodeType(vv, vertex, MyVertex.NODE_TYPE_ACCESS_POINT, MyVertex.VERTEX_ICON_STYLE_PHOTOREALISTIC);
+                                changeNodeType(vv, vertex, MyVertex.NODE_TYPE_ACCESS_POINT, MyVertex.VERTEX_ICON_STYLE_3D);
                             }
                         });
                     }
@@ -316,7 +316,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                             public void actionPerformed(ActionEvent e) {
 
-                                changeIconStyle(graph, MyVertex.VERTEX_ICON_STYLE_PHOTOREALISTIC);
+                                changeIconStyle(graph, MyVertex.VERTEX_ICON_STYLE_3D);
                             }
                         });
 
@@ -452,6 +452,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                         public void actionPerformed(ActionEvent e) {
                             final MyVertex newV = controller.getVertexFactory().create();
                             newV.setVertexIconStyle(graph.getDominantIconStyle());
+                            newV.setVertexIconType(graph.getDominantIconType());
                             newV.setEpiState(EpiState.SUSCEPTIBLE);
                             graph.addVertex(newV);
                             layout.setLocation(newV, vv.getRenderContext().getMultiLayerTransformer().inverseTransform(ivp));
@@ -490,16 +491,10 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
         vv.repaint();
     }
 
-    private void changeNodeType(VisualizationViewer vv, MyVertex v, int nodeType,
-                                int vertexIconStyle, boolean autodetermine) {
+    private void changeNodeType(VisualizationViewer vv, MyVertex v, int nodeType, int vertexIconStyle) {
         v.setVertexIconStyle(vertexIconStyle);
         v.setNodeType(nodeType);
-        v.setTypeAutodetermined(autodetermine);
         vv.repaint();
-    }
-
-    private void changeNodeType(VisualizationViewer vv, MyVertex v, int nodeType, int vertexIconStyle) {
-        this.changeNodeType(vv, v, nodeType, vertexIconStyle, false);
     }
 
     public void mouseDragged(MouseEvent e) {
