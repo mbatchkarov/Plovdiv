@@ -244,8 +244,13 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
                 maxEntry = entry;
             }
         }
-
-        return maxEntry.getKey();
+        try {
+            // if there are no vertices in the graph this throws a NPE
+            return maxEntry.getKey();
+        }
+        catch (NullPointerException ex){
+            return MyVertex.NODE_TYPE_USER;
+        }
     }
 
     public int getBackgroundColorRgb() {
