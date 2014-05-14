@@ -327,8 +327,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                             public void actionPerformed(ActionEvent e) {
                                 for (MyVertex vertex : graph.getVertices()) {
-                                changeNodeType(vv, vertex, MyVertex.NODE_TYPE_USER,
-                                               vertex.getVertexIconStyle());
+                                    changeVertexIconType(vv, graph, vertex, VertexIcon.TYPE_USER, VertexIcon.STYLE_SIMPLE);
                                 }
                             }
                         });
@@ -337,8 +336,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                             public void actionPerformed(ActionEvent e) {
                                 for (MyVertex vertex : graph.getVertices()) {
-                                    changeNodeType(vv, vertex, MyVertex.NODE_TYPE_MOBILE,
-                                                   vertex.getVertexIconStyle());
+                                    changeVertexIconType(vv, graph, vertex, VertexIcon.TYPE_USER, VertexIcon.STYLE_SIMPLE);
                                 }
                             }
                         });
