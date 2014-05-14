@@ -493,7 +493,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
     private void changeNodeType(VisualizationViewer vv, MyVertex v, int nodeType, int vertexIconStyle) {
         v.setVertexIconStyle(vertexIconStyle);
-        v.setNodeType(nodeType);
+        v.setVertexIconType(nodeType);
         vv.repaint();
     }
 
