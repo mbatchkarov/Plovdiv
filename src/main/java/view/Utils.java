@@ -9,6 +9,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
+import model.VertexIcon;
 
 /**
  * Copyright User: mmb28 Date: 20/08/2012 Time: 14:58
@@ -47,5 +48,15 @@ public class Utils {
                 || y < ins.top
                 || y > h - ins.bottom);
         return inBorder;
+    }
+
+    public static int getVertexIconTypeBasedOnDegree(int degree) {
+        int vertexIconType = VertexIcon.TYPE_MOBILE;
+        if (degree > 2 && degree < 4) {
+            vertexIconType = VertexIcon.TYPE_COMPUTER;
+        } else if (degree > 4) {
+            vertexIconType = VertexIcon.TYPE_ACCESS_POINT;
+        }
+        return vertexIconType;
     }
 }

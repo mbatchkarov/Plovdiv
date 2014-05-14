@@ -38,7 +38,6 @@ import controller.Controller;
 import edu.uci.ics.jung.algorithms.layout.GraphElementAccessor;
 import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.DirectedGraph;
-import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
@@ -66,6 +65,7 @@ import java.util.Set;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import model.VertexIcon;
 import org.apache.commons.collections15.functors.ConstantTransformer;
 import view.BackgroundImageController;
 import static view.Display.vv;
@@ -166,43 +166,43 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                         nodeTypeMenuSimple.add(new AbstractAction("User") {
                             public void actionPerformed(ActionEvent e) {
-                                changeNodeType(vv, vertex, MyVertex.NODE_TYPE_USER, MyVertex.VERTEX_ICON_STYLE_SIMPLE);
+                                changeVertexIconType(vv, vertex, VertexIcon.TYPE_USER, VertexIcon.STYLE_SIMPLE);
                             }
                         });
                         nodeTypeMenuSimple.add(new AbstractAction("Mobile") {
                             public void actionPerformed(ActionEvent e) {
-                                changeNodeType(vv, vertex, MyVertex.NODE_TYPE_MOBILE, MyVertex.VERTEX_ICON_STYLE_SIMPLE);
+                                changeVertexIconType(vv, vertex, VertexIcon.TYPE_MOBILE, VertexIcon.STYLE_SIMPLE);
                             }
                         });
                         nodeTypeMenuSimple.add(new AbstractAction("Computer") {
                             public void actionPerformed(ActionEvent e) {
-                                changeNodeType(vv, vertex, MyVertex.NODE_TYPE_COMPUTER, MyVertex.VERTEX_ICON_STYLE_SIMPLE);
+                                changeVertexIconType(vv, vertex, VertexIcon.TYPE_COMPUTER, VertexIcon.STYLE_SIMPLE);
                             }
                         });
                         nodeTypeMenuSimple.add(new AbstractAction("Access Point") {
                             public void actionPerformed(ActionEvent e) {
-                                changeNodeType(vv, vertex, MyVertex.NODE_TYPE_ACCESS_POINT, MyVertex.VERTEX_ICON_STYLE_SIMPLE);
+                                changeVertexIconType(vv, vertex, VertexIcon.TYPE_ACCESS_POINT, VertexIcon.STYLE_SIMPLE);
                             }
                         });
 
                         nodeTypeMenuRealistic.add(new AbstractAction("User") {
                             public void actionPerformed(ActionEvent e) {
-                                changeNodeType(vv, vertex, MyVertex.NODE_TYPE_USER, MyVertex.VERTEX_ICON_STYLE_3D);
+                                changeVertexIconType(vv, vertex, VertexIcon.TYPE_USER, VertexIcon.STYLE_3D);
                             }
                         });
                         nodeTypeMenuRealistic.add(new AbstractAction("Mobile") {
                             public void actionPerformed(ActionEvent e) {
-                                changeNodeType(vv, vertex, MyVertex.NODE_TYPE_MOBILE, MyVertex.VERTEX_ICON_STYLE_3D);
+                                changeVertexIconType(vv, vertex,VertexIcon.TYPE_MOBILE, VertexIcon.STYLE_3D);
                             }
                         });
                         nodeTypeMenuRealistic.add(new AbstractAction("Computer") {
                             public void actionPerformed(ActionEvent e) {
-                                changeNodeType(vv, vertex, MyVertex.NODE_TYPE_COMPUTER, MyVertex.VERTEX_ICON_STYLE_3D);
+                                changeVertexIconType(vv, vertex, VertexIcon.TYPE_COMPUTER, VertexIcon.STYLE_3D);
                             }
                         });
                         nodeTypeMenuRealistic.add(new AbstractAction("Access Point") {
                             public void actionPerformed(ActionEvent e) {
-                                changeNodeType(vv, vertex, MyVertex.NODE_TYPE_ACCESS_POINT, MyVertex.VERTEX_ICON_STYLE_3D);
+                                changeVertexIconType(vv, vertex, VertexIcon.TYPE_ACCESS_POINT, VertexIcon.STYLE_3D);
                             }
                         });
                     }
@@ -297,7 +297,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                     nodeIconsMenu.add(new AbstractAction(toggleNodeIconsText) {
                         public void actionPerformed(ActionEvent e) {
-                            toggleNodeIcons(graph);
+                            toggleVertexIconsAllowed(graph);
                         }
                     });
 
@@ -307,7 +307,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                         iconStyleMenu.add(new AbstractAction("Simple") {
 
                             public void actionPerformed(ActionEvent e) {
-                                changeIconStyle(graph, MyVertex.VERTEX_ICON_STYLE_SIMPLE);
+                                changeVertexIconStyle(graph, VertexIcon.STYLE_SIMPLE);
                             }
                         });
 
@@ -315,7 +315,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                             public void actionPerformed(ActionEvent e) {
 
-                                changeIconStyle(graph, MyVertex.VERTEX_ICON_STYLE_3D);
+                                changeVertexIconStyle(graph, VertexIcon.STYLE_3D);
                             }
                         });
                     }
@@ -426,8 +426,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                         public void actionPerformed(ActionEvent e) {
                             final MyVertex newV = controller.getVertexFactory().create();
-                            newV.setVertexIconStyle(graph.getDominantIconStyle());
-                            newV.setVertexIconType(graph.getDominantIconType());
+                            newV.setIcon(new VertexIcon(((MyGraph) graph).getDominantIconType(), ((MyGraph) graph).getDominantIconStyle()));
                             newV.setEpiState(EpiState.SUSCEPTIBLE);
                             graph.addVertex(newV);
                             layout.setLocation(newV, vv.getRenderContext().getMultiLayerTransformer().inverseTransform(ivp));
@@ -454,21 +453,21 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
         vv.repaint();
     }
 
-    private void toggleNodeIcons(MyGraph graph) {
+    private void toggleVertexIconsAllowed(MyGraph graph) {
         graph.setAllowNodeIcons(!graph.areNodeIconsAllowed());
         d.setVertexRenderer();
     }
 
-    private void changeIconStyle(MyGraph graph, int iconStyle) {
+    private void changeVertexIconStyle(MyGraph graph, int iconStyle) {
         for (Object vertex : graph.getVertices()) {
-            ((MyVertex) vertex).setVertexIconStyle(iconStyle);
+            ((MyVertex) vertex).getIcon().setStyle(iconStyle);
         }
         vv.repaint();
     }
 
-    private void changeNodeType(VisualizationViewer vv, MyVertex v, int nodeType, int vertexIconStyle) {
-        v.setVertexIconStyle(vertexIconStyle);
-        v.setVertexIconType(nodeType);
+    private void changeVertexIconType(VisualizationViewer vv, MyVertex v, int nodeType, int vertexIconStyle) {
+        v.getIcon().setStyle(vertexIconStyle);
+        v.getIcon().setType(nodeType);
         vv.repaint();
     }
 

@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.HashMap;
 import java.util.logging.Logger;
+import model.VertexIcon;
 
 /**
  * A transformer that chooses an icon for each vertex from a predefined set
@@ -16,16 +17,17 @@ import java.util.logging.Logger;
  */
 public class IconsStore implements Transformer<MyVertex, Icon> {
 
-    //There should be one key for each node type (as defined in the MyVertex class).
+    //There should be one key for each node type (as defined in the VertexIcon class).
     //The value holds the icons for each node state (corresponding to the values in the EpiState enum
     //+ one icon for when a vertex is selected in the editor).
     private final HashMap<Integer, Image[]> simpleIconsMap = new HashMap<Integer, Image[]>();
-    private final HashMap<Integer, Image[]> photorealisticIconsMap = new HashMap<Integer, Image[]>();
+    private final HashMap<Integer, Image[]> pseudo3dIconsMap = new HashMap<Integer, Image[]>();
 
     private final static int VERTEX_ICON_SELECTED = 0x0;
     private final static int VERTEX_ICON_INFECTED = 0x1;
     private final static int VERTEX_ICON_SUSCEPTIBLE = 0x2;
     private final static int VERTEX_ICON_IMMUNE = 0x3;
+    
     private PickedState pickedState;
     private Logger errorLogger;
 
@@ -53,7 +55,7 @@ public class IconsStore implements Transformer<MyVertex, Icon> {
         userIcons[VERTEX_ICON_INFECTED] = Utils.loadImageFromResources(errorLogger, "icons/simple/ic_person_infected.png");
         userIcons[VERTEX_ICON_SUSCEPTIBLE] = Utils.loadImageFromResources(errorLogger, "icons/simple/ic_person_susceptible.png");
         userIcons[VERTEX_ICON_IMMUNE] = Utils.loadImageFromResources(errorLogger, "icons/simple/ic_person_immune.png");
-        simpleIconsMap.put(MyVertex.NODE_TYPE_USER, userIcons);
+        simpleIconsMap.put(VertexIcon.TYPE_USER, userIcons);
     }
 
     private void loadSimpleMobileIcons() {
@@ -62,7 +64,7 @@ public class IconsStore implements Transformer<MyVertex, Icon> {
         mobileIcons[VERTEX_ICON_INFECTED] = Utils.loadImageFromResources(errorLogger, "icons/simple/ic_iphone_infected.png");
         mobileIcons[VERTEX_ICON_SUSCEPTIBLE] = Utils.loadImageFromResources(errorLogger, "icons/simple/ic_iphone_susceptible.png");
         mobileIcons[VERTEX_ICON_IMMUNE] = Utils.loadImageFromResources(errorLogger, "icons/simple/ic_iphone_immune.png");
-        simpleIconsMap.put(MyVertex.NODE_TYPE_MOBILE, mobileIcons);
+        simpleIconsMap.put(VertexIcon.TYPE_MOBILE, mobileIcons);
     }
 
     private void loadSimpleComputerIcons() {
@@ -71,7 +73,7 @@ public class IconsStore implements Transformer<MyVertex, Icon> {
         computerIcons[VERTEX_ICON_INFECTED] = Utils.loadImageFromResources(errorLogger, "icons/simple/ic_notebook_infected.png");
         computerIcons[VERTEX_ICON_SUSCEPTIBLE] = Utils.loadImageFromResources(errorLogger, "icons/simple/ic_notebook_susceptible.png");
         computerIcons[VERTEX_ICON_IMMUNE] = Utils.loadImageFromResources(errorLogger, "icons/simple/ic_notebook_immune.png");
-        simpleIconsMap.put(MyVertex.NODE_TYPE_COMPUTER, computerIcons);
+        simpleIconsMap.put(VertexIcon.TYPE_COMPUTER, computerIcons);
     }
 
     private void loadSimpleAccessPointIcons() {
@@ -80,7 +82,7 @@ public class IconsStore implements Transformer<MyVertex, Icon> {
         accessPointIcons[VERTEX_ICON_INFECTED] = Utils.loadImageFromResources(errorLogger, "icons/simple/ic_router_infected.png");
         accessPointIcons[VERTEX_ICON_SUSCEPTIBLE] = Utils.loadImageFromResources(errorLogger, "icons/simple/ic_router_susceptible.png");
         accessPointIcons[VERTEX_ICON_IMMUNE] = Utils.loadImageFromResources(errorLogger, "icons/simple/ic_router_immune.png");
-        simpleIconsMap.put(MyVertex.NODE_TYPE_ACCESS_POINT, accessPointIcons);
+        simpleIconsMap.put(VertexIcon.TYPE_ACCESS_POINT, accessPointIcons);
     }
 
     private void loadPhotorealisticIconsMap() {
@@ -96,7 +98,7 @@ public class IconsStore implements Transformer<MyVertex, Icon> {
         userIcons[VERTEX_ICON_INFECTED] = Utils.loadImageFromResources(errorLogger, "icons/photorealistic/ic_user_infected.png");
         userIcons[VERTEX_ICON_SUSCEPTIBLE] = Utils.loadImageFromResources(errorLogger, "icons/photorealistic/ic_user_susceptible.png");
         userIcons[VERTEX_ICON_IMMUNE] = Utils.loadImageFromResources(errorLogger, "icons/photorealistic/ic_user_immune.png");
-        photorealisticIconsMap.put(MyVertex.NODE_TYPE_USER, userIcons);
+        pseudo3dIconsMap.put(VertexIcon.TYPE_USER, userIcons);
     }
 
     private void loadPhotorealisticMobileIcons() {
@@ -105,7 +107,7 @@ public class IconsStore implements Transformer<MyVertex, Icon> {
         mobileIcons[VERTEX_ICON_INFECTED] = Utils.loadImageFromResources(errorLogger, "icons/photorealistic/ic_mobile_infected.png");
         mobileIcons[VERTEX_ICON_SUSCEPTIBLE] = Utils.loadImageFromResources(errorLogger, "icons/photorealistic/ic_mobile_susceptible.png");
         mobileIcons[VERTEX_ICON_IMMUNE] = Utils.loadImageFromResources(errorLogger, "icons/photorealistic/ic_mobile_immune.png");
-        photorealisticIconsMap.put(MyVertex.NODE_TYPE_MOBILE, mobileIcons);
+        pseudo3dIconsMap.put(VertexIcon.TYPE_MOBILE, mobileIcons);
     }
 
     private void loadPhotorealisticComputerIcons() {
@@ -114,7 +116,7 @@ public class IconsStore implements Transformer<MyVertex, Icon> {
         computerIcons[VERTEX_ICON_INFECTED] = Utils.loadImageFromResources(errorLogger, "icons/photorealistic/ic_computer_infected.png");
         computerIcons[VERTEX_ICON_SUSCEPTIBLE] = Utils.loadImageFromResources(errorLogger, "icons/photorealistic/ic_computer_susceptible.png");
         computerIcons[VERTEX_ICON_IMMUNE] = Utils.loadImageFromResources(errorLogger, "icons/photorealistic/ic_computer_immune.png");
-        photorealisticIconsMap.put(MyVertex.NODE_TYPE_COMPUTER, computerIcons);
+        pseudo3dIconsMap.put(VertexIcon.TYPE_COMPUTER, computerIcons);
     }
 
     private void loadPhotorealisticAccessPointIcons() {
@@ -123,7 +125,7 @@ public class IconsStore implements Transformer<MyVertex, Icon> {
         accessPointIcons[VERTEX_ICON_INFECTED] = Utils.loadImageFromResources(errorLogger, "icons/photorealistic/ic_access_point_infected.png");
         accessPointIcons[VERTEX_ICON_SUSCEPTIBLE] = Utils.loadImageFromResources(errorLogger, "icons/photorealistic/ic_access_point_susceptible.png");
         accessPointIcons[VERTEX_ICON_IMMUNE] = Utils.loadImageFromResources(errorLogger, "icons/photorealistic/ic_access_point_immune.png");
-        photorealisticIconsMap.put(MyVertex.NODE_TYPE_ACCESS_POINT, accessPointIcons);
+        pseudo3dIconsMap.put(VertexIcon.TYPE_ACCESS_POINT, accessPointIcons);
     }
 
     /**
@@ -131,21 +133,21 @@ public class IconsStore implements Transformer<MyVertex, Icon> {
      */
     @Override
     public Icon transform(MyVertex v) {
-        HashMap<Integer, Image[]> iconsPack = photorealisticIconsMap;
-        if (v.getVertexIconStyle() == MyVertex.VERTEX_ICON_STYLE_SIMPLE){
+        HashMap<Integer, Image[]> iconsPack = pseudo3dIconsMap;
+        if (v.getIcon().getStyle() == VertexIcon.STYLE_SIMPLE){
             iconsPack = simpleIconsMap;
         }
         
         Image image = null;
         if (pickedState != null && pickedState.isPicked(v)) {
-            image = iconsPack.get(v.getVertexIconType())[VERTEX_ICON_SELECTED];
+            image = iconsPack.get(v.getIcon().getType())[VERTEX_ICON_SELECTED];
         } else {
             if (v.isSusceptible()) {
-                image = iconsPack.get(v.getVertexIconType())[VERTEX_ICON_SUSCEPTIBLE];
+                image = iconsPack.get(v.getIcon().getType())[VERTEX_ICON_SUSCEPTIBLE];
             } else if (v.isInfected()) {
-                image = iconsPack.get(v.getVertexIconType())[VERTEX_ICON_INFECTED];
+                image = iconsPack.get(v.getIcon().getType())[VERTEX_ICON_INFECTED];
             } else if (v.isResistant()) {
-                image = iconsPack.get(v.getVertexIconType())[VERTEX_ICON_IMMUNE];
+                image = iconsPack.get(v.getIcon().getType())[VERTEX_ICON_IMMUNE];
             }
         }
         return new ImageIcon(image);

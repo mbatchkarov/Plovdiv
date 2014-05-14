@@ -47,6 +47,7 @@ import model.dynamics.Dynamics;
 
 import java.io.Serializable;
 import java.util.*;
+import model.VertexIcon;
 
 public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable {
 
@@ -206,8 +207,8 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         int simpleIconCount = 0;
         int otherIconCount = 0;
         for (Object vertex : getVertices()) {
-            int iconStyle = ((MyVertex) vertex).getVertexIconStyle();
-            if (iconStyle == MyVertex.VERTEX_ICON_STYLE_SIMPLE) {
+            int iconStyle = ((MyVertex) vertex).getIcon().getStyle();
+            if (iconStyle == VertexIcon.STYLE_SIMPLE) {
                 simpleIconCount++;
             } else {
                 otherIconCount++;
@@ -215,9 +216,9 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         }
 
         if (simpleIconCount >= otherIconCount) {
-            return MyVertex.VERTEX_ICON_STYLE_SIMPLE;
+            return VertexIcon.STYLE_SIMPLE;
         } else {
-            return MyVertex.VERTEX_ICON_STYLE_3D;
+            return VertexIcon.STYLE_3D;
         }
     }
 
@@ -229,7 +230,7 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
     public int getDominantIconType() {
         HashMap<Integer, Integer> iconTypeCounts = new HashMap<Integer, Integer>();
         for (Object vertex : getVertices()) {
-            int iconType = ((MyVertex) vertex).getVertexIconType();
+            int iconType = ((MyVertex) vertex).getIcon().getType();
             Integer iconTypeCount = iconTypeCounts.get(iconType);
             if (iconTypeCount == null) {
                 iconTypeCounts.put(iconType, 1);
@@ -245,7 +246,12 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
             }
         }
 
-        return maxEntry.getKey();
+        try {
+            // if there are no vertices in the graph this throws a NPE
+            return maxEntry.getKey();
+        } catch (NullPointerException ex) {
+            return VertexIcon.TYPE_USER;
+        }
     }
 
     public int getBackgroundColorRgb() {

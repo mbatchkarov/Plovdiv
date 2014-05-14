@@ -41,27 +41,17 @@ import java.io.Serializable;
  */
 public class MyVertex implements Serializable {
 
-    public final static int NODE_TYPE_GENERIC = 0x0;
-    public final static int NODE_TYPE_USER = 0x1;
-    public final static int NODE_TYPE_MOBILE = 0x2;
-    public final static int NODE_TYPE_COMPUTER = 0x3;
-    public final static int NODE_TYPE_ACCESS_POINT = 0x4;
-    
-    public final static int VERTEX_ICON_STYLE_SIMPLE = 0x1;
-    public final static int VERTEX_ICON_STYLE_3D = 0x2;
-
     private int id;
     private EpiState epiState; //current state
     private EpiState nextEpiState; // what will happen to this guy next
-    private int vertexIconType = NODE_TYPE_USER; // An abstract type for the node, used for determining the icon for the vertex.
-    private int vertexIconStyle = VERTEX_ICON_STYLE_SIMPLE; // An abstract type for the vertex icon, used to select between the simple and photorealistic icon packs.
-    private int numberOfConnections = 0;
-    private boolean iconTypeAutodetermined = true;
-
+    
+    private VertexIcon icon;
+    
     public MyVertex(int id) {
         this.id = id;
         epiState = EpiState.SUSCEPTIBLE;
         nextEpiState = epiState;
+        icon = new VertexIcon();
     }
 
     public void setEpiState(EpiState epiState) {
@@ -113,56 +103,20 @@ public class MyVertex implements Serializable {
     }
 
     public String toString() {
-        return (epiState+","+vertexIconStyle+","+vertexIconType);
+        return (epiState+","+icon.getStyle()+","+icon.getType());
     }
 
     /**
-     * @return the node type.
+     * @return the icon
      */
-    public int getVertexIconType() {
-        if (this.isTypeAutodetermined()) {
-            int nodeType = MyVertex.NODE_TYPE_MOBILE;
-            if (numberOfConnections > 2 && numberOfConnections < 4) {
-                nodeType = MyVertex.NODE_TYPE_COMPUTER;
-            } else if (numberOfConnections > 4) {
-                nodeType = MyVertex.NODE_TYPE_ACCESS_POINT;
-            }
-            this.setVertexIconType(nodeType);
-        }
-        return vertexIconType;
+    public VertexIcon getIcon() {
+        return icon;
     }
 
     /**
-     * @param iconType the type of node to set. Should be one of the static
-     *                 values predefined in the MyVertex class.
+     * @param icon the icon to set
      */
-    public void setVertexIconType(int iconType) {
-        vertexIconType = iconType;
-        iconTypeAutodetermined = false;
-    }
-
-    public void increaseNumberOfConnections() {
-        numberOfConnections++;
-    }
-
-    /**
-     * @return the iconTypeAutodetermined
-     */
-    public boolean isTypeAutodetermined() {
-        return iconTypeAutodetermined;
-    }
-
-    /**
-     * @return the vertexIconStyle
-     */
-    public int getVertexIconStyle() {
-        return vertexIconStyle;
-    }
-
-    /**
-     * @param vertexIconStyle the vertexIconStyle to set
-     */
-    public void setVertexIconStyle(int vertexIconStyle) {
-        this.vertexIconStyle = vertexIconStyle;
+    public void setIcon(VertexIcon icon) {
+        this.icon = icon;
     }
 }
