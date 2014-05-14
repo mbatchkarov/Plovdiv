@@ -194,6 +194,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     private static javax.swing.ButtonGroup vertexLabel;
     private javax.swing.JButton showSidebarButton;
     private javax.swing.JButton hideSidebarButton;
+    private javax.swing.JPanel simulationControlsPanel;
 
     private static InfoGatherer gatherer;
     //declared as fields rather than as local variables so that their value can be altered by listeners
@@ -212,6 +213,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     private MyGraph g;
     private IconsStore icons;
 
+    private boolean simulationControlsPanelCollapsed = false;
     private boolean diseaseStatsPanelCollapsed = false;
     private boolean graphStatsPanelCollapsed = false;
     private boolean rightSidebarVisible = true;
@@ -432,6 +434,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         helpAbout = new javax.swing.JMenuItem();
         showSidebarButton = new javax.swing.JButton();
         hideSidebarButton = new javax.swing.JButton();
+        simulationControlsPanel = new javax.swing.JPanel();
 
         MouseListener sidebarButtonsListener = new MouseListener() {
             public void mouseClicked(MouseEvent e) {
@@ -540,7 +543,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                 .addGap(0, 0, Short.MAX_VALUE)
         );
 
-        diseaseControlsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Disease controls"));
+        diseaseControlsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Disease parameters"));
 
         dynamicsLabel.setText("Dynamics");
 
@@ -615,8 +618,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                                         .addComponent(tau, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                 .addComponent(deltaT, javax.swing.GroupLayout.PREFERRED_SIZE, 91, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addComponent(timeStepLabel, javax.swing.GroupLayout.PREFERRED_SIZE, 123, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addContainerGap(14, Short.MAX_VALUE))
-        );
+                ));
         jPanel1Layout.setVerticalGroup(
                 jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(jPanel1Layout.createSequentialGroup()
@@ -656,14 +658,14 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 
             public void mouseReleased(MouseEvent e) {
                 if (Utils.isPanelBorderClicked(graphStatsPanel, e)) {
-                    Dimension panelDimension = new Dimension(402, 24);
+                    Dimension panelDimension = new Dimension(403, 24);
                     String title = "+ Disease statistics (click to expand)";
 
                     if (!diseaseStatsPanelCollapsed) {
                         diseaseStatsPanelCollapsed = true;
                     } else {
                         diseaseStatsPanelCollapsed = false;
-                        panelDimension = new Dimension(402, 160);
+                        panelDimension = new Dimension(403, 160);
                         title = "- Disease statistics (click to collapse)";
                     }
 
@@ -1030,6 +1032,57 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                         .addComponent(speedSlider, 48, 48, 48)
                 ));
 
+        simulationControlsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("- Controls (click to collapse)"));
+        javax.swing.GroupLayout simulationControlsPanelLayout = new javax.swing.GroupLayout(simulationControlsPanel);
+        simulationControlsPanel.setLayout(simulationControlsPanelLayout);
+        simulationControlsPanelLayout.setHorizontalGroup(simulationControlsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(simulationControlsPanelLayout.createSequentialGroup()
+                        .addComponent(simControlsPanel, 128, 128, 128)
+                        .addGap(5, 5, 5)
+                        .addComponent(diseaseControlsPanel, 240, 240, 240))
+                .addComponent(stepTimePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
+        simulationControlsPanelLayout.setVerticalGroup(simulationControlsPanelLayout.createSequentialGroup()
+                .addGap(5, 5, 5)
+                .addGroup(simulationControlsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(diseaseControlsPanel, 156, 156, 156)
+                        .addComponent(simControlsPanel, 156, 156, 156))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(stepTimePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+        );
+
+        simulationControlsPanel.addMouseListener(new MouseListener() {
+            public void mouseClicked(MouseEvent e) {
+            }
+
+            public void mousePressed(MouseEvent e) {
+                if (Utils.isPanelBorderClicked(simulationControlsPanel, e)) {
+                    Dimension panelDimension = new Dimension(382, 24);
+                    String title = "+ Controls (click to expand)";
+
+                    if (!simulationControlsPanelCollapsed) {
+                        simulationControlsPanelCollapsed = true;
+                    } else {
+                        simulationControlsPanelCollapsed = false;
+                        panelDimension = new Dimension(382, 264);
+                        title = "- Controls (click to collapse)";
+                    }
+
+                    simulationControlsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder(title));
+                    simulationControlsPanel.setPreferredSize(panelDimension);
+                    simulationControlsPanel.revalidate();
+                }
+            }
+
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+
         menuFile.setMnemonic('F');
         menuFile.setText("File");
 
@@ -1348,11 +1401,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         SequentialGroup rightSidebarHorizontalGroup = layout.createSequentialGroup().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                .addGroup(layout.createSequentialGroup()
-                        .addComponent(simControlsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(5, 5, 5)
-                        .addComponent(diseaseControlsPanel, 240, 240, 240))
-                .addComponent(stepTimePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(simulationControlsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(statsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(graphStatsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(hideSidebarButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)).addGap(5, 5, 5);
@@ -1365,7 +1414,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                         .addGap(5, 5, 5)
                                         .addComponent(nodeStatisticsPanel, 290, 290, Short.MAX_VALUE)
                                         .addGap(5, 5, 5)
-                                        .addComponent(showSidebarButton, 397, 397, 397)
+                                        .addComponent(showSidebarButton, 403, 403, 403)
                                 ).addComponent(pane, 600, 600, Short.MAX_VALUE))
                         .addGroup(rightSidebarHorizontalGroup));
         layout.setHorizontalGroup(layoutHorizontalGroup);
@@ -1378,29 +1427,23 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                 .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                                 .addComponent(mouseModeToolbar, 60, 60, 60)
-                                                .addComponent(diseaseControlsPanel, 156, 156, 156)
-                                                .addComponent(simControlsPanel, 156, 156, 156)
                                                 .addComponent(nodeStatisticsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                 .addGroup(layout.createSequentialGroup()
-                                                        .addGap(20, 20, 20)
+                                                        .addComponent(hideSidebarButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGap(5,5,5)
+                                                        .addComponent(simulationControlsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                .addGroup(layout.createSequentialGroup()
                                                         .addComponent(showSidebarButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(stepTimePanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(statsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                         .addComponent(graphStatsPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(5, 5, 5)
-                                        .addComponent(hideSidebarButton, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 ).addGroup(layout.createSequentialGroup()
                                         .addGap(64, 64, 64)
                                         .addComponent(pane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addContainerGap()
-                )
-        );
-
-        pack();
+                ));
     }
 
     private void toggleRightSidebar() {
@@ -1411,9 +1454,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
             toggleSidebar.setText("Hide sidebar");
         }
 
-        simControlsPanel.setVisible(rightSidebarVisible);
-        diseaseControlsPanel.setVisible(rightSidebarVisible);
-        stepTimePanel.setVisible(rightSidebarVisible);
+        simulationControlsPanel.setVisible(rightSidebarVisible);
         statsPanel.setVisible(rightSidebarVisible);
         graphStatsPanel.setVisible(rightSidebarVisible);
         showSidebarButton.setVisible(!rightSidebarVisible);
