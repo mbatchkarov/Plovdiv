@@ -47,6 +47,7 @@ import model.dynamics.Dynamics;
 
 import java.io.Serializable;
 import java.util.*;
+import model.VertexIcon;
 
 public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable {
 
@@ -61,6 +62,8 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
     private Color backgroundColor = new Color(240, 240, 240);
     private Color edgeColor = Color.BLACK;
 
+    private VertexIcon predominantVertexIcon;
+
     public MyGraph(Graph<V, E> delegate) {
         super(delegate);
         this.dynamics = null;
@@ -72,7 +75,7 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         sleepTimeBetweenSteps = 0;
     }
 
-    public void setInstance(MyGraph newInstance) {
+    public void setInstance(MyGraph<V,E> newInstance) {
         delegate = newInstance.delegate;
         setAllowNodeIcons(newInstance.areNodeIconsAllowed());
         updateCounts();
@@ -206,8 +209,8 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         int simpleIconCount = 0;
         int otherIconCount = 0;
         for (Object vertex : getVertices()) {
-            int iconStyle = ((MyVertex) vertex).getVertexIconStyle();
-            if (iconStyle == MyVertex.VERTEX_ICON_STYLE_SIMPLE) {
+            int iconStyle = ((MyVertex) vertex).getIcon().getStyle();
+            if (iconStyle == VertexIcon.STYLE_SIMPLE) {
                 simpleIconCount++;
             } else {
                 otherIconCount++;
@@ -215,9 +218,9 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         }
 
         if (simpleIconCount >= otherIconCount) {
-            return MyVertex.VERTEX_ICON_STYLE_SIMPLE;
+            return VertexIcon.STYLE_SIMPLE;
         } else {
-            return MyVertex.VERTEX_ICON_STYLE_3D;
+            return VertexIcon.STYLE_3D;
         }
     }
 
@@ -229,7 +232,7 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
     public int getDominantIconType() {
         HashMap<Integer, Integer> iconTypeCounts = new HashMap<Integer, Integer>();
         for (Object vertex : getVertices()) {
-            int iconType = ((MyVertex) vertex).getVertexIconType();
+            int iconType = ((MyVertex) vertex).getIcon().getType();
             Integer iconTypeCount = iconTypeCounts.get(iconType);
             if (iconTypeCount == null) {
                 iconTypeCounts.put(iconType, 1);
@@ -244,13 +247,24 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
                 maxEntry = entry;
             }
         }
+
         try {
             // if there are no vertices in the graph this throws a NPE
             return maxEntry.getKey();
+        } catch (NullPointerException ex) {
+            return VertexIcon.TYPE_USER;
         }
-        catch (NullPointerException ex){
-            return MyVertex.NODE_TYPE_USER;
-        }
+    }
+
+    public VertexIcon getDominantVertexIcon(){
+        return new VertexIcon(getDominantIconType(), getDominantIconStyle());
+    }
+
+    /**
+     * Stores the most common style for vertex icons in this graph
+     */
+    public void updateDominantVertexIcon(){
+        this.predominantVertexIcon = getDominantVertexIcon();
     }
 
     public int getBackgroundColorRgb() {

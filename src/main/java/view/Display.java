@@ -198,7 +198,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 
     private static InfoGatherer gatherer;
     //declared as fields rather than as local variables so that their value can be altered by listeners
-    public static VisualizationViewer vv;
+    public static VisualizationViewer<MyVertex, MyEdge> vv;
     private static ScalingControl scaler;
     //    EditingModalGraphMouse<MyVertex, MyEdge> graphMouse;
     private static CustomGraphMouse graphMouse;
@@ -332,7 +332,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                 degDistLogScale.isSelected());
     }
 
-    public VisualizationViewer getVV() {
+    public VisualizationViewer<MyVertex, MyEdge> getVV() {
         return vv;
     }
 
@@ -465,16 +465,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         setTitle("Free Roam Mode");
         setMinimumSize(new java.awt.Dimension(1024, 768));
         setPreferredSize(new java.awt.Dimension(1024, 768));
-        addWindowListener(new java.awt.event.WindowAdapter() {
-            public void windowClosing(java.awt.event.WindowEvent evt) {
-                formWindowClosing(evt);
-            }
-        });
-        addKeyListener(new java.awt.event.KeyAdapter() {
-            public void keyPressed(java.awt.event.KeyEvent evt) {
-                formKeyPressed(evt);
-            }
-        });
 
         mouseModeToolbar.setBorder(javax.swing.BorderFactory.createTitledBorder("Mouse mode"));
         mouseModeToolbar.setFloatable(false);
@@ -560,7 +550,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         tau.setText("2");
         tau.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                handleSimControlInput(evt);
+                parseSimulationParameters(evt);
             }
         });
 
@@ -569,21 +559,16 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         gama.setText("1");
         gama.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                gamaKeyReleased(evt);
+                parseSimulationParameters(evt);
             }
         });
 
         edgeBreakingLabel.setText("Edge breaking rate");
 
         breakingRate.setText("0");
-        breakingRate.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                breakingRateActionPerformed(evt);
-            }
-        });
         breakingRate.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                breakingRateKeyReleased(evt);
+                parseSimulationParameters(evt);
             }
         });
 
@@ -592,7 +577,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         deltaT.setText("0.1");
         deltaT.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyReleased(java.awt.event.KeyEvent evt) {
-                deltaTKeyReleased(evt);
+                parseSimulationParameters(evt);
             }
         });
 
@@ -1284,7 +1269,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         kk.setToolTipText("Kamada-Kawai algorithm");
         kk.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                kkActionPerformed(evt);
+                changeLayout();
             }
         });
         layoutMenu.add(kk);
@@ -1295,7 +1280,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         fr.setToolTipText("Fruchterman- Reingold algorithm");
         fr.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                frActionPerformed(evt);
+                changeLayout();
             }
         });
         layoutMenu.add(fr);
@@ -1306,7 +1291,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         isom.setToolTipText("Self-organizing map algorithm");
         isom.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                isomActionPerformed(evt);
+                changeLayout();
             }
         });
         layoutMenu.add(isom);
@@ -1317,7 +1302,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         spring.setToolTipText("A simple force-based algorithm");
         spring.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                springActionPerformed(evt);
+                changeLayout();
             }
         });
         layoutMenu.add(spring);
@@ -1328,7 +1313,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         circleL.setToolTipText("Arranges vertices in a circle");
         circleL.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                circleLActionPerformed(evt);
+                changeLayout();
             }
         });
         layoutMenu.add(circleL);
@@ -1465,34 +1450,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         persistentLayout.restore(path);
     }
 
-    private void formWindowClosing(java.awt.event.WindowEvent evt) {
-    }
-
-    private void kkActionPerformed(java.awt.event.ActionEvent evt) {
-//        redisplayCompletely();
-        this.changeLayout();
-    }
-
-    private void frActionPerformed(java.awt.event.ActionEvent evt) {
-//        redisplayCompletely();
-        this.changeLayout();
-    }
-
-    private void isomActionPerformed(java.awt.event.ActionEvent evt) {
-//        redisplayCompletely();
-        this.changeLayout();
-    }
-
-    private void springActionPerformed(java.awt.event.ActionEvent evt) {
-//        redisplayCompletely();
-        this.changeLayout();
-    }
-
-    private void circleLActionPerformed(java.awt.event.ActionEvent evt) {
-//        redisplayCompletely();
-        this.changeLayout();
-    }
-
     private void dumpToJpgActionPerformed(java.awt.event.ActionEvent evt) {
         FileDialog window = new FileDialog(this, "Save", FileDialog.SAVE);
         window.setSize(500, 500);
@@ -1549,27 +1506,22 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     }
 
     private void fileQuit1ActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO a bit rude, bit OK as a temp solution
-        System.exit(1);
+        System.exit(0);
     }
 
     private void vDEgreeActionPerformed(java.awt.event.ActionEvent evt) {
-//        vertexLabelIndex.put(g, vertexLabel.getSelection().getMnemonic() - 65);
         repaint();
     }
 
     private void vCCActionPerformed(java.awt.event.ActionEvent evt) {
-//        vertexLabelIndex.put(g, vertexLabel.getSelection().getMnemonic() - 65);
         repaint();
     }
 
     private void vBCActionPerformed(java.awt.event.ActionEvent evt) {
-//        vertexLabelIndex.put(g, vertexLabel.getSelection().getMnemonic() - 65);
         repaint();
     }
 
     private void vDistActionPerformed(java.awt.event.ActionEvent evt) {
-//        vertexLabelIndex.put(g, vertexLabel.getSelection().getMnemonic() - 65);
         repaint();
     }
 
@@ -1578,27 +1530,22 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     }
 
     private void vNoneActionPerformed(java.awt.event.ActionEvent evt) {
-//        vertexLabelIndex.put(g, vertexLabel.getSelection().getMnemonic() - 65);
         repaint();
     }
 
     private void eWeightActionPerformed(java.awt.event.ActionEvent evt) {
-//        edgeLabelIndex.put(g, edgeLabel.getSelection().getMnemonic() - 72);
         repaint();
     }
 
     private void eIDActionPerformed(java.awt.event.ActionEvent evt) {
-//        edgeLabelIndex.put(g, edgeLabel.getSelection().getMnemonic() - 72);
         repaint();
     }
 
     private void eBCActionPerformed(java.awt.event.ActionEvent evt) {
-//        edgeLabelIndex.put(g, edgeLabel.getSelection().getMnemonic() - 72);
         repaint();
     }
 
     private void eNoneActionPerformed(java.awt.event.ActionEvent evt) {
-//        edgeLabelIndex.put(g, edgeLabel.getSelection().getMnemonic() - 72);
         repaint();
     }
 
@@ -1664,7 +1611,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
             if (source.getSelectedItem().toString().equals("SIR")) {
                 gamaLabel.setVisible(true);
                 gama.setVisible(true);
-//                gama.setText("1");
                 breakingRate.setVisible(false);
                 edgeBreakingLabel.setVisible(false);
             }
@@ -1673,26 +1619,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
             validate();
             repaint();
         }
-    }
-
-    private void breakingRateActionPerformed(java.awt.event.ActionEvent evt) {
-        // TODO add your handling code here:
-    }
-
-    private void handleSimControlInput(java.awt.event.KeyEvent evt) {
-        parseSimulationParameters(evt);
-    }
-
-    private void gamaKeyReleased(java.awt.event.KeyEvent evt) {
-        parseSimulationParameters(evt);
-    }
-
-    private void breakingRateKeyReleased(java.awt.event.KeyEvent evt) {
-        parseSimulationParameters(evt);
-    }
-
-    private void deltaTKeyReleased(java.awt.event.KeyEvent evt) {
-        parseSimulationParameters(evt);
     }
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1714,9 +1640,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
             checkEmptyPopupError();
             healAllNodesButton.doClick();
         }
-    }
-
-    private void formKeyPressed(java.awt.event.KeyEvent evt) {
     }
 
     private void selectActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1802,7 +1725,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     /**
      * Initialises the display
      */
-    public void redisplayCompletely() {
+    private void redisplayCompletely() {
         //clear all previous content
         pane.removeAll();
         pane.setLayout(new BorderLayout());
@@ -1900,7 +1823,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(edgeColor));
     }
 
-    public static void redisplayPartially() {
+    private static void redisplayPartially() {
         pane.validate();
         vv.repaint();
         pane.repaint();
@@ -1915,7 +1838,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     private Layout<MyVertex, MyEdge> getSelectedGraphLayout(Graph g) {
         //ascii code of 0 is 48, 1 is 49, etc, and the menus have been assigned mnemonics from 0-5
         int type = layouts.getSelection().getMnemonic() - 48;
-//        System.out.println("layout is: " + type);
         Layout<MyVertex, MyEdge> l = null;
         switch (type) {
             case 0: {
@@ -1932,7 +1854,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
             }
             case 3: {
                 l = new SpringLayout<MyVertex, MyEdge>(g);
-//                ((SpringLayout)layout).setForceMultiplier(10.0); //how close nodes are together
                 ((SpringLayout) l).setRepulsionRange(10000);
                 break;
             }

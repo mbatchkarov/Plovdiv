@@ -43,6 +43,8 @@ import model.factories.EdgeFactory;
 import model.factories.VertexFactory;
 
 import java.util.HashSet;
+import model.VertexIcon;
+import view.Utils;
 
 /**
  * This class handles provides my own lattice/ random generators, and the other
@@ -259,10 +261,10 @@ public class Generator {
     }
 
     private static void determineInitialNodeTypes(MyGraph graph) {
-        for (Object edge : graph.getEdges().toArray()) {
-            Pair endpoints = graph.getEndpoints(edge);
-            ((MyVertex) endpoints.getFirst()).increaseNumberOfConnections();
-            ((MyVertex) endpoints.getSecond()).increaseNumberOfConnections();
+        for (Object vertex : graph.getVertices().toArray()) {
+            int vertexDegree = graph.degree(vertex);
+            int vertexIconType = Utils.getVertexIconTypeBasedOnDegree(vertexDegree);
+            ((MyVertex) vertex).setIcon(new VertexIcon(vertexIconType, VertexIcon.STYLE_SIMPLE));
         }
     }
 }

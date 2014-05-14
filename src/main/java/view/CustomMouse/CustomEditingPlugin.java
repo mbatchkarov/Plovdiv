@@ -60,6 +60,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Point2D;
+import model.VertexIcon;
 
 /**
  * A plugin that can create vertices, undirected edges, and directed edges
@@ -161,8 +162,7 @@ MouseListener, MouseMotionListener {
 				} else { // make a new vertex
 
 					final MyVertex newVertex = vertexFactory.create();
-                                        newVertex.setVertexIconStyle(((MyGraph) graph).getDominantIconStyle());
-                                        newVertex.setVertexIconType(((MyGraph) graph).getDominantIconType());
+                                        newVertex.setIcon(new VertexIcon(((MyGraph) graph).getDominantIconType(), ((MyGraph) graph).getDominantIconStyle()));
 					newVertex.setEpiState(EpiState.SUSCEPTIBLE);
 					Layout layout = vv.getModel().getGraphLayout();
 					graph.addVertex(newVertex);

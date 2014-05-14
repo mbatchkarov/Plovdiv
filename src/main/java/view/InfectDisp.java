@@ -232,12 +232,10 @@ public class InfectDisp extends javax.swing.JFrame {
         if (content.length() > 0) {
             try {
                 int n = Integer.parseInt(content);
-//                int numInfected = Integer.parseInt(g.getUserDatum(Strings.numInfected).toString());
                 if (n < 0) {
                     throw new NumberFormatException();
                 }
                 //infect the number the user specified or as many as possible
-                int x = g.getNumSusceptible();
                 controller.infectNodes(g, Math.min(n, g.getNumSusceptible()));
             } catch (NumberFormatException nfe) {
                 System.out.println("Negative number entered!");
@@ -247,7 +245,6 @@ public class InfectDisp extends javax.swing.JFrame {
             int n = Math.min(slider.getValue() * g.getVertexCount() / 100, g.getNumSusceptible());
             controller.infectNodes(g, n);
         }
-
         dispose();
     }
 
