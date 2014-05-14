@@ -350,7 +350,6 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                         }
                     });
 
-                    backgroundImageMenu.add(new AbstractAction("<UK Map>") {
                     backgroundImageMenu.add(new AbstractAction("UK map") {
 
                         public void actionPerformed(ActionEvent e) {
