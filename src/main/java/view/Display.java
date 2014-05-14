@@ -1615,7 +1615,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                 edgeBreakingLabel.setVisible(false);
             }
             parseSimulationParameters(null);
-            pack();
             validate();
             repaint();
         }
