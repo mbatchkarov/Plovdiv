@@ -347,6 +347,8 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                         public void actionPerformed(ActionEvent e) {
                             BackgroundImageController.getInstance().removeBackgroundImage(vv);
+                            setGraphBackgroundColor(vv, graph, new Color(238, 238, 238));
+                            setGraphEdgeColor(vv, graph, Color.BLACK);
                         }
                     });
 
