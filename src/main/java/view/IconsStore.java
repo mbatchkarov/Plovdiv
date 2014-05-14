@@ -138,14 +138,14 @@ public class IconsStore implements Transformer<MyVertex, Icon> {
         
         Image image = null;
         if (pickedState != null && pickedState.isPicked(v)) {
-            image = iconsPack.get(v.getNodeType())[VERTEX_ICON_SELECTED];
+            image = iconsPack.get(v.getVertexIconType())[VERTEX_ICON_SELECTED];
         } else {
             if (v.isSusceptible()) {
-                image = iconsPack.get(v.getNodeType())[VERTEX_ICON_SUSCEPTIBLE];
+                image = iconsPack.get(v.getVertexIconType())[VERTEX_ICON_SUSCEPTIBLE];
             } else if (v.isInfected()) {
-                image = iconsPack.get(v.getNodeType())[VERTEX_ICON_INFECTED];
+                image = iconsPack.get(v.getVertexIconType())[VERTEX_ICON_INFECTED];
             } else if (v.isResistant()) {
-                image = iconsPack.get(v.getNodeType())[VERTEX_ICON_IMMUNE];
+                image = iconsPack.get(v.getVertexIconType())[VERTEX_ICON_IMMUNE];
             }
         }
         return new ImageIcon(image);

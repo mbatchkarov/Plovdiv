@@ -274,8 +274,7 @@ public class CustomPajekNetReader<G extends Graph<V, E>, V, E> {
 
             ((MyVertex) v).setEpiState(state);
             ((MyVertex) v).setVertexIconStyle(Integer.parseInt(metadataSections[1]));
-            ((MyVertex) v).setNodeType(Integer.parseInt(metadataSections[2]));
-            ((MyVertex) v).setTypeAutodetermined(false);
+            ((MyVertex) v).setVertexIconType(Integer.parseInt(metadataSections[2]));
             g.getVertices().toArray()[v_id] = v;
         }
 
