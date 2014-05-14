@@ -86,6 +86,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.swing.GroupLayout.ParallelGroup;
+import javax.swing.GroupLayout.SequentialGroup;
 import org.apache.commons.collections15.Transformer;
 import view.CustomVisualization.CustomVertexRenderer;
 
@@ -219,6 +220,18 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
      * Creates new form Display
      */
     public Display(Stats stats, Controller cont, MyGraph g) {
+        try {
+            UIManager.setLookAndFeel(
+                    UIManager.getCrossPlatformLookAndFeelClassName());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (InstantiationException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
         initComponents();
         pack();
         this.stats = stats;
@@ -288,14 +301,14 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
             localBC.setText(round(stats.getBetweennessCentrality(selectedVertex)));
             in.setText(round(g.inDegree(selectedVertex)));
             out.setText(round(g.outDegree(selectedVertex)));
-            nodeStatisticsPanel.setPreferredSize(new Dimension(298, 60));
+            nodeStatisticsPanel.setPreferredSize(new Dimension(290, 60));
         } else {
             localCC.setText("N/A");
             localAPL.setText("N/A");
             localBC.setText("N/A");
             in.setText("N/A");
             out.setText("N/A");
-            nodeStatisticsPanel.setPreferredSize(new Dimension(298, 0));
+            nodeStatisticsPanel.setPreferredSize(new Dimension(290, 0));
         }
 
         nodeStatisticsPanel.revalidate();
@@ -513,7 +526,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         mouseModeToolbar.add(annotate);
 
         pane.setBorder(javax.swing.BorderFactory.createTitledBorder("Graph"));
-        pane.setMinimumSize(new java.awt.Dimension(608, 100));
+        pane.setMinimumSize(new java.awt.Dimension(600, 100));
         pane.setName("pane"); // NOI18N
 
         javax.swing.GroupLayout paneLayout = new javax.swing.GroupLayout(pane);
@@ -679,17 +692,17 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         );
 
         nodeStatisticsPanel.setBorder(javax.swing.BorderFactory.createTitledBorder("Selected node statistics"));
-        nodeStatisticsPanel.setMinimumSize(new Dimension(298, 0));
+        nodeStatisticsPanel.setMinimumSize(new Dimension(290, 0));
 
         localCC.setText("0.0");
 
-        localCCLabel.setText("Clustering coef.");
+        localCCLabel.setText("CC");
 
         localAPL.setText("0.0");
 
         localAPLLabel.setText("APL");
 
-        bcLabel.setText("Between. centrality");
+        bcLabel.setText("BC");
 
         localBC.setText("0.0");
 
@@ -722,7 +735,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(jPanel2Layout.createSequentialGroup()
                                         .addComponent(localCCLabel)
-                                        .addGap(32, 32, 32)
+                                        .addGap(12, 12, 12)
                                         .addComponent(localCC))
                                 .addGroup(jPanel2Layout.createSequentialGroup()
                                         .addComponent(bcLabel)
@@ -797,7 +810,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 
         degreeCorrLabel.setText("Degree corr. ");
 
-        ccLabel.setText("Clustering coef. ");
+        ccLabel.setText("CC ");
 
         globalCC.setText("0");
 
@@ -856,13 +869,13 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                         .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(graphStatsPanelLayout.createSequentialGroup()
                                                         .addComponent(ccLabel)
-                                                        .addGap(8, 8, 8)
+                                                        .addGap(56, 56, 56)
                                                         .addComponent(globalCC, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                 .addGroup(graphStatsPanelLayout.createSequentialGroup()
                                                         .addComponent(avgDegreeLabel)
-                                                        .addGap(33, 33, 33)
+                                                        .addGap(8, 8, 8)
                                                         .addComponent(globalAvgDegree)))
-                                        .addGap(12, 12, 12)
+                                        .addGap(20, 20, 20)
                                         .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                 .addGroup(graphStatsPanelLayout.createSequentialGroup()
                                                         .addComponent(degreeCorrLabel)
@@ -872,7 +885,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                                         .addComponent(aplLabel)
                                                         .addGap(56, 56, 56)
                                                         .addComponent(globalAPL)))
-                                        .addGap(24, 24, 24)
+                                        .addGap(20, 20, 20)
                                         .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING).addGroup(graphStatsPanelLayout.createSequentialGroup()
                                                         .addComponent(vertexCountLabel)
                                                         .addGap(6, 6, 6)
@@ -1334,7 +1347,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
-        ParallelGroup rightSidebarHorizontalGroup = layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+        SequentialGroup rightSidebarHorizontalGroup = layout.createSequentialGroup().addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(simControlsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGap(5, 5, 5)
@@ -1342,7 +1355,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                 .addComponent(stepTimePanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(statsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(graphStatsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(hideSidebarButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE);
+                .addComponent(hideSidebarButton, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)).addGap(5, 5, 5);
         ParallelGroup layoutHorizontalGroup = layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                 .addGroup(layout.createSequentialGroup()
                         .addGap(5, 5, 5)
@@ -1350,10 +1363,10 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                 .addGroup(layout.createSequentialGroup()
                                         .addComponent(mouseModeToolbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                         .addGap(5, 5, 5)
-                                        .addComponent(nodeStatisticsPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(nodeStatisticsPanel, 290, 290, Short.MAX_VALUE)
                                         .addGap(5, 5, 5)
-                                        .addComponent(showSidebarButton, 400, 400, 400)
-                                ).addComponent(pane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                        .addComponent(showSidebarButton, 397, 397, 397)
+                                ).addComponent(pane, 600, 600, Short.MAX_VALUE))
                         .addGroup(rightSidebarHorizontalGroup));
         layout.setHorizontalGroup(layoutHorizontalGroup);
 
@@ -1669,28 +1682,28 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         graphMouse.setMode(ModalGraphMouse.Mode.PICKING);
         annotationControlsToolbar.setVisible(annotate.isSelected());
         nodeStatisticsPanel.setVisible(true);
-        mouseModeToolbar.setPreferredSize(new Dimension(225, 60));
+        mouseModeToolbar.setPreferredSize(new Dimension(240, 60));
     }
 
     private void editActionPerformed(java.awt.event.ActionEvent evt) {
         graphMouse.setMode(ModalGraphMouse.Mode.EDITING);
         annotationControlsToolbar.setVisible(annotate.isSelected());
         nodeStatisticsPanel.setVisible(true);
-        mouseModeToolbar.setPreferredSize(new Dimension(225, 60));
+        mouseModeToolbar.setPreferredSize(new Dimension(240, 60));
     }
 
     private void transformActionPerformed(java.awt.event.ActionEvent evt) {
         graphMouse.setMode(ModalGraphMouse.Mode.TRANSFORMING);
         annotationControlsToolbar.setVisible(annotate.isSelected());
         nodeStatisticsPanel.setVisible(true);
-        mouseModeToolbar.setPreferredSize(new Dimension(225, 60));
+        mouseModeToolbar.setPreferredSize(new Dimension(240, 60));
     }
 
     private void annotateActionPerformed(java.awt.event.ActionEvent evt) {
         graphMouse.setMode(ModalGraphMouse.Mode.ANNOTATING);
         annotationControlsToolbar.setVisible(annotate.isSelected());
         nodeStatisticsPanel.setVisible(false);
-        mouseModeToolbar.setPreferredSize(new Dimension(598, 60));
+        mouseModeToolbar.setPreferredSize(new Dimension(594, 60));
     }
 
     private void degDistLogScaleItemStateChanged(java.awt.event.ItemEvent evt) {
