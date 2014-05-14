@@ -121,26 +121,17 @@ public class MyVertex implements Serializable {
      */
     public int getVertexIconType() {
         if (this.isTypeAutodetermined()) {
-            autodetermineNodeType();
+            int nodeType = MyVertex.NODE_TYPE_MOBILE;
+            if (numberOfConnections > 2 && numberOfConnections < 4) {
+                nodeType = MyVertex.NODE_TYPE_COMPUTER;
+            } else if (numberOfConnections > 4) {
+                nodeType = MyVertex.NODE_TYPE_ACCESS_POINT;
+            }
+            this.setVertexIconType(nodeType);
         }
         return vertexIconType;
     }
 
-    private void autodetermineNodeType() {
-            if (this.vertexIconType == NODE_TYPE_MOBILE ||
-                this.vertexIconType == NODE_TYPE_COMPUTER ||
-                this.vertexIconType == NODE_TYPE_ACCESS_POINT) {
-
-                int nodeType = MyVertex.NODE_TYPE_MOBILE;
-                if (numberOfConnections > 2 && numberOfConnections < 4) {
-                    nodeType = MyVertex.NODE_TYPE_COMPUTER;
-                } else if (numberOfConnections > 4) {
-                    nodeType = MyVertex.NODE_TYPE_ACCESS_POINT;
-                }
-                this.vertexIconType = nodeType;
-        }
-    }
-    
     /**
      * @param iconType the type of node to set. Should be one of the static
      *                 values predefined in the MyVertex class.
