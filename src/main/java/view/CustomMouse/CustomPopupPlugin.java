@@ -166,43 +166,44 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                         nodeTypeMenuSimple.add(new AbstractAction("User") {
                             public void actionPerformed(ActionEvent e) {
-                                changeVertexIconType(vv, vertex, VertexIcon.TYPE_USER, VertexIcon.STYLE_SIMPLE);
+                                changeVertexIconType(vv, graph, vertex, VertexIcon.TYPE_USER, VertexIcon.STYLE_SIMPLE);
                             }
                         });
                         nodeTypeMenuSimple.add(new AbstractAction("Mobile") {
                             public void actionPerformed(ActionEvent e) {
-                                changeVertexIconType(vv, vertex, VertexIcon.TYPE_MOBILE, VertexIcon.STYLE_SIMPLE);
+                                changeVertexIconType(vv, graph, vertex, VertexIcon.TYPE_MOBILE,
+                                                     VertexIcon.STYLE_SIMPLE);
                             }
                         });
                         nodeTypeMenuSimple.add(new AbstractAction("Computer") {
                             public void actionPerformed(ActionEvent e) {
-                                changeVertexIconType(vv, vertex, VertexIcon.TYPE_COMPUTER, VertexIcon.STYLE_SIMPLE);
+                                changeVertexIconType(vv, graph, vertex, VertexIcon.TYPE_COMPUTER, VertexIcon.STYLE_SIMPLE);
                             }
                         });
                         nodeTypeMenuSimple.add(new AbstractAction("Access Point") {
                             public void actionPerformed(ActionEvent e) {
-                                changeVertexIconType(vv, vertex, VertexIcon.TYPE_ACCESS_POINT, VertexIcon.STYLE_SIMPLE);
+                                changeVertexIconType(vv, graph, vertex, VertexIcon.TYPE_ACCESS_POINT, VertexIcon.STYLE_SIMPLE);
                             }
                         });
 
                         nodeTypeMenuRealistic.add(new AbstractAction("User") {
                             public void actionPerformed(ActionEvent e) {
-                                changeVertexIconType(vv, vertex, VertexIcon.TYPE_USER, VertexIcon.STYLE_3D);
+                                changeVertexIconType(vv, graph, vertex, VertexIcon.TYPE_USER, VertexIcon.STYLE_3D);
                             }
                         });
                         nodeTypeMenuRealistic.add(new AbstractAction("Mobile") {
                             public void actionPerformed(ActionEvent e) {
-                                changeVertexIconType(vv, vertex,VertexIcon.TYPE_MOBILE, VertexIcon.STYLE_3D);
+                                changeVertexIconType(vv, graph, vertex,VertexIcon.TYPE_MOBILE, VertexIcon.STYLE_3D);
                             }
                         });
                         nodeTypeMenuRealistic.add(new AbstractAction("Computer") {
                             public void actionPerformed(ActionEvent e) {
-                                changeVertexIconType(vv, vertex, VertexIcon.TYPE_COMPUTER, VertexIcon.STYLE_3D);
+                                changeVertexIconType(vv, graph, vertex, VertexIcon.TYPE_COMPUTER, VertexIcon.STYLE_3D);
                             }
                         });
                         nodeTypeMenuRealistic.add(new AbstractAction("Access Point") {
                             public void actionPerformed(ActionEvent e) {
-                                changeVertexIconType(vv, vertex, VertexIcon.TYPE_ACCESS_POINT, VertexIcon.STYLE_3D);
+                                changeVertexIconType(vv, graph, vertex, VertexIcon.TYPE_ACCESS_POINT, VertexIcon.STYLE_3D);
                             }
                         });
                     }
@@ -462,12 +463,18 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
         for (Object vertex : graph.getVertices()) {
             ((MyVertex) vertex).getIcon().setStyle(iconStyle);
         }
+        graph.updateDominantVertexIcon();
         vv.repaint();
     }
 
-    private void changeVertexIconType(VisualizationViewer vv, MyVertex v, int nodeType, int vertexIconStyle) {
+    private void changeVertexIconType(VisualizationViewer<MyVertex, MyEdge> vv,
+                                      MyGraph graph,
+                                      MyVertex v,
+                                      int nodeType,
+                                      int vertexIconStyle) {
         v.getIcon().setStyle(vertexIconStyle);
         v.getIcon().setType(nodeType);
+        graph.updateDominantVertexIcon();
         vv.repaint();
     }
 

@@ -62,6 +62,8 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
     private Color backgroundColor = new Color(240, 240, 240);
     private Color edgeColor = Color.BLACK;
 
+    private VertexIcon predominantVertexIcon;
+
     public MyGraph(Graph<V, E> delegate) {
         super(delegate);
         this.dynamics = null;
@@ -73,7 +75,7 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         sleepTimeBetweenSteps = 0;
     }
 
-    public void setInstance(MyGraph newInstance) {
+    public void setInstance(MyGraph<V,E> newInstance) {
         delegate = newInstance.delegate;
         setAllowNodeIcons(newInstance.areNodeIconsAllowed());
         updateCounts();
@@ -252,6 +254,17 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         } catch (NullPointerException ex) {
             return VertexIcon.TYPE_USER;
         }
+    }
+
+    public VertexIcon getDominantVertexIcon(){
+        return new VertexIcon(getDominantIconType(), getDominantIconStyle());
+    }
+
+    /**
+     * Stores the most common style for vertex icons in this graph
+     */
+    public void updateDominantVertexIcon(){
+        this.predominantVertexIcon = getDominantVertexIcon();
     }
 
     public int getBackgroundColorRgb() {

@@ -198,7 +198,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 
     private static InfoGatherer gatherer;
     //declared as fields rather than as local variables so that their value can be altered by listeners
-    public static VisualizationViewer vv;
+    public static VisualizationViewer<MyVertex, MyEdge> vv;
     private static ScalingControl scaler;
     //    EditingModalGraphMouse<MyVertex, MyEdge> graphMouse;
     private static CustomGraphMouse graphMouse;
@@ -332,7 +332,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                 degDistLogScale.isSelected());
     }
 
-    public VisualizationViewer getVV() {
+    public VisualizationViewer<MyVertex, MyEdge> getVV() {
         return vv;
     }
 
