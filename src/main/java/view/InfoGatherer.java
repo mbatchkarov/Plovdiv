@@ -86,7 +86,7 @@ public class InfoGatherer {
 
         if (!path.equals("nullnull")) {//if the user clicks CANCEL path will be set to "nullnull"
             try {
-                controller.load(path);
+                controller.load(d.vv, path);
             } catch (IOException e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(d, "Error! \n" + e.getMessage());
