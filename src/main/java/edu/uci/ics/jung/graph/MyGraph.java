@@ -35,11 +35,14 @@ package edu.uci.ics.jung.graph;
  *
  * @author Miroslav Batchkarov
  */
+
 import controller.ExtraGraphEvent;
 import controller.ExtraGraphEventListener;
 import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
+
 import java.awt.Color;
+
 import model.EpiState;
 import model.MyEdge;
 import model.MyVertex;
@@ -47,6 +50,7 @@ import model.dynamics.Dynamics;
 
 import java.io.Serializable;
 import java.util.*;
+
 import model.VertexIcon;
 
 public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable {
@@ -73,9 +77,10 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         numResistant = 0;
         numSusceptible = 0;
         sleepTimeBetweenSteps = 0;
+        predominantVertexIcon = null;
     }
 
-    public void setInstance(MyGraph<V,E> newInstance) {
+    public void setInstance(MyGraph<V, E> newInstance) {
         delegate = newInstance.delegate;
         setAllowNodeIcons(newInstance.areNodeIconsAllowed());
         updateCounts();
@@ -146,9 +151,9 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
     @Override
     public String toString() {
         return "MyGraph{"
-                + "delegate=" + this.delegate
-                + ", extraListenerList=" + extraListenerList
-                + '}';
+               + "delegate=" + this.delegate
+               + ", extraListenerList=" + extraListenerList
+               + '}';
     }
 
     /**
@@ -206,6 +211,15 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
      * amount of vertices.
      */
     public int getDominantIconStyle() {
+        if (getVertices().size() < 1) {
+            // no vertices, can't find the predominant style
+            if (predominantVertexIcon == null)
+                //and one has not been saved previously
+                return VertexIcon.STYLE_SIMPLE;
+            else
+                return predominantVertexIcon.getStyle();
+        }
+
         int simpleIconCount = 0;
         int otherIconCount = 0;
         for (Object vertex : getVertices()) {
@@ -230,6 +244,14 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
      * the first one (in order of declaration) is selected.
      */
     public int getDominantIconType() {
+        if (getVertices().size() < 1) {
+            // no vertices, can't find the predominant style
+            if (predominantVertexIcon == null)
+                //and one has not been saved previously
+                return VertexIcon.TYPE_USER;
+            else
+                return predominantVertexIcon.getType();
+        }
         HashMap<Integer, Integer> iconTypeCounts = new HashMap<Integer, Integer>();
         for (Object vertex : getVertices()) {
             int iconType = ((MyVertex) vertex).getIcon().getType();
@@ -248,22 +270,17 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
             }
         }
 
-        try {
-            // if there are no vertices in the graph this throws a NPE
-            return maxEntry.getKey();
-        } catch (NullPointerException ex) {
-            return VertexIcon.TYPE_USER;
-        }
+        return maxEntry.getKey();
     }
 
-    public VertexIcon getDominantVertexIcon(){
+    public VertexIcon getDominantVertexIcon() {
         return new VertexIcon(getDominantIconType(), getDominantIconStyle());
     }
 
     /**
      * Stores the most common style for vertex icons in this graph
      */
-    public void updateDominantVertexIcon(){
+    public void updateDominantVertexIcon() {
         this.predominantVertexIcon = getDominantVertexIcon();
     }
 
