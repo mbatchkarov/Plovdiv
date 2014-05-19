@@ -30,32 +30,43 @@
 package edu.uci.ics.jung.graph;
 
 /**
- * A singleton graph decorator which is observable and provides a mechanism for adding user data to the graph.
+ * A singleton graph decorator which is observable and provides a mechanism for
+ * adding user data to the graph.
+ *
  * @author Miroslav Batchkarov
  */
 
 import controller.ExtraGraphEvent;
 import controller.ExtraGraphEventListener;
-import edu.uci.ics.jung.algorithms.layout.Layout;
 import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
+
+import java.awt.Color;
+
 import model.EpiState;
 import model.MyEdge;
 import model.MyVertex;
-import model.Strings;
 import model.dynamics.Dynamics;
-import model.dynamics.SISDynamics;
 
 import java.io.Serializable;
 import java.util.*;
+
+import model.VertexIcon;
 
 public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable {
 
     List<ExtraGraphEventListener<V, E>> extraListenerList;
 
+    private boolean allowNodeIcons = true;
+
     private Dynamics dynamics;
     private int numSusceptible, numInfected, numResistant;
     int sleepTimeBetweenSteps; // how long to wait before another simulation step is made (ms)
+
+    private Color backgroundColor = new Color(240, 240, 240);
+    private Color edgeColor = Color.BLACK;
+
+    private VertexIcon predominantVertexIcon;
 
     public MyGraph(Graph<V, E> delegate) {
         super(delegate);
@@ -66,11 +77,12 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         numResistant = 0;
         numSusceptible = 0;
         sleepTimeBetweenSteps = 0;
+        predominantVertexIcon = null;
     }
 
-    public void setInstance(MyGraph newInstance) {
+    public void setInstance(MyGraph<V, E> newInstance) {
         delegate = newInstance.delegate;
-        setAllSusceptible();
+        setAllowNodeIcons(newInstance.areNodeIconsAllowed());
         updateCounts();
         fireExtraEvent(new ExtraGraphEvent(delegate, ExtraGraphEvent.GRAPH_REPLACED));
     }
@@ -138,12 +150,11 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
 
     @Override
     public String toString() {
-        return "MyGraph{" +
-               "delegate=" + this.delegate +
-               ", extraListenerList=" + extraListenerList +
-               '}';
+        return "MyGraph{"
+               + "delegate=" + this.delegate
+               + ", extraListenerList=" + extraListenerList
+               + '}';
     }
-
 
     /**
      * Attaches counters of the numbers of infected/susceptible/resistant to all
@@ -178,5 +189,114 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
             x.setEpiState(EpiState.SUSCEPTIBLE);
         }
         updateCounts();
+    }
+
+    /**
+     * @return the allowNodeIcons
+     */
+    public boolean areNodeIconsAllowed() {
+        return allowNodeIcons;
+    }
+
+    /**
+     * @param allowNodeIcons the allowNodeIcons to set
+     */
+    public void setAllowNodeIcons(boolean allowNodeIcons) {
+        this.allowNodeIcons = allowNodeIcons;
+    }
+
+    /**
+     * Analyzes all of the vertices and returns the predominant style of icons
+     * used. The simple icons are preferred if both styles are used in equal
+     * amount of vertices.
+     */
+    public int getDominantIconStyle() {
+        if (getVertices().size() < 1) {
+            // no vertices, can't find the predominant style
+            if (predominantVertexIcon == null)
+                //and one has not been saved previously
+                return VertexIcon.STYLE_SIMPLE;
+            else
+                return predominantVertexIcon.getStyle();
+        }
+
+        int simpleIconCount = 0;
+        int otherIconCount = 0;
+        for (Object vertex : getVertices()) {
+            int iconStyle = ((MyVertex) vertex).getIcon().getStyle();
+            if (iconStyle == VertexIcon.STYLE_SIMPLE) {
+                simpleIconCount++;
+            } else {
+                otherIconCount++;
+            }
+        }
+
+        if (simpleIconCount >= otherIconCount) {
+            return VertexIcon.STYLE_SIMPLE;
+        } else {
+            return VertexIcon.STYLE_3D;
+        }
+    }
+
+    /**
+     * Analyzes all of the vertices and returns the predominant type of icon
+     * used. If there are two types of icons used in equal amount of vertices,
+     * the first one (in order of declaration) is selected.
+     */
+    public int getDominantIconType() {
+        if (getVertices().size() < 1) {
+            // no vertices, can't find the predominant style
+            if (predominantVertexIcon == null)
+                //and one has not been saved previously
+                return VertexIcon.TYPE_USER;
+            else
+                return predominantVertexIcon.getType();
+        }
+        HashMap<Integer, Integer> iconTypeCounts = new HashMap<Integer, Integer>();
+        for (Object vertex : getVertices()) {
+            int iconType = ((MyVertex) vertex).getIcon().getType();
+            Integer iconTypeCount = iconTypeCounts.get(iconType);
+            if (iconTypeCount == null) {
+                iconTypeCounts.put(iconType, 1);
+            } else {
+                iconTypeCounts.put(iconType, iconTypeCount + 1);
+            }
+        }
+
+        Map.Entry<Integer, Integer> maxEntry = null;
+        for (Map.Entry<Integer, Integer> entry : iconTypeCounts.entrySet()) {
+            if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0) {
+                maxEntry = entry;
+            }
+        }
+
+        return maxEntry.getKey();
+    }
+
+    public VertexIcon getDominantVertexIcon() {
+        return new VertexIcon(getDominantIconType(), getDominantIconStyle());
+    }
+
+    /**
+     * Stores the most common style for vertex icons in this graph
+     */
+    public void updateDominantVertexIcon() {
+        this.predominantVertexIcon = getDominantVertexIcon();
+    }
+
+    public int getBackgroundColorRgb() {
+        return backgroundColor.getRGB();
+    }
+
+    public void setBackgroundColor(int rgb) {
+        backgroundColor = new Color(rgb);
+    }
+
+    public int getEdgeColorRgb() {
+        return edgeColor.getRGB();
+    }
+
+    public void setEdgeColor(int rgb) {
+        edgeColor = new Color(rgb);
     }
 }

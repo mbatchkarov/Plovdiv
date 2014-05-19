@@ -48,6 +48,7 @@ public class VertexFactory implements Factory<MyVertex> {
 
     public MyVertex create() {
         MyVertex x = new MyVertex(++i);
+        
         return x;
     }
 

@@ -41,27 +41,17 @@ import java.io.Serializable;
  */
 public class MyVertex implements Serializable {
 
-    public final static int NODE_TYPE_GENERIC = 0x0;
-    public final static int NODE_TYPE_USER = 0x1;
-    public final static int NODE_TYPE_MOBILE = 0x2;
-    public final static int NODE_TYPE_COMPUTER = 0x3;
-    public final static int NODE_TYPE_ACCESS_POINT = 0x4;
-    
-    public final static int VERTEX_ICON_STYLE_SIMPLE = 0x1;
-    public final static int VERTEX_ICON_STYLE_PHOTOREALISTIC = 0x2;
-
     private int id;
     private EpiState epiState; //current state
     private EpiState nextEpiState; // what will happen to this guy next
-    private int nodeType = NODE_TYPE_USER; // An abstract type for the node, used for determining the icon for the vertex.
-    private int vertexIconStyle = VERTEX_ICON_STYLE_SIMPLE; // An abstract type for the vertex icon, used to select between the simple and photorealistic icon packs.
-    private int numberOfConnections = 0;
-    private boolean typeAutodetermined = true;
-
+    
+    private VertexIcon icon;
+    
     public MyVertex(int id) {
         this.id = id;
         epiState = EpiState.SUSCEPTIBLE;
         nextEpiState = epiState;
+        icon = new VertexIcon();
     }
 
     public void setEpiState(EpiState epiState) {
@@ -71,6 +61,10 @@ public class MyVertex implements Serializable {
 
     public void setNextEpiState(EpiState nextEpiState) {
         this.nextEpiState = nextEpiState;
+    }
+    
+    public EpiState getEpiState(){
+        return epiState;
     }
 
     public void advanceEpiState() {
@@ -109,62 +103,20 @@ public class MyVertex implements Serializable {
     }
 
     public String toString() {
-        return ("[" + id + "]=" + this.epiState);
+        return (epiState+","+icon.getStyle()+","+icon.getType());
     }
 
     /**
-     * @return the node type.
+     * @return the icon
      */
-    public int getNodeType() {
-        if (this.isTypeAutodetermined()) {
-            int nodeType = MyVertex.NODE_TYPE_MOBILE;
-            if (numberOfConnections > 2 && numberOfConnections < 4) {
-                nodeType = MyVertex.NODE_TYPE_COMPUTER;
-            } else if (numberOfConnections > 4) {
-                nodeType = MyVertex.NODE_TYPE_ACCESS_POINT;
-            }
-            this.setNodeType(nodeType);
-        }
-        return nodeType;
+    public VertexIcon getIcon() {
+        return icon;
     }
 
     /**
-     * @param nodeType the type of node to set. Should be one of the static
-     *                 values predefined in the MyVertex class.
+     * @param icon the icon to set
      */
-    public void setNodeType(int nodeType) {
-        this.nodeType = nodeType;
-    }
-
-    public void increaseNumberOfConnections() {
-        numberOfConnections++;
-    }
-
-    /**
-     * @return the typeAutodetermined
-     */
-    public boolean isTypeAutodetermined() {
-        return typeAutodetermined;
-    }
-
-    /**
-     * @param typeAutodetermined the typeAutodetermined to set
-     */
-    public void setTypeAutodetermined(boolean typeAutodetermined) {
-        this.typeAutodetermined = typeAutodetermined;
-    }
-
-    /**
-     * @return the vertexIconStyle
-     */
-    public int getVertexIconStyle() {
-        return vertexIconStyle;
-    }
-
-    /**
-     * @param vertexIconStyle the vertexIconStyle to set
-     */
-    public void setVertexIconStyle(int vertexIconStyle) {
-        this.vertexIconStyle = vertexIconStyle;
+    public void setIcon(VertexIcon icon) {
+        this.icon = icon;
     }
 }

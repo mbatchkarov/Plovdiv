@@ -32,6 +32,7 @@ package controller;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.graph.ObservableGraph;
+import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.layout.PersistentLayout;
 import model.EpiState;
 import model.MyEdge;
@@ -47,27 +48,28 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
+import view.BackgroundImageController;
 
 /**
  * @author reseter
  */
 public class Controller {
-
+    
     private EdgeFactory ef;
     private VertexFactory vf;
     private GraphFactory gf;
     private Display gui;
     private Simulator sim;
-
+    
     private MyGraph g;
-
+    
     private Controller(Stats stats, MyGraph g) {
         this.g = g;
         g.setDynamics(new SISDynamics(0.1, 0.1, 0.1, 0.1));
         sim = new Simulator(g, stats, this);
         validateNodeStates();
     }
-
+    
     public void setGui(Display w) {
         gui = w;
         w.setVisible(true);
@@ -87,14 +89,14 @@ public class Controller {
         }
         return ef;
     }
-
+    
     public GraphFactory getGraphFactory() {
         if (gf == null) {
             gf = new GraphFactory();
         }
         return new GraphFactory(getGraph());
     }
-
+    
     public VertexFactory getVertexFactory() {
         if (vf == null) {
             vf = new VertexFactory();
@@ -114,7 +116,7 @@ public class Controller {
             MyEdge e = (MyEdge) i.next();
             m.put(e, e.getWeigth());
         }
-
+        
         return m;
     }
 
@@ -122,7 +124,7 @@ public class Controller {
     public void updateCounts() {
         this.g.updateCounts();
     }
-
+    
     public void setAllSusceptible() {
         this.g.setAllSusceptible();
         sim.resetSimulation();
@@ -140,7 +142,7 @@ public class Controller {
                 current.setEpiState(EpiState.SUSCEPTIBLE);
             }
         }
-
+        
     }
 
     //------------SAVE/ LOAD FUNCTIONALITY--------------
@@ -150,52 +152,63 @@ public class Controller {
      *
      * @param path
      */
-    public void load(String path) throws IOException {
+    public void load(VisualizationViewer vv, String path) throws IOException {
         MyGraph g = PajekParser.load(path, getGraphFactory(),
                 getVertexFactory().reset(),
                 getEdgeFactory().reset());
         this.g.setInstance(g);
-        IOClass.loadLayout(getGui(), path);
+        gui.setVertexRenderer();
+        IOClass.loadLayout(gui, path);        
+        BackgroundImageController.getInstance().checkForAndLoadBackgroundImage(vv, path);
+        BackgroundImageController.getInstance().loadCustomColors(vv, g);
     }
-
-    public void save(String path, ObservableGraph g, PersistentLayout layout) throws IOException {
+    
+    public void save(String path, MyGraph g, PersistentLayout layout) throws IOException {
         if (path != "nullnull") {
             //if the user pressed cancel, nullnull will be passed to this method
             PajekParser.save(path + ".graph", g);
             layout.persist(path + ".layout");
+            BackgroundImageController.getInstance().saveBackgroundImage(path);
         }
     }
 
     //=========!!!all generated/loaded graphs will appear in a new window!!!=========
     //-----------GENERATION FUNCTIONALITY-------------------
-    public void generateRandom(int a, int b) {
-        this.g.setInstance(Generator.generateRandom(a, b, this));
+    public void generateRandom(int a, int b, boolean autodetermineIconType) {
+        this.g.setInstance(Generator.generateRandom(a, b, this, autodetermineIconType));
+        gui.setVertexRenderer();
     }
-
-    public void generate4Lattice(int a, int b) {
-        this.g.setInstance(Generator.generateRectangularLattice(a, b, this));
+    
+    public void generate4Lattice(int a, int b, boolean autodetermineIconType) {
+        this.g.setInstance(Generator.generateRectangularLattice(a, b, this, autodetermineIconType));
+        gui.setVertexRenderer();
     }
-
-    public void generate6Lattice(int a, int b) {
-        this.g.setInstance(Generator.generateHexagonalLattice(a, b, this));
+    
+    public void generate6Lattice(int a, int b, boolean autodetermineIconType) {
+        this.g.setInstance(Generator.generateHexagonalLattice(a, b, this, autodetermineIconType));
+        gui.setVertexRenderer();
     }
-
-    public void generateKleinbergSmallWorld(int m, int n, double c) {
-        this.g.setInstance(Generator.generateKleinbergSmallWorld(m, n, c, this));
+    
+    public void generateKleinbergSmallWorld(int m, int n, double c, boolean autodetermineIconType) {
+        this.g.setInstance(Generator.generateKleinbergSmallWorld(m, n, c, this, autodetermineIconType));
+        gui.setVertexRenderer();
     }
-
-    public void generateScaleFree(int a, int b, int c) {
-        this.g.setInstance(Generator.generateScaleFree(a, 1, c, this));
+    
+    public void generateScaleFree(int a, int b, int c, boolean autodetermineIconType) {
+        this.g.setInstance(Generator.generateScaleFree(a, 1, c, this, autodetermineIconType));
+        gui.setVertexRenderer();
     }
-
-    public void generateEppsteinPowerLaw(int numVert, int numEdges, int r) {
-        this.g.setInstance(Generator.generateEppsteinPowerLaw(numVert, numEdges, r, this));
+    
+    public void generateEppsteinPowerLaw(int numVert, int numEdges, int r, boolean autodetermineIconType) {
+        this.g.setInstance(Generator.generateEppsteinPowerLaw(numVert, numEdges, r, this, autodetermineIconType));
+        gui.setVertexRenderer();
     }
-
+    
     public void generateEmptyGraph() {
         getEdgeFactory().reset();
         getVertexFactory().reset();
         this.g.setInstance(getGraphFactory().create());
+        gui.setVertexRenderer();
     }
 
     /**
@@ -203,6 +216,7 @@ public class Controller {
      * accessing the display directly
      */
     public void updateDisplay() {
+        
         Display.vv.repaint();
     }
 
@@ -231,18 +245,18 @@ public class Controller {
         updateCounts();
         updateDisplay();
     }
-
+    
     public Simulator getSimulator() {
         return sim;
     }
-
+    
     public MyGraph getGraph() {
         return g;
     }
-
+    
     public static void main(String[] args) {
         MyGraph g = new GraphFactory().create();
-
+        
         Stats stats = new Stats(g);
         Controller cont = new Controller(stats, g);  //controller
 
@@ -257,7 +271,7 @@ public class Controller {
 
         //display a graph
         d.handlingEvents = true;
-        cont.generateScaleFree(20, 1, 1);
+        cont.generateScaleFree(20, 1, 1, true);
     }
-
+    
 }

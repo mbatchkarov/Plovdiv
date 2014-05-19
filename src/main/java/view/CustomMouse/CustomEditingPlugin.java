@@ -37,6 +37,7 @@ import edu.uci.ics.jung.algorithms.layout.util.VisRunner;
 import edu.uci.ics.jung.algorithms.util.IterativeContext;
 import edu.uci.ics.jung.graph.DirectedGraph;
 import edu.uci.ics.jung.graph.Graph;
+import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
 import edu.uci.ics.jung.visualization.VisualizationServer;
@@ -49,7 +50,6 @@ import edu.uci.ics.jung.visualization.util.ArrowFactory;
 import model.EpiState;
 import model.MyEdge;
 import model.MyVertex;
-import model.Strings;
 import org.apache.commons.collections15.Factory;
 
 import javax.swing.*;
@@ -60,6 +60,7 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.CubicCurve2D;
 import java.awt.geom.Point2D;
+import model.VertexIcon;
 
 /**
  * A plugin that can create vertices, undirected edges, and directed edges
@@ -161,6 +162,7 @@ MouseListener, MouseMotionListener {
 				} else { // make a new vertex
 
 					final MyVertex newVertex = vertexFactory.create();
+                                        newVertex.setIcon(new VertexIcon(((MyGraph) graph).getDominantIconType(), ((MyGraph) graph).getDominantIconStyle()));
 					newVertex.setEpiState(EpiState.SUSCEPTIBLE);
 					Layout layout = vv.getModel().getGraphLayout();
 					graph.addVertex(newVertex);
