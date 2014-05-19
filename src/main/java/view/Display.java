@@ -1707,12 +1707,13 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         double tauValue = parseValueOrColourComponentOnError(tau);
         double gamaValue = parseValueOrColourComponentOnError(gama);
         double deltaTValue = parseValueOrColourComponentOnError(deltaT);
+        //todo this value is not used- need a GUI with more textboxes
         double brakingRateValue = parseValueOrColourComponentOnError(breakingRate);
 
         if (dynamics.getSelectedItem().toString().equals("SIR")) {
             g.setDynamics(new SIRDynamics(tauValue, deltaTValue, gamaValue));
         } else if (dynamics.getSelectedItem().toString().equals("SIS")) {
-            g.setDynamics(new SISDynamics(tauValue, deltaTValue, gamaValue, brakingRateValue));
+            g.setDynamics(new SISDynamics(tauValue, deltaTValue, gamaValue));
         } else {
             g.setDynamics(new SIDynamics(tauValue, deltaTValue));
         }

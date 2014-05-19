@@ -42,13 +42,11 @@ import model.*;
  */
 public class SISDynamics extends model.dynamics.Dynamics {
 
-    private double gama; //recovery rate
-    private double edgeBreakingRate; //rate at which S-I connections break
+    private double recoveryRate;
 
-    public SISDynamics(double transmissionRate, double deltaT, double gama, double edgeBreakingRate) {
+    public SISDynamics(double transmissionRate, double deltaT, double recoveryRate) {
         super(transmissionRate, deltaT);
-        this.gama = gama;
-        this.edgeBreakingRate = edgeBreakingRate;
+        this.recoveryRate = recoveryRate;
     }
 
 
@@ -61,12 +59,8 @@ public class SISDynamics extends model.dynamics.Dynamics {
     }
 
 
-    public double getGama() {
-        return gama;
-    }
-
-    public double getEdgeBreakingRate() {
-        return edgeBreakingRate;
+    public double getRecoveryRate() {
+        return recoveryRate;
     }
 
     public String toString() {

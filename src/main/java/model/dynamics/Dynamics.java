@@ -35,37 +35,99 @@
 
 package model.dynamics;
 
-import edu.uci.ics.jung.graph.MyGraph;
 import model.EpiState;
 import model.MyVertex;
 
 /**
- *
  * @author reseter
  */
 public abstract class Dynamics {
 
     //common characteristics of all types of network dynamics
-    private double tau;
-    private double deltaT;
-    //the graph this object is associated to
-    private MyGraph g;
+    private double transmissionRate;
+    private double timeStep;
 
-    public Dynamics(double transmissionRate, double deltaT){
-        this.tau = transmissionRate;
-        this.deltaT = deltaT;
-//        this.g = g;
+    // rates at which edge between S-I, S-S and I-I edges break/appear/rewire
+    private double SIEdgeBreakingRate, SSEdgeBreakingRate, IIEdgeBreakingRate;
+    private double SIEdgeCreationRate, SSEdgeCreationRate, IIEdgeCreationRate;
+    private double SIEdgeRewiringRate, SSEdgeRewiringRate, IIEdgeRewiringRate;
+
+
+    public double getSIEdgeBreakingProb() {
+        return 1 - Math.exp(SIEdgeBreakingRate);
     }
 
-    public abstract double getGama();
-    
-    public double getTau(){
-        return tau;
+    public double getSSEdgeBreakingProb() {
+        return 1 - Math.exp(SSEdgeBreakingRate);
     }
 
-    public double getDeltaT(){
-        return deltaT;
+    public double getIIEdgeBreakingProb() {
+        return 1 - Math.exp(IIEdgeBreakingRate);
     }
+
+    public double getSIEdgeCreationProb() {
+        return 1 - Math.exp(SIEdgeCreationRate);
+    }
+
+    public double getSSEdgeCreationProb() {
+        return 1 - Math.exp(SSEdgeCreationRate);
+    }
+
+    public double getIIEdgeCreationProb() {
+        return 1 - Math.exp(IIEdgeCreationRate);
+    }
+
+    public double getSIEdgeRewiringProb() {
+        return 1 - Math.exp(SIEdgeRewiringRate);
+    }
+
+    public double getSSEdgeRewiringProb() {
+        return 1 - Math.exp(SSEdgeRewiringRate);
+    }
+
+    public double getIIEdgeRewiringProb() {
+        return 1 - Math.exp(IIEdgeRewiringRate);
+    }
+
+    public Dynamics(double transmissionRate, double timeStep) {
+        this(transmissionRate, timeStep, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f);
+    }
+
+    public Dynamics(double transmissionRate, double timeStep,
+                    double SIEdgeBreakingRate, double SSEdgeBreakingRate, double IIEdgeBreakingRate,
+                    double SIEdgeCreationRate, double SSEdgeCreationRate, double IIEdgeCreationRate,
+                    double SIEdgeRewiringRate, double SSEdgeRewiringRate, double IIEdgeRewiringRate) {
+        this.transmissionRate = transmissionRate;
+        this.timeStep = timeStep;
+        this.SIEdgeBreakingRate = SIEdgeBreakingRate;
+        this.SSEdgeBreakingRate = SSEdgeBreakingRate;
+        this.IIEdgeBreakingRate = IIEdgeBreakingRate;
+        this.SIEdgeCreationRate = SIEdgeCreationRate;
+        this.SSEdgeCreationRate = SSEdgeCreationRate;
+        this.IIEdgeCreationRate = IIEdgeCreationRate;
+        this.SIEdgeRewiringRate = SIEdgeRewiringRate;
+        this.SSEdgeRewiringRate = SSEdgeRewiringRate;
+        this.IIEdgeRewiringRate = IIEdgeRewiringRate;
+    }
+
+    public abstract double getRecoveryRate();
+
+    public double getTransmissionRate() {
+        return transmissionRate;
+    }
+
+    public double getTimeStep() {
+        return timeStep;
+    }
+
     public abstract EpiState getNextState(MyVertex v);
+
+    public double getRecoveryProb() {
+        return 1d - Math.exp(-1 * (getRecoveryRate() * getTimeStep()));
+    }
+
+    public double getInfectionProb() {
+        return 1d - Math.exp((-1 * getTransmissionRate() * getTimeStep()));
+    }
 
 }

@@ -43,15 +43,15 @@ import model.*;
  */
 public class SIRDynamics extends model.dynamics.Dynamics{
 
-    private double gama;
+    private double recoveryRate;
 
-    public SIRDynamics(double transmissionRate, double deltaT, double recoveryRate){
-        super(transmissionRate, deltaT);
-        this.gama = recoveryRate;
+    public SIRDynamics(double transmissionRate, double timeStep, double recoveryRate){
+        super(transmissionRate, timeStep);
+        this.recoveryRate = recoveryRate;
     }
 
-    public double getGama(){
-        return gama;
+    public double getRecoveryRate(){
+        return recoveryRate;
     }
  
     public EpiState getNextState(MyVertex v) {

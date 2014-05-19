@@ -42,7 +42,6 @@ import edu.uci.ics.jung.graph.util.Pair;
 import model.MyEdge;
 import model.MyVertex;
 import model.dynamics.Dynamics;
-import model.dynamics.SISDynamics;
 import org.apache.commons.collections15.buffer.CircularFifoBuffer;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -63,12 +62,7 @@ import java.util.*;
 public class Simulator {
     private Random rng;
     private SimModelThread thread;
-    private Double recoveryProb;
-    private Double infectionProb;
-    private int sleepTime;
-    private Dynamics dynamics;
     private volatile int stepNumber;
-    private double beta;
     private CircularFifoBuffer<Integer> xValues;
     private CircularFifoBuffer<Integer> yValues;
     private boolean doOneStepOnly;
@@ -78,76 +72,174 @@ public class Simulator {
     private MyGraph g;
     private Stats stats;
     private Controller controller;
+    private LinkedList<SimulationCommand> commands;
 
     public Simulator(MyGraph g, Stats stats, Controller controller) {
         this.g = g;
         this.stats = stats;
         this.controller = controller;
-        rng = new Random();
-        sleepTime = 200;
-        doOneStepOnly = false;
-        infectedXYSeries = new XYSeries("Infected", false, false);
-        xValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
-        yValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
+        this.rng = new Random();
+        this.doOneStepOnly = false;
+        this.infectedXYSeries = new XYSeries("Infected", false, false);
+        this.xValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
+        this.yValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
+        this.commands = new LinkedList<SimulationCommand>();
 
-        thread = new SimModelThread("sim-thread");
-        //stuff below needed?
-        thread.pause();
-        thread.start();
+        this.thread = new SimModelThread("sim-thread");
+        this.thread.pause();
+        this.thread.start();
     }
 
     public void resetSimulation() {
-        stepNumber = 0;
-        xValues.clear();
-        yValues.clear();
-        updateChartUnderlyingData();
-        updateChartAxisParameters();
+        this.stepNumber = 0;
+        this.xValues.clear();
+        this.yValues.clear();
+        this.commands.clear();
+        this.updateChartUnderlyingData();
+        this.updateChartAxisParameters();
     }
 
-    private void doStep(double beta, MyGraph<MyVertex, MyEdge> g, Double recProb, Double infProb) {
-        Collection<MyEdge> edges = g.getEdges();
-        Collection<MyVertex> vertices = g.getVertices();
-        HashMap<MyEdge, Pair> edgesToAdd = new HashMap<MyEdge, Pair>();
-        HashSet<MyEdge> edgesToRemove = new HashSet<MyEdge>();
-
-        for (MyEdge current : edges) { //for all edges check for infection if I-S or S-I
-            MyVertex first = g.getEndpoints(current).getFirst();
-            MyVertex second = g.getEndpoints(current).getSecond();
-            //I-S
-            if (first.isInfected() && second.isSusceptible()) {
-                this.checkForInfection(second, current, infProb, beta, edgesToAdd, edgesToRemove);
-            }
-            //S-I
-            if (second.isInfected() && first.isSusceptible()) {
-                this.checkForInfection(first, current, infProb, beta, edgesToAdd, edgesToRemove);
-            }
-        }
-
-        for (MyVertex v : vertices) {
-            //for all infected nodes check for recovery
-            if (v.isInfected()) {
-                this.checkForRecovery(v, recProb);
-            }
-        }
-        //modify graph structure
-        for (MyEdge e : edgesToRemove) {
-            g.removeEdge(e);
-        }
-        for (MyEdge e : edgesToAdd.keySet()) {
-            g.addEdge(e, edgesToAdd.get(e));
-        }
+    private void doStep(MyGraph<MyVertex, MyEdge> g) {
+        checkForTopologyChanges(g);
+        checkForInfection(g);
+        checkForRecovery(g);
 
         //here the next state of each vertex should be known, updating
-        for (MyVertex ssv : vertices) {
-            //set the state to be the one in the next-state-collection, just calculated for it
-            ssv.advanceEpiState();
+        for (SimulationCommand c : commands) {
+            c.execute();
         }
+        commands.clear();
+
         //record changes in number of inf/sus/res nodes
         controller.updateCounts();
-//        g.fireExtraEvent(new ExtraGraphEvent(g, ExtraGraphEvent.METADATA_CHANGED));
         xValues.add(stepNumber);
         yValues.add(g.getNumInfected());
-        this.stats.recalculateAll();
+        stats.recalculateAll();
+    }
+
+    private void checkForTopologyChanges(MyGraph<MyVertex, MyEdge> g) {
+        // check for edge breaking
+        Dynamics d = g.getDynamics();
+        for (MyEdge e : g.getEdges()) {
+            double eventProba = 0d;
+
+            MyVertex v1 = g.getEndpoints(e).getFirst();
+            MyVertex v2 = g.getEndpoints(e).getSecond();
+            if (v1.isInfected()) {
+                if (v2.isSusceptible()) {
+                    eventProba = d.getSIEdgeBreakingProb();
+                }
+                if (v2.isInfected()) {
+                    eventProba = d.getIIEdgeBreakingProb();
+                }
+            }
+            if (v1.isSusceptible()) {
+                if (v2.isSusceptible()) {
+                    eventProba = d.getSSEdgeBreakingProb();
+                }
+                if (v2.isInfected()) {
+                    eventProba = d.getSIEdgeBreakingProb();
+                }
+            }
+
+            if (rng.nextFloat() < eventProba) {
+                commands.add(new EdgeBreakingCommand(g, e));
+            }
+        }
+
+        // check for edge creation
+        for (MyEdge e : g.getEdges()) {
+            double eventProba = 0d;
+
+            MyVertex v1 = g.getEndpoints(e).getFirst();
+            MyVertex v2 = g.getEndpoints(e).getSecond();
+            if (v1.isInfected()) {
+                if (v2.isSusceptible()) {
+                    eventProba = d.getSIEdgeCreationProb();
+                }
+                if (v2.isInfected()) {
+                    eventProba = d.getIIEdgeCreationProb();
+                }
+            }
+            if (v1.isSusceptible()) {
+                if (v2.isSusceptible()) {
+                    eventProba = d.getSSEdgeCreationProb();
+                }
+                if (v2.isInfected()) {
+                    eventProba = d.getSIEdgeCreationProb();
+                }
+            }
+
+            if (rng.nextFloat() < eventProba) {
+                System.out.println("Creating edge");
+                commands.add(new EdgeCreationCommand(controller.getEdgeFactory(), g, v1, v2));
+            }
+        }
+
+        // check for edge rewiring
+        for (MyEdge e : g.getEdges()) {
+            double eventProba = 0d;
+
+            MyVertex v1 = g.getEndpoints(e).getFirst();
+            MyVertex v2 = g.getEndpoints(e).getSecond();
+            if (v1.isInfected()) {
+                if (v2.isSusceptible()) {
+                    eventProba = d.getSIEdgeRewiringProb();
+                }
+                if (v2.isInfected()) {
+                    eventProba = d.getIIEdgeRewiringProb();
+                }
+            }
+            if (v1.isSusceptible()) {
+                if (v2.isSusceptible()) {
+                    eventProba = d.getSSEdgeRewiringProb();
+                }
+                if (v2.isInfected()) {
+                    eventProba = d.getSIEdgeRewiringProb();
+                }
+            }
+
+            if (rng.nextFloat() < eventProba) {
+                MyVertex newEndpoint = findSusceptibleVertex(g,
+                                                             v1.isInfected() ? v2 : v1,
+                                                             v1.isInfected() ? v1 : v2);
+                if (newEndpoint != null) {
+                    System.out.println("Rewiring");
+                    commands.add(new EdgeBreakingCommand(g, e));
+                    commands.add(new EdgeCreationCommand(controller.getEdgeFactory(),
+                                                         g, v1,
+                                                         newEndpoint));
+                }
+            }
+        }
+    }
+
+    private MyVertex findSusceptibleVertex(MyGraph<MyVertex, MyEdge> g,
+                                           MyVertex origin, MyVertex oldEndoint) {
+        //break current connection from origin to oldEndpoint and find another susceptible node
+        // to connect origin to
+        ArrayList<MyVertex> susceptibles = new ArrayList<MyVertex>();
+        for (MyVertex v : g.getVertices()) {
+            if (v.isSusceptible() && v != origin && v != oldEndoint) {
+                susceptibles.add(v);
+            }
+        }
+        if (susceptibles.size() < 1) {
+            // there aren't any susceptibles in the graph
+            return null;
+        }
+
+
+        MyVertex[] candidates = new MyVertex[1];
+        candidates = susceptibles.toArray(candidates);
+        while (true) {
+            int i = rng.nextInt(susceptibles.size());
+            if (!g.isNeighbor(origin, candidates[i])) {
+                //found a guy
+                System.out.println("Found a susceptible one");
+                return candidates[i];
+            }
+        }
     }
 
     /**
@@ -224,64 +316,47 @@ public class Simulator {
 
     /**
      * Checks if a SUSCEPTIBLE node vertex second will get infected at this
-     * simSleepTime step. The vertex is assumed to have been in contact with an infected
-     * node
+     * time step.
      */
-    private void checkForInfection(MyVertex vertex, MyEdge currentEdge, double infProb, double beta,
-                                   HashMap<MyEdge, Pair> edgesToAdd, Set<MyEdge> edgesToRemove) {
-        //compute a random probability
-        Double randomProb = Math.abs((double) rng.nextInt() / new Double(Integer.MAX_VALUE));
-        //if this chap is unlucky
-        if (randomProb < infProb) {
-            Double randomProb1 = Math.abs((double) rng.nextInt() / (double) Integer.MAX_VALUE);
+    private void checkForInfection(MyGraph<MyVertex, MyEdge> g) {
+        for (MyEdge e : g.getEdges()) {
+            MyVertex first = g.getEndpoints(e).getFirst();
+            MyVertex second = g.getEndpoints(e).getSecond();
 
-            if (randomProb1 < dynamics.getTau() / (dynamics.getTau() + beta)) {
-                //see email 21 DEC 2009, 13:16
-                //put in the "waiting list" to be infected
-                vertex.setNextEpiState(dynamics.getNextState(vertex));
-            } else {
-                //break current connection and try to reconnect to another susceptible node
-                int numSus = g.getNumSusceptible();
-                if (numSus > 0) {
-                    ArrayList<MyVertex> sus = new ArrayList<MyVertex>(numSus);
-                    for (Object x : g.getVertices()) {
-                        MyVertex v = (MyVertex) x;
-                        if (v.isSusceptible()) {
-                            sus.add(v);
-                        }
-                    }
-                    boolean done = false;
-                    MyVertex[] v = new MyVertex[1];
-                    v = sus.toArray(v);
-                    int first = sus.indexOf(vertex);
-                    while (!done) {
-                        int second = rng.nextInt(numSus);
-                        if (first != second && !g.isNeighbor(v[first], v[second])) {
-                            // mark old edge for removal
-                            edgesToRemove.add(currentEdge);
-                            // make new edge for insertion
-                            edgesToAdd.put(controller.getEdgeFactory().create(),
-                                           new Pair(v[first], v[second]));
-                            done = true;
-                        }
-                    }
+            if (first.isInfected() && second.isSusceptible()) {
+                if (rng.nextFloat() < g.getDynamics().getInfectionProb())
+                //put on the waiting list to be infected at the next time step
+                {
+                    commands.add(new ChangeSIRStateCommand
+                                         (second,
+                                          g.getDynamics().getNextState(second)));
                 }
             }
+            if (second.isInfected() && first.isSusceptible()) {
+                if (rng.nextFloat() < g.getDynamics().getInfectionProb()) {
+                    commands.add(new ChangeSIRStateCommand(first,
+                                                           g.getDynamics().getNextState(first)));
+                }
+            }
+
+
         }
+
 
     }
 
     /**
      * Checks if the given vertex will recover at this step, it is assumed to be
      * infected, so make your own checks
-     *
-     * @param recProb
      */
-    private void checkForRecovery(MyVertex vertex, double recProb) {
-        if (rng.nextFloat() < recProb) {
-            //put this vertex on the "waiting list" for recovery
-            vertex.setNextEpiState(dynamics.getNextState(vertex));
-        }
+    private void checkForRecovery(MyGraph<MyVertex, MyEdge> g) {
+        for (MyVertex vertex : g.getVertices())
+            if (vertex.isInfected())
+                if (rng.nextFloat() < g.getDynamics().getRecoveryProb()) {
+                    //put this vertex on the "waiting list" for recovery
+                    commands.add(new ChangeSIRStateCommand(vertex,
+                                                           g.getDynamics().getNextState(vertex)));
+                }
     }
 
 
@@ -356,13 +431,12 @@ public class Simulator {
 
             while (alive) {
                 try {
-                    sleep(sleepTime);
+                    sleep(g.getSleepTimeBetweenSteps());
                     synchronized (this) {
                         while (suspended && alive && !doOneStepOnly) {
                             wait();
                         }
                     }
-                    readSimSettingsFromGraph();
                     doStepWithCurrentSettings();
                     //make sure
                     if (doOneStepOnly) {
@@ -375,35 +449,13 @@ public class Simulator {
                     e.printStackTrace();
                 }
             }
-
-            System.out.println("Alive: " + isAlive());
-            System.out.println("Running: " + isRunning());
-            System.out.println("Step no " + stepNumber);
-
-        }
-
-        private void readSimSettingsFromGraph() {
-            dynamics = g.getDynamics();
-
-            beta = 0;
-            if (dynamics instanceof SISDynamics) {
-                beta = ((SISDynamics) dynamics).getEdgeBreakingRate();
-            }
-            sleepTime = g.getSleepTimeBetweenSteps();
-
-            //probabilities based on per-link traversal of the graph
-            //probability of recovery is constant, and in this case so is the infection probability
-            recoveryProb = 1d - Math.exp((-1 * (dynamics.getGama() * dynamics.getDeltaT())));
-            infectionProb = 1d - Math.exp((-1 * ((dynamics.getTau() + beta) * dynamics.getDeltaT())));
         }
     }
 
     public void doStepWithCurrentSettings() {
-        doStep(beta, g, recoveryProb, infectionProb);
-        g.fireExtraEvent(new ExtraGraphEvent(g, ExtraGraphEvent.SIM_STEP_COMPLETE));
-//        controller.updateDisplay(); // todo this should happen automatically via event handling
-//        controller.updateCounts();
+        doStep(g);
         stepNumber++;
+        g.fireExtraEvent(new ExtraGraphEvent(g, ExtraGraphEvent.SIM_STEP_COMPLETE));
     }
 
 }

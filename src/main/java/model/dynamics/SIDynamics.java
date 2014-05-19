@@ -43,25 +43,22 @@ import model.*;
 public class SIDynamics extends model.dynamics.Dynamics {
 
     public SIDynamics(double transmissionRate, double deltaT) {
-        //no need to pass gama in, in this case it is always 0
-        //so this.getGama() returns 0
-
         super(transmissionRate, deltaT);
     }
 
-    //TODO da se ogleda tuk
     @Override
     public EpiState getNextState(MyVertex v) {
         return EpiState.INFECTED;
     }
 
-    
+
     public String toString(){
         return "SI";
     }
 
     @Override
-    public double getGama() {
+    public double getRecoveryRate() {
+        //the recovery rate of an SI model is always 0- nobody recovers
         return 0;
     }
 }
