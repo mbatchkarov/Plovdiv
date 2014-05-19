@@ -1883,7 +1883,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     // 
     private Layout getControlledKKLayout(Graph g) {
         KKLayout kkLayout = new KKLayout<MyVertex, MyEdge>(g);
-        kkLayout.setMaxIterations(g.getVertexCount());
+        kkLayout.setMaxIterations(2*g.getVertexCount());
         kkLayout.setExchangeVertices(false);
         return kkLayout;
     }
