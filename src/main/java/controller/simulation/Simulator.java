@@ -32,8 +32,11 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package controller;
+package controller.simulation;
 
+import controller.Controller;
+import controller.ExtraGraphEvent;
+import controller.Stats;
 import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.graph.util.Pair;
 import model.MyEdge;
