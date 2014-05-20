@@ -169,7 +169,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     static javax.swing.JButton pauseSimToolbarButton;
     static javax.swing.JToggleButton select;
     private javax.swing.JPanel simControlsPanel;
-    private javax.swing.JPanel simParamsPanel;
+    private SimulationParametersPanel simParamsPanel;
     private javax.swing.JMenuItem simPauseMenuItem;
     private static javax.swing.JSlider speedSlider;
     private javax.swing.JRadioButtonMenuItem spring;
@@ -245,8 +245,8 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         redisplayCompletely();
 
         vNone.setSelected(true);
-//        parseSimulationParameters(null);//todo trigger parsing of default values for transmission
-// params
+        simParamsPanel.parseSimulationParameters();// trigger parsing of default values
+        // for transmission params
     }
 
     private AbstractAction incrementWaitTime = new AbstractAction() {
@@ -1612,7 +1612,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         pane.add(vv, BorderLayout.CENTER);
         pane.setVisible(true);
         redisplayPartially();
-//        parseSimulationParameters(null); //todo enable this
+        simParamsPanel.parseSimulationParameters();
         //initially display nothing
         initDegreeDistributionChart();
         updateStatsDisplay();

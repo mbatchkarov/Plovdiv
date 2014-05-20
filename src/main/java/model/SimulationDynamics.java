@@ -55,15 +55,6 @@ public class SimulationDynamics {
     public double SIEdgeCreationRate, SSEdgeCreationRate, IIEdgeCreationRate;
     public double SIEdgeRewiringRate, SSEdgeRewiringRate, IIEdgeRewiringRate;
 
-    public SimulationDynamics() {
-        this(DynamicsType.SIS, 2, 1., 0.1, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f);
-    }
-
-    public SimulationDynamics(DynamicsType type, double transmissionRate,
-                              double recoveryRate, double timeStep) {
-        this(type, transmissionRate, recoveryRate, timeStep, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f);
-    }
-
     public SimulationDynamics(DynamicsType type, double transmissionRate,
                               double recoveryRate, double timeStep,
 

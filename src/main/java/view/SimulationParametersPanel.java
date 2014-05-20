@@ -184,7 +184,7 @@ public class SimulationParametersPanel extends javax.swing.JPanel {
                 gamaLabel.setVisible(true);
                 recoveryRate.setVisible(true);
             }
-            parseSimulationParameters(null);
+            parseSimulationParameters();
             validate();
             repaint();
         }
@@ -215,7 +215,7 @@ public class SimulationParametersPanel extends javax.swing.JPanel {
         UIUtils.parseDoubleOrColourComponentOnError((javax.swing.JTextField) evt.getSource());
     }//GEN-LAST:event_timeStepKeyReleased
 
-    private void parseSimulationParameters(KeyEvent evt) {
+    public void parseSimulationParameters() {
         //check the current state of the fields
         //parse the contents of the text field that should be active (based on the combos)
         //and attach them to the graph as a Dynamics object
@@ -225,7 +225,7 @@ public class SimulationParametersPanel extends javax.swing.JPanel {
             double transmissionRateVal = Double.parseDouble(transmissionRate.getText());
             double recoveryRateVal = Double.parseDouble(recoveryRate.getText());
             double timeStepVal = Double.parseDouble(timeStep.getText());
-            SimulationDynamics.DynamicsType type = null;
+            SimulationDynamics.DynamicsType type;
 
             if (dynamics.getSelectedItem().toString().equals("SIR")) {
                 type = SimulationDynamics.DynamicsType.SIR;

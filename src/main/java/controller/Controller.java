@@ -64,7 +64,6 @@ public class Controller {
     
     private Controller(Stats stats, MyGraph g) {
         this.g = g;
-        g.setDynamics(new SimulationDynamics());
         sim = new Simulator(g, stats, this);
         validateNodeStates();
     }
