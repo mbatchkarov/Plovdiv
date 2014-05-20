@@ -125,14 +125,12 @@ public class SimulationParametersPanel extends javax.swing.JPanel {
                     .addComponent(more, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(ok, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                         .addComponent(timeStep, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(recoveryRate, javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(transmissionRate, javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(dynamics, javax.swing.GroupLayout.Alignment.LEADING, 0, 72, Short.MAX_VALUE)))
+                        .addComponent(dynamics, javax.swing.GroupLayout.Alignment.LEADING, 0, 72, Short.MAX_VALUE))
+                    .addComponent(ok, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
