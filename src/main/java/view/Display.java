@@ -101,7 +101,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     static javax.swing.JToggleButton annotate;
     private javax.swing.JRadioButtonMenuItem circleL;
     private static javax.swing.JCheckBox degDistCumulative;
-    private static javax.swing.JCheckBox degDistLogScale;
     private static javax.swing.JPanel degreeDistPanel;
     static javax.swing.JButton doStepToolbarButton;
     private javax.swing.JMenuItem dumpToJpg;
@@ -308,10 +307,8 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     }
 
     private void initDegreeDistributionChart() {
-        JPanel degreeChart = stats.buildDegreeDistributionChart(
-                degDistCumulative.isSelected(),
-                degDistLogScale.isSelected(),
-                degreeDistPanel.getSize());
+        JPanel degreeChart = stats.buildDegreeDistributionChart(degDistCumulative.isSelected(),
+                                                                degreeDistPanel.getSize());
 
         degreeDistPanel.setLayout(new FlowLayout());
         degreeDistPanel.removeAll();
@@ -319,8 +316,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     }
 
     private void updateDegreeDistributionChart() {
-        stats.updateDegreeDistributionChartData(degDistCumulative.isSelected(),
-                                                degDistLogScale.isSelected());
+        stats.updateDegreeDistributionChartData(degDistCumulative.isSelected());
     }
 
     public VisualizationViewer<MyVertex, MyEdge> getVV() {
@@ -367,7 +363,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         globalEdgeCount = new javax.swing.JLabel();
         edgeCountLabel = new javax.swing.JLabel();
         degreeDistPanel = new javax.swing.JPanel();
-        degDistLogScale = new javax.swing.JCheckBox();
         degDistCumulative = new javax.swing.JCheckBox();
         simControlsPanel = new javax.swing.JPanel();
         simParamsPanel = new SimulationParametersPanel(this);
@@ -727,13 +722,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                      .addGap(0, 93, Short.MAX_VALUE)
                                               );
 
-        degDistLogScale.setText("Log scale");
-        degDistLogScale.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                degDistLogScaleItemStateChanged(evt);
-            }
-        });
-
         degDistCumulative.setText("Cumulative");
         degDistCumulative.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
@@ -779,8 +767,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                                                                                                                                                                                 .addComponent(globalEdgeCount)))
                                                                                                                                   .addGap(5, 5, 5))
                                                                                                    .addGroup(graphStatsPanelLayout.createSequentialGroup()
-                                                                                                                                  .addComponent(degDistLogScale)
-                                                                                                                                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                                                                                                   .addComponent(degDistCumulative, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                                                                                   .addContainerGap())
                                                                                                    .addGroup(graphStatsPanelLayout.createSequentialGroup()
@@ -810,7 +796,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                                     .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                                                                                    .addComponent(degDistCumulative)
-                                                                                                   .addComponent(degDistLogScale))
+                                                                                                   )
                                                                     .addGap(5, 5, 5))
                                               );
 
@@ -1538,10 +1524,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         annotationControlsToolbar.setVisible(annotate.isSelected());
         nodeStatisticsPanel.setVisible(false);
         mouseModeToolbar.setPreferredSize(new Dimension(594, 60));
-    }
-
-    private void degDistLogScaleItemStateChanged(java.awt.event.ItemEvent evt) {
-        updateDegreeDistributionChart();
     }
 
     private void degDistCumulativeItemStateChanged(java.awt.event.ItemEvent evt) {
