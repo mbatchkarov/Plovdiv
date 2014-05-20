@@ -767,8 +767,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                                                                                                                                                                                 .addComponent(globalEdgeCount)))
                                                                                                                                   .addGap(5, 5, 5))
                                                                                                    .addGroup(graphStatsPanelLayout.createSequentialGroup()
-                                                                                                                                  .addComponent(degDistLogScale)
-                                                                                                                                  .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                                                                                                                   .addComponent(degDistCumulative, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                                                                                   .addContainerGap())
                                                                                                    .addGroup(graphStatsPanelLayout.createSequentialGroup()
@@ -797,8 +795,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                                                     .addComponent(degreeDistPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                                                     .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                                                     .addGroup(graphStatsPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                                                                   .addComponent(degDistCumulative)
-                                                                                                   .addComponent(degDistLogScale))
+                                                                                                   .addComponent(degDistCumulative))
                                                                     .addGap(5, 5, 5))
                                               );
 
