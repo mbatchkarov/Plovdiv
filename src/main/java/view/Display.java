@@ -284,7 +284,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         globalVertexCount.setText(String.valueOf((int) stats.getVertexCount()));
         globalEdgeCount.setText(String.valueOf((int) stats.getEdgeCount()));
 
-        updateDegreeDistributionChart();
+        stats.updateDegreeDistributionChartData(degDistCumulative.isSelected());
 
         //information about a certain node
         if (selectedVertex != null) {
@@ -313,10 +313,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         degreeDistPanel.setLayout(new FlowLayout());
         degreeDistPanel.removeAll();
         degreeDistPanel.add(degreeChart);
-    }
-
-    private void updateDegreeDistributionChart() {
-        stats.updateDegreeDistributionChartData(degDistCumulative.isSelected());
     }
 
     public VisualizationViewer<MyVertex, MyEdge> getVV() {
@@ -1527,7 +1523,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     }
 
     private void degDistCumulativeItemStateChanged(java.awt.event.ItemEvent evt) {
-        updateDegreeDistributionChart();
+        stats.updateDegreeDistributionChartData(degDistCumulative.isSelected());
     }
 
     public JPanel getStatsPanel() {

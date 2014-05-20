@@ -285,6 +285,9 @@ public class Simulator {
      * event and force the chart to update
      */
     public void updateChartUnderlyingData() {
+        if (xValues.size() != yValues.size())
+            throw new IllegalStateException("X and Y data of chart has different length");
+
         Integer[] xarr = new Integer[xValues.size()];
         Integer[] yarr = new Integer[yValues.size()];
         xarr = xValues.toArray(xarr);
@@ -366,8 +369,6 @@ public class Simulator {
      * @author Miroslav Batchkarov
      */
     class SimModelThread extends Thread {
-
-        private final int WINDOW_WIDTH = 50;
 
         /**
          * Is the thread suspended?
