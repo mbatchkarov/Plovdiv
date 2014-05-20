@@ -62,7 +62,7 @@ public class Controller {
     
     private MyGraph g;
     
-    private Controller(Stats stats, MyGraph g) {
+    public Controller(Stats stats, MyGraph g) {
         this.g = g;
         sim = new Simulator(g, stats, this);
         validateNodeStates();

@@ -25,7 +25,6 @@ public class EdgeCreationCommand implements SimulationCommand {
 
     @Override
     public void execute() {
-        System.out.println("Creating edge from " + from + " to " + to);
         this.graph.addEdge(factory.create(), from, to);
     }
 }

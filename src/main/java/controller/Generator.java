@@ -68,8 +68,7 @@ public class Generator {
         ef.reset();
         RandomGenerator r = new RandomGenerator(controller.getGraphFactory(), vf, ef, v, e);
         MyGraph g = r.create();
-        System.out.println("Generator has created: " + g);
-        
+
         if (autodetermineIconType) {
             determineInitialNodeTypes(g);
         }
@@ -86,7 +85,6 @@ public class Generator {
     public static MyGraph generateRectangularLattice(int m, int n, Controller controller, boolean autodetermineIconType) {
         //@see notes 17 JUL 2009
         MyGraph g = controller.getGraphFactory().create();
-        System.out.println(g);
         VertexFactory vf = controller.getVertexFactory().reset();
         vf.reset();
         EdgeFactory ef = controller.getEdgeFactory().reset();

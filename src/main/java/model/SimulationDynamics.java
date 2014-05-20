@@ -134,35 +134,35 @@ public class SimulationDynamics {
     }
 
     public double getSSEdgeBreakingProb() {
-        return 1 - Math.exp(-1d * SSEdgeBreakingRate);
+        return 1 - Math.exp(-1d * getTimeStep() * SSEdgeBreakingRate);
     }
 
     public double getIIEdgeBreakingProb() {
-        return 1 - Math.exp(-1d * IIEdgeBreakingRate);
+        return 1 - Math.exp(-1d * getTimeStep() * IIEdgeBreakingRate);
     }
 
     public double getSIEdgeCreationProb() {
-        return 1 - Math.exp(-1d * SIEdgeCreationRate);
+        return 1 - Math.exp(-1d * getTimeStep() * SIEdgeCreationRate);
     }
 
     public double getSSEdgeCreationProb() {
-        return 1 - Math.exp(-1d * SSEdgeCreationRate);
+        return 1 - Math.exp(-1d * getTimeStep() * SSEdgeCreationRate);
     }
 
     public double getIIEdgeCreationProb() {
-        return 1 - Math.exp(-1d * IIEdgeCreationRate);
+        return 1 - Math.exp(-1d * getTimeStep() * IIEdgeCreationRate);
     }
 
     public double getSIEdgeRewiringProb() {
-        return 1 - Math.exp(-1d * SIEdgeRewiringRate);
+        return 1 - Math.exp(-1d * getTimeStep() * SIEdgeRewiringRate);
     }
 
     public double getSSEdgeRewiringProb() {
-        return 1 - Math.exp(-1d * SSEdgeRewiringRate);
+        return 1 - Math.exp(-1d * getTimeStep() * SSEdgeRewiringRate);
     }
 
     public double getIIEdgeRewiringProb() {
-        return 1 - Math.exp(-1d * IIEdgeRewiringRate);
+        return 1 - Math.exp(-1d * getTimeStep() * IIEdgeRewiringRate);
     }
 
 }

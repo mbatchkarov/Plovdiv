@@ -71,7 +71,6 @@ public class Simulator {
     private MyGraph g;
     private Stats stats;
     private Controller controller;
-    private LinkedList<SimulationCommand> commands;
 
     public Simulator(MyGraph g, Stats stats, Controller controller) {
         this.g = g;
@@ -82,7 +81,6 @@ public class Simulator {
         this.infectedXYSeries = new XYSeries("Infected", false, false);
         this.xValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
         this.yValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
-        this.commands = new LinkedList<SimulationCommand>();
 
         this.thread = new SimModelThread("sim-thread");
         this.thread.pause();
@@ -93,21 +91,20 @@ public class Simulator {
         this.stepNumber = 0;
         this.xValues.clear();
         this.yValues.clear();
-        this.commands.clear();
         this.updateChartUnderlyingData();
         this.updateChartAxisParameters();
     }
 
     private void doStep(MyGraph<MyVertex, MyEdge> g) {
-        checkForTopologyChanges(g);
-        checkForInfection(g);
-        checkForRecovery(g);
+        LinkedList<SimulationCommand> commands = new LinkedList<SimulationCommand>();
+        checkForTopologyChanges(g, commands);
+        checkForInfection(g, commands);
+        checkForRecovery(g, commands);
 
         //here the next state of each vertex should be known, updating
         for (SimulationCommand c : commands) {
             c.execute();
         }
-        commands.clear();
 
         //record changes in number of inf/sus/res nodes
         controller.updateCounts();
@@ -116,7 +113,8 @@ public class Simulator {
         stats.recalculateAll();
     }
 
-    private void checkForTopologyChanges(MyGraph<MyVertex, MyEdge> g) {
+    public void checkForTopologyChanges(MyGraph<MyVertex, MyEdge> g,
+                                        LinkedList<SimulationCommand> commands) {
         // check for edge breaking
         SimulationDynamics d = g.getDynamics();
         for (MyEdge e : g.getEdges()) {
@@ -204,7 +202,6 @@ public class Simulator {
                                                              v1.isInfected() ? v2 : v1,
                                                              v1.isInfected() ? v1 : v2);
                 if (newEndpoint != null) {
-                    System.out.println("Rewiring");
                     commands.add(new EdgeBreakingCommand(g, e));
                     commands.add(new EdgeCreationCommand(controller.getEdgeFactory(),
                                                          g, v1,
@@ -236,7 +233,6 @@ public class Simulator {
             int i = rng.nextInt(susceptibles.size());
             if (!g.isNeighbor(origin, candidates[i])) {
                 //found a guy
-                System.out.println("Found a susceptible one");
                 return candidates[i];
             }
         }
@@ -318,7 +314,8 @@ public class Simulator {
      * Checks if a SUSCEPTIBLE node vertex second will get infected at this
      * time step.
      */
-    private void checkForInfection(MyGraph<MyVertex, MyEdge> g) {
+    public void checkForInfection(MyGraph<MyVertex, MyEdge> g,
+                                  LinkedList<SimulationCommand> commands) {
         for (MyEdge e : g.getEdges()) {
             MyVertex first = g.getEndpoints(e).getFirst();
             MyVertex second = g.getEndpoints(e).getSecond();
@@ -349,7 +346,8 @@ public class Simulator {
      * Checks if the given vertex will recover at this step, it is assumed to be
      * infected, so make your own checks
      */
-    private void checkForRecovery(MyGraph<MyVertex, MyEdge> g) {
+    public void checkForRecovery(MyGraph<MyVertex, MyEdge> g,
+                                 LinkedList<SimulationCommand> commands) {
         for (MyVertex vertex : g.getVertices())
             if (vertex.isInfected())
                 if (rng.nextFloat() < g.getDynamics().getRecoveryProb()) {
