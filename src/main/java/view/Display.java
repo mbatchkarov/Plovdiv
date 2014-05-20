@@ -1483,13 +1483,12 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     private void speedSliderStateChanged(javax.swing.event.ChangeEvent evt) {
         JSlider source = (JSlider) evt.getSource();
         if (!source.getValueIsAdjusting()) {
-//            parseSimulationParameters(null);
+            simParamsPanel.parseSimulationParameters();
         }
     }
 
     private void speedSliderKeyPressed(java.awt.event.KeyEvent evt) {
-//        parseSimulationParameters(evt);
-        System.out.println("Slider moving");
+        simParamsPanel.parseSimulationParameters();
     }
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {
