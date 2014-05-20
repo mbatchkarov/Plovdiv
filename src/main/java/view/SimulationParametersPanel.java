@@ -98,11 +98,6 @@ public class SimulationParametersPanel extends javax.swing.JPanel {
                 dynamicsItemStateChanged(evt);
             }
         });
-        dynamics.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                dynamicsActionPerformed(evt);
-            }
-        });
 
         ok.setText("OK");
         ok.addActionListener(new java.awt.event.ActionListener() {
@@ -160,27 +155,16 @@ public class SimulationParametersPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void dynamicsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dynamicsActionPerformed
-    }//GEN-LAST:event_dynamicsActionPerformed
-
     private void dynamicsItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_dynamicsItemStateChanged
         JComboBox source = (JComboBox) evt.getItemSelectable();
         if (evt.getStateChange() == ItemEvent.SELECTED) {
             if (source.getSelectedItem().toString().equals("SI")) {
-                gamaLabel.setVisible(false);
-                recoveryRate.setVisible(false);
+                recoveryRate.setEnabled(false);
             }
-            if (source.getSelectedItem().toString().equals("SIS")) {
-                gamaLabel.setVisible(true);
-                recoveryRate.setVisible(true);
-            }
-            if (source.getSelectedItem().toString().equals("SIR")) {
-                gamaLabel.setVisible(true);
-                recoveryRate.setVisible(true);
+            else{
+                recoveryRate.setEnabled(true);
             }
             parseSimulationParameters();
-            validate();
-            repaint();
         }
     }//GEN-LAST:event_dynamicsItemStateChanged
 
@@ -189,7 +173,6 @@ public class SimulationParametersPanel extends javax.swing.JPanel {
     }
 
     private void okActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okActionPerformed
-        System.out.println("Store actual params here");
         parseSimulationParameters();
     }//GEN-LAST:event_okActionPerformed
 
