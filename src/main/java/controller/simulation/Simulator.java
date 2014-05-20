@@ -38,10 +38,9 @@ import controller.Controller;
 import controller.ExtraGraphEvent;
 import controller.Stats;
 import edu.uci.ics.jung.graph.MyGraph;
-import edu.uci.ics.jung.graph.util.Pair;
 import model.MyEdge;
 import model.MyVertex;
-import model.dynamics.Dynamics;
+import model.SimulationDynamics;
 import org.apache.commons.collections15.buffer.CircularFifoBuffer;
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -119,7 +118,7 @@ public class Simulator {
 
     private void checkForTopologyChanges(MyGraph<MyVertex, MyEdge> g) {
         // check for edge breaking
-        Dynamics d = g.getDynamics();
+        SimulationDynamics d = g.getDynamics();
         for (MyEdge e : g.getEdges()) {
             double eventProba = 0d;
 

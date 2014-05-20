@@ -46,7 +46,7 @@ import java.awt.Color;
 import model.EpiState;
 import model.MyEdge;
 import model.MyVertex;
-import model.dynamics.Dynamics;
+import model.SimulationDynamics;
 
 import java.io.Serializable;
 import java.util.*;
@@ -59,7 +59,7 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
 
     private boolean allowNodeIcons = true;
 
-    private Dynamics dynamics;
+    private SimulationDynamics dynamics;
     private int numSusceptible, numInfected, numResistant;
     int sleepTimeBetweenSteps; // how long to wait before another simulation step is made (ms)
 
@@ -91,11 +91,11 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         extraListenerList.add(l);
     }
 
-    public Dynamics getDynamics() {
+    public SimulationDynamics getDynamics() {
         return dynamics;
     }
 
-    public void setDynamics(Dynamics dynamics) {
+    public void setDynamics(SimulationDynamics dynamics) {
         this.dynamics = dynamics;
     }
 

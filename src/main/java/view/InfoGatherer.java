@@ -30,7 +30,6 @@
 package view;
 
 import controller.Controller;
-import controller.IOClass;
 import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.visualization.layout.PersistentLayout;
 import view.generatorSettings.GeneratorSettings;
