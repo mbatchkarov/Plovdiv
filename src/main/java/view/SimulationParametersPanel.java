@@ -98,8 +98,13 @@ public class SimulationParametersPanel extends javax.swing.JPanel {
                 dynamicsItemStateChanged(evt);
             }
         });
+        dynamics.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                dynamicsActionPerformed(evt);
+            }
+        });
 
-        ok.setText("OK");
+        ok.setText("Apply");
         ok.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 okActionPerformed(evt);
@@ -191,6 +196,10 @@ public class SimulationParametersPanel extends javax.swing.JPanel {
     private void timeStepKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_timeStepKeyReleased
         UIUtils.parseDoubleOrColourComponentOnError((javax.swing.JTextField) evt.getSource());
     }//GEN-LAST:event_timeStepKeyReleased
+
+    private void dynamicsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dynamicsActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_dynamicsActionPerformed
 
     public void parseSimulationParameters() {
         //check the current state of the fields
