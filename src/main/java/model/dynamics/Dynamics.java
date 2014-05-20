@@ -54,39 +54,39 @@ public abstract class Dynamics {
 
 
     public double getSIEdgeBreakingProb() {
-        return 1 - Math.exp(SIEdgeBreakingRate);
+        return 1 - Math.exp(-1d * SIEdgeBreakingRate);
     }
 
     public double getSSEdgeBreakingProb() {
-        return 1 - Math.exp(SSEdgeBreakingRate);
+        return 1 - Math.exp(-1d * SSEdgeBreakingRate);
     }
 
     public double getIIEdgeBreakingProb() {
-        return 1 - Math.exp(IIEdgeBreakingRate);
+        return 1 - Math.exp(-1d * IIEdgeBreakingRate);
     }
 
     public double getSIEdgeCreationProb() {
-        return 1 - Math.exp(SIEdgeCreationRate);
+        return 1 - Math.exp(-1d * SIEdgeCreationRate);
     }
 
     public double getSSEdgeCreationProb() {
-        return 1 - Math.exp(SSEdgeCreationRate);
+        return 1 - Math.exp(-1d * SSEdgeCreationRate);
     }
 
     public double getIIEdgeCreationProb() {
-        return 1 - Math.exp(IIEdgeCreationRate);
+        return 1 - Math.exp(-1d * IIEdgeCreationRate);
     }
 
     public double getSIEdgeRewiringProb() {
-        return 1 - Math.exp(SIEdgeRewiringRate);
+        return 1 - Math.exp(-1d * SIEdgeRewiringRate);
     }
 
     public double getSSEdgeRewiringProb() {
-        return 1 - Math.exp(SSEdgeRewiringRate);
+        return 1 - Math.exp(-1d * SSEdgeRewiringRate);
     }
 
     public double getIIEdgeRewiringProb() {
-        return 1 - Math.exp(IIEdgeRewiringRate);
+        return 1 - Math.exp(-1d * IIEdgeRewiringRate);
     }
 
     public Dynamics(double transmissionRate, double timeStep) {
@@ -127,7 +127,7 @@ public abstract class Dynamics {
     }
 
     public double getInfectionProb() {
-        return 1d - Math.exp((-1 * getTransmissionRate() * getTimeStep()));
+        return 1d - Math.exp((-getTransmissionRate() * getTimeStep()));
     }
 
 }
