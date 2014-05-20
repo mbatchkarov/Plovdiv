@@ -17,6 +17,7 @@ public class ChangeSIRStateCommand implements SimulationCommand {
 
     @Override
     public void execute() {
+        System.out.println("Advancing epidemic state");
         this.v.setEpiState(nextState);
     }
 }

@@ -147,31 +147,32 @@ public class Simulator {
         }
 
         // check for edge creation
-        for (MyEdge e : g.getEdges()) {
-            double eventProba = 0d;
+        for (MyVertex v1 : g.getVertices()) {
+            for (MyVertex v2 : g.getVertices()) {
+                if (g.isNeighbor(v1, v2) || v1 == v2)
+                    continue;
 
-            MyVertex v1 = g.getEndpoints(e).getFirst();
-            MyVertex v2 = g.getEndpoints(e).getSecond();
-            if (v1.isInfected()) {
-                if (v2.isSusceptible()) {
-                    eventProba = d.getSIEdgeCreationProb();
+                double eventProba = 0d;
+                if (v1.isInfected()) {
+                    if (v2.isSusceptible()) {
+                        eventProba = d.getSIEdgeCreationProb();
+                    }
+                    if (v2.isInfected()) {
+                        eventProba = d.getIIEdgeCreationProb();
+                    }
                 }
-                if (v2.isInfected()) {
-                    eventProba = d.getIIEdgeCreationProb();
+                if (v1.isSusceptible()) {
+                    if (v2.isSusceptible()) {
+                        eventProba = d.getSSEdgeCreationProb();
+                    }
+                    if (v2.isInfected()) {
+                        eventProba = d.getSIEdgeCreationProb();
+                    }
                 }
-            }
-            if (v1.isSusceptible()) {
-                if (v2.isSusceptible()) {
-                    eventProba = d.getSSEdgeCreationProb();
-                }
-                if (v2.isInfected()) {
-                    eventProba = d.getSIEdgeCreationProb();
-                }
-            }
 
-            if (rng.nextFloat() < eventProba) {
-                System.out.println("Creating edge");
-                commands.add(new EdgeCreationCommand(controller.getEdgeFactory(), g, v1, v2));
+                if (rng.nextFloat() < eventProba) {
+                    commands.add(new EdgeCreationCommand(controller.getEdgeFactory(), g, v1, v2));
+                }
             }
         }
 

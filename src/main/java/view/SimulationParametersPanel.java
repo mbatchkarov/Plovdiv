@@ -6,15 +6,9 @@
 
 package view;
 
-import edu.uci.ics.jung.graph.MyGraph;
-
-import java.awt.Color;
 import java.awt.event.ItemEvent;
-import java.awt.event.KeyEvent;
 import javax.swing.*;
 
-import model.MyEdge;
-import model.MyVertex;
 import model.SimulationDynamics;
 
 /**
@@ -24,6 +18,7 @@ public class SimulationParametersPanel extends javax.swing.JPanel {
 
     private Display d;
     private double[] advancedRates;
+    private AdvancedSimulationSettingsFrame advancedSettingsFrame;
 
     /**
      * Creates new form SimulationParametersPanel
@@ -31,6 +26,7 @@ public class SimulationParametersPanel extends javax.swing.JPanel {
     public SimulationParametersPanel(Display d) {
         this.d = d;
         advancedRates = new double[9];
+        advancedSettingsFrame = new AdvancedSimulationSettingsFrame(this);
         initComponents();
     }
 
@@ -62,7 +58,7 @@ public class SimulationParametersPanel extends javax.swing.JPanel {
 
         jLabel4.setText("Time step");
 
-        more.setText("More");
+        more.setText("More...");
         more.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 moreActionPerformed(evt);
@@ -118,52 +114,52 @@ public class SimulationParametersPanel extends javax.swing.JPanel {
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                      .addGroup(layout.createSequentialGroup()
-                                      .addContainerGap()
-                                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                                      .addComponent(jLabel1)
-                                                      .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                                      .addComponent(gamaLabel)
-                                                      .addComponent(jLabel4)
-                                                      .addComponent(more, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                      .addGroup(layout.createSequentialGroup()
-                                                                      .addGap(6, 6, 6)
-                                                                      .addComponent(ok, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                                                      .addComponent(timeStep, javax.swing.GroupLayout.Alignment.LEADING)
-                                                                      .addComponent(recoveryRate, javax.swing.GroupLayout.Alignment.LEADING)
-                                                                      .addComponent(transmissionRate, javax.swing.GroupLayout.Alignment.LEADING)
-                                                                      .addComponent(dynamics, javax.swing.GroupLayout.Alignment.LEADING, 0, 72, Short.MAX_VALUE)))
-                                      .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                 );
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel1)
+                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(gamaLabel)
+                    .addComponent(jLabel4)
+                    .addComponent(more, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(ok, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                        .addComponent(timeStep, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(recoveryRate, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(transmissionRate, javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(dynamics, javax.swing.GroupLayout.Alignment.LEADING, 0, 72, Short.MAX_VALUE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
         layout.setVerticalGroup(
-                layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                      .addGroup(layout.createSequentialGroup()
-                                      .addGap(0, 0, Short.MAX_VALUE)
-                                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                      .addComponent(dynamics, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                                      .addComponent(jLabel1))
-                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                      .addComponent(jLabel2)
-                                                      .addComponent(transmissionRate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                      .addComponent(gamaLabel)
-                                                      .addComponent(recoveryRate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                      .addComponent(jLabel4)
-                                                      .addComponent(timeStep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                      .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                      .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                                      .addComponent(more)
-                                                      .addComponent(ok))
-                                      .addGap(0, 0, 0))
-                               );
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(dynamics, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel2)
+                    .addComponent(transmissionRate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(gamaLabel)
+                    .addComponent(recoveryRate, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel4)
+                    .addComponent(timeStep, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(more)
+                    .addComponent(ok))
+                .addGap(0, 0, 0))
+        );
     }// </editor-fold>//GEN-END:initComponents
 
     private void dynamicsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dynamicsActionPerformed
@@ -196,11 +192,11 @@ public class SimulationParametersPanel extends javax.swing.JPanel {
 
     private void okActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_okActionPerformed
         System.out.println("Store actual params here");
-        double transmissionRate = 0;
+        parseSimulationParameters();
     }//GEN-LAST:event_okActionPerformed
 
     private void moreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_moreActionPerformed
-        new AdvancedSimulationSettingsFrame(this);
+        advancedSettingsFrame.setVisible(true);
     }//GEN-LAST:event_moreActionPerformed
 
     private void transmissionRateKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_transmissionRateKeyReleased

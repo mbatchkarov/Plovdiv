@@ -44,16 +44,16 @@ public class SimulationDynamics {
         SI, SIS, SIR;
     }
 
-    public DynamicsType type;
+    private DynamicsType type;
     //common characteristics of all types of network dynamics
-    public double transmissionRate;
-    public double timeStep;
-    public double recoveryRate;
+    private double transmissionRate;
+    private double timeStep;
+    private double recoveryRate;
 
     // rates at which edge between S-I, S-S and I-I edges break/appear/rewire
-    public double SIEdgeBreakingRate, SSEdgeBreakingRate, IIEdgeBreakingRate;
-    public double SIEdgeCreationRate, SSEdgeCreationRate, IIEdgeCreationRate;
-    public double SIEdgeRewiringRate, SSEdgeRewiringRate, IIEdgeRewiringRate;
+    private double SIEdgeBreakingRate, SSEdgeBreakingRate, IIEdgeBreakingRate;
+    private double SIEdgeCreationRate, SSEdgeCreationRate, IIEdgeCreationRate;
+    private double SIEdgeRewiringRate, SSEdgeRewiringRate, IIEdgeRewiringRate;
 
     public SimulationDynamics(DynamicsType type, double transmissionRate,
                               double recoveryRate, double timeStep,
