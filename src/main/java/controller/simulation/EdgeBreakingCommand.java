@@ -18,6 +18,8 @@ public class EdgeBreakingCommand implements SimulationCommand {
 
     @Override
     public void execute() {
-        this.graph.removeEdge(edge);
+        synchronized (this.graph) {
+	        this.graph.removeEdge(edge);
+        }
     }
 }

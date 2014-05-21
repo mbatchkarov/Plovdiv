@@ -1534,7 +1534,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 
         persistentLayout = new PersistentLayoutImpl<MyVertex, MyEdge>(getSelectedGraphLayout(g));
 
-        vv = new VisualizationViewer<MyVertex, MyEdge>(persistentLayout, pane.getSize());
+        vv = new SynchronisedVisualizationViewer<MyVertex, MyEdge>(persistentLayout, pane.getSize());
         initDemoMap();
 
         icons = new IconsStore(vv.getPickedVertexState());
