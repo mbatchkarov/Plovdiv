@@ -66,28 +66,22 @@ import model.MyEdge;
 import model.MyVertex;
 import model.SimulationDynamics;
 import model.Strings;
+import org.apache.commons.collections15.Transformer;
 import org.apache.commons.collections15.functors.ConstantTransformer;
 import view.CustomMouse.CustomGraphMouse;
-import view.CustomVisualization.CenterLabelPositioner;
-import view.CustomVisualization.CustomEdgeLabeller;
-import view.CustomVisualization.CustomVertexLabeler;
-import view.CustomVisualization.CustomVertexIconShapeTransformer;
+import view.CustomVisualization.*;
 
 import javax.swing.*;
+import javax.swing.GroupLayout.ParallelGroup;
+import javax.swing.GroupLayout.SequentialGroup;
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import javax.swing.GroupLayout.ParallelGroup;
-import javax.swing.GroupLayout.SequentialGroup;
-
-import org.apache.commons.collections15.Transformer;
-import view.CustomVisualization.CustomVertexRenderer;
 
 import static view.Utils.round;
 
@@ -1766,7 +1760,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     }
 
     public void updateSimulationParameters(SimulationDynamics dynamics) {
-        g.setSleepTimeBetweenSteps(speedSlider.getValue() + 20);
+        g.setSleepTimeBetweenSteps(speedSlider.getValue());
         //make sure the graphs is in a proper state
         controller.validateNodeStates();
         this.g.setDynamics(dynamics);

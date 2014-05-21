@@ -48,6 +48,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -78,7 +79,7 @@ public class Simulator {
         this.controller = controller;
         this.rng = new Random();
         this.doOneStepOnly = false;
-        this.infectedXYSeries = new XYSeries("Infected", false, false);
+        this.infectedXYSeries = new SynchronisedXYSeries("Infected", false, false);
         this.xValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
         this.yValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
 
@@ -292,11 +293,12 @@ public class Simulator {
         Integer[] yarr = new Integer[yValues.size()];
         xarr = xValues.toArray(xarr);
         yarr = yValues.toArray(yarr);
-
-        infectedXYSeries.clear();
-        for (int i = 0; i < xarr.length; i++) {
-            infectedXYSeries.add(xarr[i], yarr[i]);
-        }
+		synchronized (infectedXYSeries){
+	        infectedXYSeries.clear();
+	        for (int i = 0; i < xarr.length; i++) {
+	            infectedXYSeries.add(xarr[i], yarr[i]);
+	        }
+		}
     }
 
     public void pauseSim() {
@@ -456,5 +458,17 @@ public class Simulator {
         stepNumber++;
         g.fireExtraEvent(new ExtraGraphEvent(g, ExtraGraphEvent.SIM_STEP_COMPLETE));
     }
+
+	private class SynchronisedXYSeries extends XYSeries{
+
+		public SynchronisedXYSeries(Comparable key, boolean autoSort, boolean allowDuplicateXValues) {
+			super(key, autoSort, allowDuplicateXValues);
+		}
+
+		@Override
+		public synchronized XYDataItem getDataItem(int index) {
+			return super.getDataItem(index);
+		}
+	}
 
 }
