@@ -29,16 +29,15 @@
  */
 package controller;
 
+import controller.simulation.Simulator;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.MyGraph;
-import edu.uci.ics.jung.graph.ObservableGraph;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.layout.PersistentLayout;
 import model.EpiState;
 import model.MyEdge;
 import model.MyVertex;
-import model.dynamics.SIRDynamics;
-import model.dynamics.SISDynamics;
+import model.SimulationDynamics;
 import model.factories.EdgeFactory;
 import model.factories.GraphFactory;
 import model.factories.VertexFactory;
@@ -63,9 +62,8 @@ public class Controller {
     
     private MyGraph g;
     
-    private Controller(Stats stats, MyGraph g) {
+    public Controller(Stats stats, MyGraph g) {
         this.g = g;
-        g.setDynamics(new SISDynamics(0.1, 0.1, 0.1, 0.1));
         sim = new Simulator(g, stats, this);
         validateNodeStates();
     }
@@ -138,7 +136,8 @@ public class Controller {
         Iterator i = this.g.getVertices().iterator();
         while (i.hasNext()) {
             MyVertex current = ((MyVertex) i.next());
-            if (current.isResistant() && !(this.g.getDynamics() instanceof SIRDynamics)) {
+            if (current.isResistant() &&
+                !(this.g.getDynamics().getType() == SimulationDynamics.DynamicsType.SIR)) {
                 current.setEpiState(EpiState.SUSCEPTIBLE);
             }
         }

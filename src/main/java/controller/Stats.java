@@ -486,12 +486,11 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
      * Returns a plot of the degree distribution of the graph
      *
      * @param cumulative
-     * @param logy
      * @param maxSize
      * @return
      */
-    public ChartPanel buildDegreeDistributionChart(boolean cumulative, boolean logy, Dimension maxSize) {
-        updateDegreeDistributionChartData(cumulative, logy);
+    public ChartPanel buildDegreeDistributionChart(boolean cumulative, Dimension maxSize) {
+        updateDegreeDistributionChartData(cumulative);
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(this.degreeDistXYSeries);
 
@@ -508,14 +507,8 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
         XYPlot plot = chart.getXYPlot();
         plot.setRenderer(0, new XYSplineRenderer(1));
 
-        ValueAxis rangeAxis;
-        if (logy) {
-            rangeAxis = new LogarithmicAxis("Log(Count)");
-        } else {
-            rangeAxis = new NumberAxis("Count");
-            // todo the labels of this axis are out of whack
-        }
-        plot.setRangeAxis(rangeAxis);
+        // todo the labels of this axis are sometimes out of whack
+        plot.setRangeAxis(new NumberAxis("Count"));
         final NumberAxis domainAxis = (NumberAxis) plot.getDomainAxis();
         domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
@@ -530,10 +523,9 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
      * currrent graph.
      *
      * @param cumulative
-     * @param logy
      * @return
      */
-    public void updateDegreeDistributionChartData(boolean cumulative, boolean logy) {
+    public void updateDegreeDistributionChartData(boolean cumulative) {
         int[] buckets;
         if (!cumulative) {
             buckets = getDegreeDistribution();
@@ -543,9 +535,8 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
         this.degreeDistXYSeries.clear();
         for (int i = 0; i < buckets.length; i++) {
             if (buckets[i] > 0) {
-                final double yValue = logy ? Math.log(buckets[i]) : buckets[i];
-                if (yValue > 0) {
-                    this.degreeDistXYSeries.add(i, yValue); //0s not ok for log plotting
+                if (buckets[i] > 0) {
+                    this.degreeDistXYSeries.add(i, buckets[i]); //0s not ok for log plotting
                 }
             }
         }
