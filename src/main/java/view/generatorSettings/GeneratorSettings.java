@@ -244,13 +244,15 @@ public class GeneratorSettings extends javax.swing.JFrame {
                 case 0: {
                     controller.generate4Lattice(
                             Integer.parseInt(((LatticeSettings) pane.getComponent(0)).getM().getText()),
-                            Integer.parseInt(((LatticeSettings) pane.getComponent(0)).getN().getText()), autodetermineIconType);
+                            Integer.parseInt(((LatticeSettings) pane.getComponent(0)).getN().getText()),
+                            Integer.parseInt(((LatticeSettings) pane.getComponent(0)).getN1().getText()), autodetermineIconType);
                     break;
                 }
                 case 1: {
                     controller.generate6Lattice(
                             Integer.parseInt(((LatticeSettings) pane.getComponent(0)).getM().getText()),
-                            Integer.parseInt(((LatticeSettings) pane.getComponent(0)).getN().getText()), autodetermineIconType);
+                            Integer.parseInt(((LatticeSettings) pane.getComponent(0)).getN().getText()),
+                            Integer.parseInt(((LatticeSettings) pane.getComponent(0)).getN1().getText()), autodetermineIconType);
                     break;
                 }
                 case 2: {

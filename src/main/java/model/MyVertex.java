@@ -34,6 +34,7 @@
  */
 package model;
 
+import edu.uci.ics.jung.graph.util.Pair;
 import java.io.Serializable;
 
 /**
@@ -46,6 +47,8 @@ public class MyVertex implements Serializable {
     private EpiState nextEpiState; // what will happen to this guy next
     
     private VertexIcon icon;
+    
+    private Pair<Integer> latticePosition;
     
     public MyVertex(int id) {
         this.id = id;
@@ -118,5 +121,19 @@ public class MyVertex implements Serializable {
      */
     public void setIcon(VertexIcon icon) {
         this.icon = icon;
+    }
+
+    /**
+     * @return the latticePosition
+     */
+    public Pair<Integer> getLatticePosition() {
+        return latticePosition;
+    }
+
+    /**
+     * @param latticePosition the latticePosition to set
+     */
+    public void setLatticePosition(Pair<Integer> latticePosition) {
+        this.latticePosition = latticePosition;
     }
 }

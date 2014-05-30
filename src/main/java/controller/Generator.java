@@ -35,8 +35,13 @@ package controller;
 
 import edu.uci.ics.jung.algorithms.generators.random.BarabasiAlbertGenerator;
 import edu.uci.ics.jung.algorithms.generators.random.EppsteinPowerLawGenerator;
+import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.algorithms.layout.StaticLayout;
 import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.graph.util.Pair;
+import edu.uci.ics.jung.visualization.renderers.Renderer.Vertex;
+import java.awt.Point;
+import java.awt.geom.Point2D;
 import model.MyEdge;
 import model.MyVertex;
 import model.factories.EdgeFactory;
@@ -44,6 +49,7 @@ import model.factories.VertexFactory;
 
 import java.util.HashSet;
 import model.VertexIcon;
+import org.apache.commons.collections15.Transformer;
 import view.Utils;
 
 /**
@@ -98,8 +104,8 @@ public class Generator {
                     < n; j++) {
                 allNodes[i][j] = vf.create();
                 g.addVertex(allNodes[i][j]);
+                allNodes[i][j].setLatticePosition(new Pair<Integer>(i, j));
             }
-
         }
         for (int i = 0; i
                 < m - 1; i++) {//initialize it
@@ -120,10 +126,12 @@ public class Generator {
                 < n - 1; i++) {
             g.addEdge(ef.create(), allNodes[m - 1][i], allNodes[m - 1][i + 1]);//TODO modify to include last row and last column
         }
-        
+
         if (autodetermineIconType) {
             determineInitialNodeTypes(g);
         }
+
+        g.setLayoutStatic(true);
         return g;
     }
 
@@ -147,6 +155,7 @@ public class Generator {
                     < n; j++) {
                 nodes[i][j] = vf.create();
                 g.addVertex(nodes[i][j]);
+                nodes[i][j].setLatticePosition(new Pair<Integer>(i, j));
             }
 
         }
@@ -189,10 +198,11 @@ public class Generator {
         }
 
 //        MyGraph.setInstance(g);
-        
         if (autodetermineIconType) {
             determineInitialNodeTypes(g);
         }
+        
+        g.setLayoutStatic(true);
         return g;
     }
 
@@ -207,7 +217,7 @@ public class Generator {
                 controller.getEdgeFactory().reset(),
                 m, n, clusteringExponent);
         MyGraph myGraph = (MyGraph) gen.create();
-        
+
         if (autodetermineIconType) {
             determineInitialNodeTypes(myGraph);
         }
@@ -221,7 +231,7 @@ public class Generator {
         EppsteinPowerLawGenerator<MyVertex, MyEdge> gen = new EppsteinPowerLawGenerator(
                 controller.getGraphFactory(), vf, ef, numVert, numEdges, r);
         MyGraph myGraph = (MyGraph) gen.create();
-        
+
         if (autodetermineIconType) {
             determineInitialNodeTypes(myGraph);
         }
@@ -251,7 +261,7 @@ public class Generator {
                 numVertices, numEdgesToAttach, seeds);
         gen.evolveGraph(evolveSteps);
         MyGraph myGraph = (MyGraph) gen.create();
-        
+
         if (autodetermineIconType) {
             determineInitialNodeTypes(myGraph);
         }

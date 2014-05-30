@@ -30,10 +30,15 @@
 package controller;
 
 import controller.simulation.Simulator;
+import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.algorithms.layout.StaticLayout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.layout.PersistentLayout;
+import java.awt.Dimension;
+import java.awt.Point;
+import java.awt.geom.Point2D;
 import model.EpiState;
 import model.MyEdge;
 import model.MyVertex;
@@ -47,27 +52,28 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
+import org.apache.commons.collections15.Transformer;
 import view.BackgroundImageController;
 
 /**
  * @author reseter
  */
 public class Controller {
-    
+
     private EdgeFactory ef;
     private VertexFactory vf;
     private GraphFactory gf;
     private Display gui;
     private Simulator sim;
-    
+
     private MyGraph g;
-    
+
     public Controller(Stats stats, MyGraph g) {
         this.g = g;
         sim = new Simulator(g, stats, this);
         validateNodeStates();
     }
-    
+
     public void setGui(Display w) {
         gui = w;
         w.setVisible(true);
@@ -87,14 +93,14 @@ public class Controller {
         }
         return ef;
     }
-    
+
     public GraphFactory getGraphFactory() {
         if (gf == null) {
             gf = new GraphFactory();
         }
         return new GraphFactory(getGraph());
     }
-    
+
     public VertexFactory getVertexFactory() {
         if (vf == null) {
             vf = new VertexFactory();
@@ -114,7 +120,7 @@ public class Controller {
             MyEdge e = (MyEdge) i.next();
             m.put(e, e.getWeigth());
         }
-        
+
         return m;
     }
 
@@ -122,7 +128,7 @@ public class Controller {
     public void updateCounts() {
         this.g.updateCounts();
     }
-    
+
     public void setAllSusceptible() {
         this.g.setAllSusceptible();
         sim.resetSimulation();
@@ -136,12 +142,12 @@ public class Controller {
         Iterator i = this.g.getVertices().iterator();
         while (i.hasNext()) {
             MyVertex current = ((MyVertex) i.next());
-            if (current.isResistant() &&
-                !(this.g.getDynamics().getType() == SimulationDynamics.DynamicsType.SIR)) {
+            if (current.isResistant()
+                    && !(this.g.getDynamics().getType() == SimulationDynamics.DynamicsType.SIR)) {
                 current.setEpiState(EpiState.SUSCEPTIBLE);
             }
         }
-        
+
     }
 
     //------------SAVE/ LOAD FUNCTIONALITY--------------
@@ -157,11 +163,11 @@ public class Controller {
                 getEdgeFactory().reset());
         this.g.setInstance(g);
         gui.setVertexRenderer();
-        IOClass.loadLayout(gui, path);        
+        IOClass.loadLayout(gui, path);
         BackgroundImageController.getInstance().checkForAndLoadBackgroundImage(vv, path);
         BackgroundImageController.getInstance().loadCustomColors(vv, g);
     }
-    
+
     public void save(String path, MyGraph g, PersistentLayout layout) throws IOException {
         if (path != "nullnull") {
             //if the user pressed cancel, nullnull will be passed to this method
@@ -177,32 +183,36 @@ public class Controller {
         this.g.setInstance(Generator.generateRandom(a, b, this, autodetermineIconType));
         gui.setVertexRenderer();
     }
-    
-    public void generate4Lattice(int a, int b, boolean autodetermineIconType) {
-        this.g.setInstance(Generator.generateRectangularLattice(a, b, this, autodetermineIconType));
+
+    public void generate4Lattice(int a, int b, int nodeDist, boolean autodetermineIconType) {
+        MyGraph newGraph = Generator.generateRectangularLattice(a, b, this, autodetermineIconType);
+        newGraph.setNodeDistance(nodeDist);
+        this.g.setInstance(newGraph);
         gui.setVertexRenderer();
     }
-    
-    public void generate6Lattice(int a, int b, boolean autodetermineIconType) {
-        this.g.setInstance(Generator.generateHexagonalLattice(a, b, this, autodetermineIconType));
+
+    public void generate6Lattice(int a, int b, int nodeDist, boolean autodetermineIconType) {
+        MyGraph newGraph = Generator.generateHexagonalLattice(a, b, this, autodetermineIconType);
+        newGraph.setNodeDistance(nodeDist);
+        this.g.setInstance(newGraph);
         gui.setVertexRenderer();
     }
-    
+
     public void generateKleinbergSmallWorld(int m, int n, double c, boolean autodetermineIconType) {
         this.g.setInstance(Generator.generateKleinbergSmallWorld(m, n, c, this, autodetermineIconType));
         gui.setVertexRenderer();
     }
-    
+
     public void generateScaleFree(int a, int b, int c, boolean autodetermineIconType) {
         this.g.setInstance(Generator.generateScaleFree(a, 1, c, this, autodetermineIconType));
         gui.setVertexRenderer();
     }
-    
+
     public void generateEppsteinPowerLaw(int numVert, int numEdges, int r, boolean autodetermineIconType) {
         this.g.setInstance(Generator.generateEppsteinPowerLaw(numVert, numEdges, r, this, autodetermineIconType));
         gui.setVertexRenderer();
     }
-    
+
     public void generateEmptyGraph() {
         getEdgeFactory().reset();
         getVertexFactory().reset();
@@ -215,7 +225,7 @@ public class Controller {
      * accessing the display directly
      */
     public void updateDisplay() {
-        
+
         Display.vv.repaint();
     }
 
@@ -244,18 +254,18 @@ public class Controller {
         updateCounts();
         updateDisplay();
     }
-    
+
     public Simulator getSimulator() {
         return sim;
     }
-    
+
     public MyGraph getGraph() {
         return g;
     }
-    
+
     public static void main(String[] args) {
         MyGraph g = new GraphFactory().create();
-        
+
         Stats stats = new Stats(g);
         Controller cont = new Controller(stats, g);  //controller
 
@@ -272,5 +282,5 @@ public class Controller {
         d.handlingEvents = true;
         cont.generateScaleFree(20, 1, 1, true);
     }
-    
+
 }

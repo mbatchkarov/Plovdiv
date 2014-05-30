@@ -67,7 +67,10 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
     private Color edgeColor = Color.BLACK;
 
     private VertexIcon predominantVertexIcon;
-
+    
+    private boolean layoutStatic = false;
+    private int nodeDistance = 64;
+    
     public MyGraph(Graph<V, E> delegate) {
         super(delegate);
         this.dynamics = null;
@@ -84,6 +87,8 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         delegate = newInstance.delegate;
         setAllowNodeIcons(newInstance.areNodeIconsAllowed());
         updateCounts();
+        setLayoutStatic(newInstance.isLayoutStatic());
+        setNodeDistance(newInstance.getNodeDistance());
         fireExtraEvent(new ExtraGraphEvent(delegate, ExtraGraphEvent.GRAPH_REPLACED));
     }
 
@@ -298,5 +303,33 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
 
     public void setEdgeColor(int rgb) {
         edgeColor = new Color(rgb);
+    }
+
+    /**
+     * @return the layoutStatic
+     */
+    public boolean isLayoutStatic() {
+        return layoutStatic;
+    }
+
+    /**
+     * @param layoutStatic the layoutStatic to set
+     */
+    public void setLayoutStatic(boolean layoutStatic) {
+        this.layoutStatic = layoutStatic;
+    }
+
+    /**
+     * @return the nodeDistance
+     */
+    public int getNodeDistance() {
+        return nodeDistance;
+    }
+
+    /**
+     * @param nodeDistance the nodeDistance to set
+     */
+    public void setNodeDistance(int nodeDistance) {
+        this.nodeDistance = nodeDistance;
     }
 }

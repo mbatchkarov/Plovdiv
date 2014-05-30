@@ -80,6 +80,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -1726,7 +1727,12 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     public void changeLayout() {
         try {
             Layout oldLayout = vv.getGraphLayout();
-            PersistentLayoutImpl newLayout = new PersistentLayoutImpl<MyVertex, MyEdge>(getSelectedGraphLayout(g));
+            Layout newLayoutBase = getSelectedGraphLayout(g);
+            if (g.isLayoutStatic()){
+                newLayoutBase = generateStaticLayout(g);
+                g.setLayoutStatic(false);
+            }
+            PersistentLayoutImpl newLayout = new PersistentLayoutImpl<MyVertex, MyEdge>(newLayoutBase);
             this.persistentLayout = newLayout;
             newLayout.setSize(oldLayout.getSize());
             oldLayout.initialize();
@@ -1786,6 +1792,15 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                 controller.getSimulator().resetSimulation();
             }
         }
+    }
+
+    private Layout generateStaticLayout(final MyGraph g) {
+        Layout<MyVertex, MyEdge> staticLayout = new StaticLayout<MyVertex, MyEdge>(g, new Transformer<MyVertex, Point2D>() {
+            public Point2D transform(MyVertex i) {
+                return new Point(i.getLatticePosition().getFirst() * g.getNodeDistance(), i.getLatticePosition().getSecond() * g.getNodeDistance());
+            }
+        });
+        return staticLayout;
     }
 
     public void updateSimulationParameters(SimulationDynamics dynamics) {
