@@ -66,9 +66,6 @@ import view.Display;
  */
 public class CustomGraphMouse extends AbstractModalGraphMouse
         implements ModalGraphMouse, ItemSelectable {
-    
-    public final static int ZOOM_MODE_WINDOWS = 0x1;
-    public final static int ZOOM_MODE_MACOS = 0x2;
 
     protected Display d;
     private Controller cont;
@@ -81,8 +78,6 @@ public class CustomGraphMouse extends AbstractModalGraphMouse
     protected AnnotatingGraphMousePlugin annotatingPlugin;
     protected MultiLayerTransformer basicTransformer;
     protected RenderContext rc;
-    
-    private int scrollingStyle = ZOOM_MODE_MACOS;
 
 //        protected FreeRoam fr;//the window in which this mouse operates
     //used to update the contents of this window on mouse events
@@ -115,25 +110,6 @@ public class CustomGraphMouse extends AbstractModalGraphMouse
         setModeKeyListener(new ModeKeyAdapter(this));
     }
 
-    public void setZoomMode(int scrollingStyle){
-        this.scrollingStyle = scrollingStyle;
-    }
-    
-    public class CustomScalingControl extends CrossoverScalingControl {
-
-        @Override
-        public void scale(VisualizationServer<?, ?> vv, float amount, Point2D at) {
-            if (scrollingStyle == ZOOM_MODE_WINDOWS){
-                if (amount < 1){
-                    amount = 1.11f;
-                } else {
-                    amount = 0.9090909f;
-                }
-            }
-            super.scale(vv, amount, at);
-        }
-    }
-
     /**
      * create the plugins, and load the plugins for TRANSFORMING mode
      *
@@ -143,7 +119,7 @@ public class CustomGraphMouse extends AbstractModalGraphMouse
         pickingPlugin = new CustomPickingPlugin(this.stats, this.d);
         animatedPickingPlugin = new AnimatedPickingGraphMousePlugin();
         translatingPlugin = new TranslatingGraphMousePlugin(InputEvent.BUTTON1_MASK);
-        scalingPlugin = new ScalingGraphMousePlugin(new CustomScalingControl(), 0, in, out);
+        scalingPlugin = new ScalingGraphMousePlugin(d.getScaler(), 0, in, out);
         rotatingPlugin = new RotatingGraphMousePlugin();
         shearingPlugin = new ShearingGraphMousePlugin();
         editingPlugin = new CustomEditingPlugin(this.cont.getGraph(), vertexFactory, edgeFactory);

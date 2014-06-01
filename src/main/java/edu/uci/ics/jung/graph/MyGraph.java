@@ -35,13 +35,10 @@ package edu.uci.ics.jung.graph;
  *
  * @author Miroslav Batchkarov
  */
-
 import controller.ExtraGraphEvent;
 import controller.ExtraGraphEventListener;
 import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
-
-import java.awt.Color;
 
 import model.EpiState;
 import model.MyEdge;
@@ -55,22 +52,14 @@ import model.VertexIcon;
 
 public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable {
 
-    List<ExtraGraphEventListener<V, E>> extraListenerList;
-
-    private boolean allowNodeIcons = true;
+    private List<ExtraGraphEventListener<V, E>> extraListenerList;
 
     private SimulationDynamics dynamics;
     private int numSusceptible, numInfected, numResistant;
-    int sleepTimeBetweenSteps; // how long to wait before another simulation step is made (ms)
+    private int sleepTimeBetweenSteps; // how long to wait before another simulation step is made (ms)
 
-    private Color backgroundColor = new Color(240, 240, 240);
-    private Color edgeColor = Color.BLACK;
+    private LayoutParameters layoutParameters;
 
-    private VertexIcon predominantVertexIcon;
-    
-    private boolean layoutStatic = false;
-    private int nodeDistance = 64;
-    
     public MyGraph(Graph<V, E> delegate) {
         super(delegate);
         this.dynamics = null;
@@ -80,15 +69,13 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         numResistant = 0;
         numSusceptible = 0;
         sleepTimeBetweenSteps = 0;
-        predominantVertexIcon = null;
+        layoutParameters = new LayoutParameters();
     }
 
     public void setInstance(MyGraph<V, E> newInstance) {
         delegate = newInstance.delegate;
-        setAllowNodeIcons(newInstance.areNodeIconsAllowed());
         updateCounts();
-        setLayoutStatic(newInstance.isLayoutStatic());
-        setNodeDistance(newInstance.getNodeDistance());
+        setLayoutParameters(newInstance.getLayoutParameters());
         fireExtraEvent(new ExtraGraphEvent(delegate, ExtraGraphEvent.GRAPH_REPLACED));
     }
 
@@ -156,9 +143,9 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
     @Override
     public String toString() {
         return "MyGraph{"
-               + "delegate=" + this.delegate
-               + ", extraListenerList=" + extraListenerList
-               + '}';
+                + "delegate=" + this.delegate
+                + ", extraListenerList=" + extraListenerList
+                + '}';
     }
 
     /**
@@ -197,32 +184,13 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
     }
 
     /**
-     * @return the allowNodeIcons
-     */
-    public boolean areNodeIconsAllowed() {
-        return allowNodeIcons;
-    }
-
-    /**
-     * @param allowNodeIcons the allowNodeIcons to set
-     */
-    public void setAllowNodeIcons(boolean allowNodeIcons) {
-        this.allowNodeIcons = allowNodeIcons;
-    }
-
-    /**
      * Analyzes all of the vertices and returns the predominant style of icons
      * used. The simple icons are preferred if both styles are used in equal
      * amount of vertices.
      */
-    public int getDominantIconStyle() {
+    private int getDominantIconStyle() {
         if (getVertices().size() < 1) {
-            // no vertices, can't find the predominant style
-            if (predominantVertexIcon == null)
-                //and one has not been saved previously
-                return VertexIcon.STYLE_SIMPLE;
-            else
-                return predominantVertexIcon.getStyle();
+            return VertexIcon.STYLE_SIMPLE;
         }
 
         int simpleIconCount = 0;
@@ -248,15 +216,11 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
      * used. If there are two types of icons used in equal amount of vertices,
      * the first one (in order of declaration) is selected.
      */
-    public int getDominantIconType() {
+    private int getDominantIconType() {
         if (getVertices().size() < 1) {
-            // no vertices, can't find the predominant style
-            if (predominantVertexIcon == null)
-                //and one has not been saved previously
-                return VertexIcon.TYPE_USER;
-            else
-                return predominantVertexIcon.getType();
+            return VertexIcon.TYPE_USER;
         }
+
         HashMap<Integer, Integer> iconTypeCounts = new HashMap<Integer, Integer>();
         for (Object vertex : getVertices()) {
             int iconType = ((MyVertex) vertex).getIcon().getType();
@@ -279,57 +243,27 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
     }
 
     public VertexIcon getDominantVertexIcon() {
-        return new VertexIcon(getDominantIconType(), getDominantIconStyle());
+        if (layoutParameters.getDominantVertexIcon() == null) {
+            updateDominantVertexIcon();
+        }
+        return layoutParameters.getDominantVertexIcon();
     }
 
-    /**
-     * Stores the most common style for vertex icons in this graph
-     */
     public void updateDominantVertexIcon() {
-        this.predominantVertexIcon = getDominantVertexIcon();
-    }
-
-    public int getBackgroundColorRgb() {
-        return backgroundColor.getRGB();
-    }
-
-    public void setBackgroundColor(int rgb) {
-        backgroundColor = new Color(rgb);
-    }
-
-    public int getEdgeColorRgb() {
-        return edgeColor.getRGB();
-    }
-
-    public void setEdgeColor(int rgb) {
-        edgeColor = new Color(rgb);
+        layoutParameters.setDominantVertexIcon(new VertexIcon(getDominantIconType(), getDominantIconStyle()));
     }
 
     /**
-     * @return the layoutStatic
+     * @return the layoutParameters
      */
-    public boolean isLayoutStatic() {
-        return layoutStatic;
+    public LayoutParameters getLayoutParameters() {
+        return layoutParameters;
     }
 
     /**
-     * @param layoutStatic the layoutStatic to set
+     * @param layoutParameters the layoutParameters to set
      */
-    public void setLayoutStatic(boolean layoutStatic) {
-        this.layoutStatic = layoutStatic;
-    }
-
-    /**
-     * @return the nodeDistance
-     */
-    public int getNodeDistance() {
-        return nodeDistance;
-    }
-
-    /**
-     * @param nodeDistance the nodeDistance to set
-     */
-    public void setNodeDistance(int nodeDistance) {
-        this.nodeDistance = nodeDistance;
+    public void setLayoutParameters(LayoutParameters layoutParameters) {
+        this.layoutParameters = layoutParameters;
     }
 }

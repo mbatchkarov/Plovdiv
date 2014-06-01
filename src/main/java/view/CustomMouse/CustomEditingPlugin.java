@@ -137,7 +137,7 @@ MouseListener, MouseMotionListener {
 			final PickedState<MyVertex> pickedVertexState = vv.getPickedVertexState();
 
 			if (pickSupport != null) {
-				Graph graph = vv.getModel().getGraphLayout().getGraph();
+				MyGraph graph = (MyGraph) vv.getModel().getGraphLayout().getGraph();
 				// set default edge type
 				if (graph instanceof DirectedGraph) {
 					edgeIsDirected = EdgeType.DIRECTED;
@@ -162,10 +162,11 @@ MouseListener, MouseMotionListener {
 				} else { // make a new vertex
 
 					final MyVertex newVertex = vertexFactory.create();
-                                        newVertex.setIcon(new VertexIcon(((MyGraph) graph).getDominantIconType(), ((MyGraph) graph).getDominantIconStyle()));
+                                        newVertex.setIcon(graph.getDominantVertexIcon());
 					newVertex.setEpiState(EpiState.SUSCEPTIBLE);
 					Layout layout = vv.getModel().getGraphLayout();
 					graph.addVertex(newVertex);
+                                        graph.updateDominantVertexIcon();
 					layout.setLocation(newVertex, vv.getRenderContext().
 					getMultiLayerTransformer().inverseTransform(e.getPoint()));
 					//clear selection

@@ -95,10 +95,10 @@ public class LatticeSettings extends javax.swing.JPanel {
 
         jLabel4.setText("Lattice Settings");
 
-        jLabel5.setText("Node distance (int)");
+        jLabel5.setText("Node density (%)");
 
-        n1.setText("64");
-        n1.setToolTipText("Height of the lattice");
+        n1.setText("100");
+        n1.setToolTipText("<html>When at 100% density, the entire graph will be fitted in the available visualization<br>space at the default zoom level.<br><br>A higher density would mean that the graph will be squeezed, so it takes just some<br>of the available space (good for small graphs).<br><br>A lower density will translate in some of the vertices being positioned outside of the<br>initially visible space (good for large graphs).</html>");
         n1.setInputVerifier(new IntVerifier());
         n1.setMinimumSize(new java.awt.Dimension(50, 20));
         n1.addActionListener(new java.awt.event.ActionListener() {
@@ -117,20 +117,20 @@ public class LatticeSettings extends javax.swing.JPanel {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addGap(100, 100, 100)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel2)
                             .addComponent(jLabel3)
                             .addComponent(jLabel5))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 99, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 36, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addComponent(n, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
                             .addComponent(m)
                             .addComponent(n1, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)))
                     .addComponent(jLabel4))
-                .addContainerGap())
+                .addGap(100, 100, 100))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -148,8 +148,10 @@ public class LatticeSettings extends javax.swing.JPanel {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(n1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel5))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(0, 0, Short.MAX_VALUE))
         );
+
+        n1.getAccessibleContext().setAccessibleDescription("<html>* When at 100% density, the entire graph will be fitted in the available visualization<br>space at the default zoom level.<br>A higher density would mean that the graph will be squeezed, so it takes just some<br>of the available space (good for small graphs).<br>A lower density will translate in some of the vertices being positioned outside of the<br>initially visible space (good for large graphs).</html>");
     }// </editor-fold>//GEN-END:initComponents
 
     private void nKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_nKeyTyped

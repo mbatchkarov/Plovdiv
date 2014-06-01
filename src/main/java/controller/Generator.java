@@ -131,7 +131,8 @@ public class Generator {
             determineInitialNodeTypes(g);
         }
 
-        g.setLayoutStatic(true);
+        g.getLayoutParameters().setLayoutStatic(true);
+        g.getLayoutParameters().setDimension(new Pair(m, n));
         return g;
     }
 
@@ -202,7 +203,8 @@ public class Generator {
             determineInitialNodeTypes(g);
         }
         
-        g.setLayoutStatic(true);
+        g.getLayoutParameters().setLayoutStatic(true);
+        g.getLayoutParameters().setDimension(new Pair(m, n));
         return g;
     }
 

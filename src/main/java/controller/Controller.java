@@ -184,16 +184,16 @@ public class Controller {
         gui.setVertexRenderer();
     }
 
-    public void generate4Lattice(int a, int b, int nodeDist, boolean autodetermineIconType) {
+    public void generate4Lattice(int a, int b, int nodeDensity, boolean autodetermineIconType) {
         MyGraph newGraph = Generator.generateRectangularLattice(a, b, this, autodetermineIconType);
-        newGraph.setNodeDistance(nodeDist);
+        newGraph.getLayoutParameters().setNodeDensity(nodeDensity);
         this.g.setInstance(newGraph);
         gui.setVertexRenderer();
     }
 
-    public void generate6Lattice(int a, int b, int nodeDist, boolean autodetermineIconType) {
+    public void generate6Lattice(int a, int b, int nodeDensity, boolean autodetermineIconType) {
         MyGraph newGraph = Generator.generateHexagonalLattice(a, b, this, autodetermineIconType);
-        newGraph.setNodeDistance(nodeDist);
+        newGraph.getLayoutParameters().setNodeDensity(nodeDensity);
         this.g.setInstance(newGraph);
         gui.setVertexRenderer();
     }
