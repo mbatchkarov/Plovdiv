@@ -114,6 +114,20 @@ public class Simulator {
         stats.recalculateAll();
     }
 
+    /**
+     * Checks if any edge creations, deletions of rewirings should occur at this time step.
+     *
+     * NB: Multiple edge rewirings may occur in a single time step. These are executed in
+     *          order. The process has two independent step- removing the old edge and then
+     *          adding a new one. However, the second part may fail if the edge we are adding
+     *          exists already (as we don't want to be adding multiple edges between a pair of
+     *          vertices). This means sometimes an edge rewiring mey just turn into an edge
+     *          deletion. This is particularly problematic when the edge rewiring rate is high.
+     *
+     * @param g the graph
+     * @param commands a list of changes that will be executed later. This methods appends to the
+     *                 list
+     */
     public void checkForTopologyChanges(MyGraph<MyVertex, MyEdge> g,
                                         LinkedList<SimulationCommand> commands) {
         // check for edge breaking
