@@ -739,7 +739,8 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                                                 .addGroup(graphStatsPanelLayout.createSequentialGroup()
                                                         .addComponent(ccLabel)
                                                         .addGap(56, 56, 56)
-                                                        .addComponent(globalCC, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                                        .addComponent(globalCC,
+                                                                      javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                                                 .addGroup(graphStatsPanelLayout.createSequentialGroup()
                                                         .addComponent(avgDegreeLabel)
                                                         .addGap(8, 8, 8)
