@@ -25,6 +25,8 @@ public class EdgeCreationCommand implements SimulationCommand {
 
     @Override
     public void execute() {
-        this.graph.addEdge(factory.create(), from, to);
+	    synchronized (this.graph) {
+		    this.graph.addEdge(factory.create(), from, to);
+	    }
     }
 }

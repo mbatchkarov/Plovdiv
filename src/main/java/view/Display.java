@@ -68,12 +68,11 @@ import model.SimulationDynamics;
 import model.Strings;
 import org.apache.commons.collections15.functors.ConstantTransformer;
 import view.CustomMouse.CustomGraphMouse;
-import view.CustomVisualization.CenterLabelPositioner;
-import view.CustomVisualization.CustomEdgeLabeller;
-import view.CustomVisualization.CustomVertexLabeler;
-import view.CustomVisualization.CustomVertexIconShapeTransformer;
+import view.CustomVisualization.*;
 
 import javax.swing.*;
+import javax.swing.GroupLayout.ParallelGroup;
+import javax.swing.GroupLayout.SequentialGroup;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -83,8 +82,6 @@ import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import javax.swing.GroupLayout.ParallelGroup;
-import javax.swing.GroupLayout.SequentialGroup;
 
 import org.apache.commons.collections15.Transformer;
 import view.CustomMouse.CustomScalingControl;
@@ -289,7 +286,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         globalVertexCount.setText(String.valueOf((int) stats.getVertexCount()));
         globalEdgeCount.setText(String.valueOf((int) stats.getEdgeCount()));
 
-        updateDegreeDistributionChart();
+        stats.updateDegreeDistributionChartData(degDistCumulative.isSelected());
 
         //information about a certain node
         if (selectedVertex != null) {
@@ -313,15 +310,11 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 
     private void initDegreeDistributionChart() {
         JPanel degreeChart = stats.buildDegreeDistributionChart(degDistCumulative.isSelected(),
-                degreeDistPanel.getSize());
+                                                                degreeDistPanel.getSize());
 
         degreeDistPanel.setLayout(new FlowLayout());
         degreeDistPanel.removeAll();
         degreeDistPanel.add(degreeChart);
-    }
-
-    private void updateDegreeDistributionChart() {
-        stats.updateDegreeDistributionChartData(degDistCumulative.isSelected());
     }
 
     public VisualizationViewer<MyVertex, MyEdge> getVV() {
@@ -960,7 +953,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         menuFile.setText("File");
 
         newDoc.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_N,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                                                                 Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         newDoc.setMnemonic('N');
         newDoc.setText("New graph");
         newDoc.addActionListener(new java.awt.event.ActionListener() {
@@ -971,7 +964,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         menuFile.add(newDoc);
 
         fileSave.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                                                                   Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         fileSave.setMnemonic('S');
         fileSave.setText("Save...");
         fileSave.addActionListener(new java.awt.event.ActionListener() {
@@ -982,7 +975,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         menuFile.add(fileSave);
 
         fileLoad.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                                                                   Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         fileLoad.setMnemonic('L');
         fileLoad.setText("Load...");
         fileLoad.addActionListener(new java.awt.event.ActionListener() {
@@ -993,7 +986,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         menuFile.add(fileLoad);
 
         fileGenerate1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_G,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                                                                        Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         fileGenerate1.setMnemonic('G');
         fileGenerate1.setText("Generate...");
         fileGenerate1.addActionListener(new java.awt.event.ActionListener() {
@@ -1004,7 +997,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         menuFile.add(fileGenerate1);
 
         fileQuit1.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q,
-                Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
+                                                                    Toolkit.getDefaultToolkit().getMenuShortcutKeyMask()));
         fileQuit1.setMnemonic('Q');
         fileQuit1.setText("Quit");
         fileQuit1.addActionListener(new java.awt.event.ActionListener() {
@@ -1532,7 +1525,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     }
 
     private void degDistCumulativeItemStateChanged(java.awt.event.ItemEvent evt) {
-        updateDegreeDistributionChart();
+        stats.updateDegreeDistributionChartData(degDistCumulative.isSelected());
     }
 
     public JPanel getStatsPanel() {
@@ -1549,7 +1542,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
 
         persistentLayout = new PersistentLayoutImpl<MyVertex, MyEdge>(getSelectedGraphLayout(g));
 
-        vv = new VisualizationViewer<MyVertex, MyEdge>(persistentLayout, pane.getSize());
+        vv = new SynchronisedVisualizationViewer<MyVertex, MyEdge>(persistentLayout, pane.getSize());
         vv.addMouseListener(new MouseListener() {
 
             public void mouseClicked(MouseEvent e) {
@@ -1821,7 +1814,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     }
 
     public void updateSimulationParameters(SimulationDynamics dynamics) {
-        g.setSleepTimeBetweenSteps(speedSlider.getValue() + 20);
+        g.setSleepTimeBetweenSteps(speedSlider.getValue());
         //make sure the graphs is in a proper state
         controller.validateNodeStates();
         this.g.setDynamics(dynamics);
