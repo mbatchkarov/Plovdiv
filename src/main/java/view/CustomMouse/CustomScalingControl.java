@@ -43,8 +43,8 @@ public class CustomScalingControl extends CrossoverScalingControl {
         }
     }
 
-    public void resetZoomLevel(VisualizationServer<?, ?> vv, Point2D at) {
-        scale(vv, 1 / currentZoom, at);
+    public void resetStoredZoomLevel() {
+       currentZoom = 1;
     }
 
     public void toggleZoomMode() {

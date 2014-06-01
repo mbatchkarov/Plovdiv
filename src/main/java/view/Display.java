@@ -1793,6 +1793,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
                 vv.getGraphLayout().setGraph(this.g);
                 vv.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.LAYOUT).setToIdentity();
                 vv.getRenderContext().getMultiLayerTransformer().getTransformer(Layer.VIEW).setToIdentity();
+                scaler.resetStoredZoomLevel();
                 scaler.scale(vv, CustomScalingControl.DEFAULT_ZOOM_LEVEL, vv.getCenter());
                 changeLayout();
                 controller.getSimulator().resetSimulation();
