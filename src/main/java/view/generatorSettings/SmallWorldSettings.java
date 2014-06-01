@@ -82,6 +82,7 @@ public class SmallWorldSettings extends javax.swing.JPanel {
 
         jLabel12.setText("Rewiring probability");
 
+        e.setText("0");
         e.setInputVerifier(new DoubleVerifier());
         e.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyTyped(java.awt.event.KeyEvent evt) {
@@ -89,10 +90,12 @@ public class SmallWorldSettings extends javax.swing.JPanel {
             }
         });
 
+        m.setText("30");
         m.setInputVerifier(new IntVerifier());
 
         jLabel14.setText("Num Local connections(int)");
 
+        n.setText("4");
         n.setInputVerifier(new IntVerifier());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);

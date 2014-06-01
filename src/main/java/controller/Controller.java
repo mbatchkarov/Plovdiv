@@ -30,15 +30,11 @@
 package controller;
 
 import controller.simulation.Simulator;
-import edu.uci.ics.jung.algorithms.layout.Layout;
-import edu.uci.ics.jung.algorithms.layout.StaticLayout;
+import edu.uci.ics.jung.algorithms.generators.random.ErdosRenyiGenerator;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.layout.PersistentLayout;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.geom.Point2D;
 import model.EpiState;
 import model.MyEdge;
 import model.MyVertex;
@@ -52,11 +48,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
-import org.apache.commons.collections15.Transformer;
 import view.BackgroundImageController;
 
 /**
- * @author reseter
+ * @author Miroslav Batchkarov
  */
 public class Controller {
 
@@ -143,7 +138,7 @@ public class Controller {
         while (i.hasNext()) {
             MyVertex current = ((MyVertex) i.next());
             if (current.isResistant()
-                    && !(this.g.getDynamics().getType() == SimulationDynamics.DynamicsType.SIR)) {
+                && !(this.g.getDynamics().getType() == SimulationDynamics.DynamicsType.SIR)) {
                 current.setEpiState(EpiState.SUSCEPTIBLE);
             }
         }
@@ -159,8 +154,8 @@ public class Controller {
      */
     public void load(VisualizationViewer vv, String path) throws IOException {
         MyGraph g = PajekParser.load(path, getGraphFactory(),
-                getVertexFactory().reset(),
-                getEdgeFactory().reset());
+                                     getVertexFactory().reset(),
+                                      getEdgeFactory().reset());
         this.g.setInstance(g);
         gui.setVertexRenderer();
         IOClass.loadLayout(gui, path);
@@ -200,6 +195,15 @@ public class Controller {
 
     public void generateKleinbergSmallWorld(int m, int n, double c, boolean autodetermineIconType) {
         this.g.setInstance(Generator.generateKleinbergSmallWorld(m, n, c, this, autodetermineIconType));
+        gui.setVertexRenderer();
+    }
+
+    public void generateErdosRenyi(int m, double p, boolean autodetermineIconType) {
+        ErdosRenyiGenerator gen = new ErdosRenyiGenerator(getGraphFactory(),
+                                                          getVertexFactory().reset(),
+                                                          getEdgeFactory().reset(),
+                                                          m, p);
+        this.g.setInstance(new MyGraph(gen.create()));
         gui.setVertexRenderer();
     }
 

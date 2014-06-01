@@ -36,7 +36,7 @@
 package model;
 
 /**
- * @author reseter
+ * @author Miroslav Batchkarov
  */
 public class SimulationDynamics {
 

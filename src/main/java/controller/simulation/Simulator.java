@@ -57,7 +57,7 @@ import java.awt.*;
 import java.util.*;
 
 /**
- * @author reseter
+ * @author Miroslav Batchkarov
  */
 public class Simulator {
     private Random rng;

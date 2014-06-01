@@ -48,7 +48,7 @@ import java.util.Random;
  * connected with an edge
  * Allows parallel edges, but not self-links
  *
- * @author reseter
+ * @author Miroslav Batchkarov
  */
 public class RandomGenerator {
 

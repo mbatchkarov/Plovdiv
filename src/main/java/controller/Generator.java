@@ -59,7 +59,7 @@ import view.Utils;
  * the internal buffer of the generator when issuing numbers to newly added
  * graph elements
  *
- * @author reseter
+ * @author Miroslav Batchkarov
  */
 public class Generator {
 

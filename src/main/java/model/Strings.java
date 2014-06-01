@@ -35,7 +35,7 @@
 package model;
 
 /**
- * @author reseter
+ * @author Miroslav Batchkarov
  */
 public abstract class Strings {
 

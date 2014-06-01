@@ -38,7 +38,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 
 /**
- * @author reseter
+ * @author Miroslav Batchkarov
  */
 public class MyEdge implements Serializable {
 

@@ -50,7 +50,7 @@ import java.util.*;
 
 import model.VertexIcon;
 
-public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable {
+public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable, UndirectedGraph<V, E> {
 
     private List<ExtraGraphEventListener<V, E>> extraListenerList;
 
@@ -78,6 +78,10 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         setLayoutParameters(newInstance.getLayoutParameters());
         fireExtraEvent(new ExtraGraphEvent(delegate, ExtraGraphEvent.GRAPH_REPLACED));
     }
+    public void setInstance(Graph<V, E> newInstance) {
+        setInstance(new MyGraph<V, E>(newInstance));
+    }
+
 
     public void addExtraGraphEventListener(ExtraGraphEventListener<V, E> l) {
         extraListenerList.add(l);

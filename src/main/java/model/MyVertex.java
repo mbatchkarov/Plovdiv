@@ -38,7 +38,7 @@ import edu.uci.ics.jung.graph.util.Pair;
 import java.io.Serializable;
 
 /**
- * @author reseter
+ * @author Miroslav Batchkarov
  */
 public class MyVertex implements Serializable {
 

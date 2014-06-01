@@ -77,6 +77,7 @@ public class LatticeSettings extends javax.swing.JPanel {
         jLabel5 = new javax.swing.JLabel();
         n1 = new javax.swing.JTextField();
 
+        n.setText("6");
         n.setToolTipText("Height of the lattice");
         n.setInputVerifier(new IntVerifier());
         n.setMinimumSize(new java.awt.Dimension(50, 20));
@@ -86,6 +87,7 @@ public class LatticeSettings extends javax.swing.JPanel {
             }
         });
 
+        m.setText("6");
         m.setToolTipText("Width of the lattice");
         m.setInputVerifier(new IntVerifier());
 
