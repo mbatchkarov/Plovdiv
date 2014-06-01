@@ -106,7 +106,7 @@ public class MyVertex implements Serializable {
     }
 
     public String toString() {
-        return (epiState+","+icon.getStyle()+","+icon.getType());
+        return (id + ":" +epiState+","+icon.getStyle()+","+icon.getType());
     }
 
     /**
