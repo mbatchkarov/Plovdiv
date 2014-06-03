@@ -46,7 +46,7 @@ import edu.uci.ics.jung.graph.MyGraph;
 import java.awt.event.KeyEvent;
 
 /**
- * @author reseter
+ * @author Miroslav Batchkarov
  */
 public class InfectDisp extends javax.swing.JFrame {
 

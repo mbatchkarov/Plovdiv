@@ -132,7 +132,7 @@ public class BackgroundImageController {
     }
     
     public void loadCustomColors(VisualizationViewer vv, MyGraph g) {
-        vv.setBackground(new Color(g.getBackgroundColorRgb()));
-        vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(new Color(g.getEdgeColorRgb())));
+        vv.setBackground(new Color(g.getLayoutParameters().getBackgroundColorRgb()));
+        vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(new Color(g.getLayoutParameters().getEdgeColorRgb())));
     }
 }

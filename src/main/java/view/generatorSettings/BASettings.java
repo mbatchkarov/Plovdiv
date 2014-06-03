@@ -75,6 +75,7 @@ public class BASettings extends javax.swing.JPanel {
 
         jLabel8.setText("Evolve steps");
 
+        s.setText("35");
         s.setToolTipText("How many time steps");
         s.setInputVerifier(new IntVerifier());
         s.addKeyListener(new java.awt.event.KeyAdapter() {

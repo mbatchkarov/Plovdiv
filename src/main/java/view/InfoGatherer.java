@@ -42,7 +42,7 @@ import java.io.IOException;
  * Shows dialog windows and and parses user input to evoke the appropriate
  * methods of the controller with correct data
  *
- * @author reseter
+ * @author Miroslav Batchkarov
  */
 public class InfoGatherer {
 

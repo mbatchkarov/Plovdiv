@@ -73,6 +73,7 @@ public class RandomSettings extends javax.swing.JPanel {
         jLabel2 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
 
+        e.setText("80");
         e.setInputVerifier(new IntVerifier());
         e.setMinimumSize(new java.awt.Dimension(50, 20));
         e.addKeyListener(new java.awt.event.KeyAdapter() {
@@ -81,6 +82,7 @@ public class RandomSettings extends javax.swing.JPanel {
             }
         });
 
+        v.setText("35");
         v.setInputVerifier(new IntVerifier());
 
         jLabel3.setText("Edges (int)");
@@ -102,7 +104,7 @@ public class RandomSettings extends javax.swing.JPanel {
                             .addComponent(jLabel3))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 143, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(e, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(e, javax.swing.GroupLayout.DEFAULT_SIZE, 50, Short.MAX_VALUE)
                             .addComponent(v)))
                     .addComponent(jLabel4))
                 .addContainerGap())

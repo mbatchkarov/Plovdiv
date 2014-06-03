@@ -35,13 +35,10 @@ package edu.uci.ics.jung.graph;
  *
  * @author Miroslav Batchkarov
  */
-
 import controller.ExtraGraphEvent;
 import controller.ExtraGraphEventListener;
 import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
-
-import java.awt.Color;
 
 import model.EpiState;
 import model.MyEdge;
@@ -53,20 +50,15 @@ import java.util.*;
 
 import model.VertexIcon;
 
-public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable {
+public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable, UndirectedGraph<V, E> {
 
-    List<ExtraGraphEventListener<V, E>> extraListenerList;
-
-    private boolean allowNodeIcons = true;
+    private List<ExtraGraphEventListener<V, E>> extraListenerList;
 
     private SimulationDynamics dynamics;
     private int numSusceptible, numInfected, numResistant;
-    int sleepTimeBetweenSteps; // how long to wait before another simulation step is made (ms)
+    private int sleepTimeBetweenSteps; // how long to wait before another simulation step is made (ms)
 
-    private Color backgroundColor = new Color(240, 240, 240);
-    private Color edgeColor = Color.BLACK;
-
-    private VertexIcon predominantVertexIcon;
+    private LayoutParameters layoutParameters;
 
     public MyGraph(Graph<V, E> delegate) {
         super(delegate);
@@ -77,15 +69,19 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
         numResistant = 0;
         numSusceptible = 0;
         sleepTimeBetweenSteps = 0;
-        predominantVertexIcon = null;
+        layoutParameters = new LayoutParameters();
     }
 
     public void setInstance(MyGraph<V, E> newInstance) {
         delegate = newInstance.delegate;
-        setAllowNodeIcons(newInstance.areNodeIconsAllowed());
         updateCounts();
+        setLayoutParameters(newInstance.getLayoutParameters());
         fireExtraEvent(new ExtraGraphEvent(delegate, ExtraGraphEvent.GRAPH_REPLACED));
     }
+    public void setInstance(Graph<V, E> newInstance) {
+        setInstance(new MyGraph<V, E>(newInstance));
+    }
+
 
     public void addExtraGraphEventListener(ExtraGraphEventListener<V, E> l) {
         extraListenerList.add(l);
@@ -151,9 +147,9 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
     @Override
     public String toString() {
         return "MyGraph{"
-               + "delegate=" + this.delegate
-               + ", extraListenerList=" + extraListenerList
-               + '}';
+                + "delegate=" + this.delegate
+                + ", extraListenerList=" + extraListenerList
+                + '}';
     }
 
     /**
@@ -192,32 +188,13 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
     }
 
     /**
-     * @return the allowNodeIcons
-     */
-    public boolean areNodeIconsAllowed() {
-        return allowNodeIcons;
-    }
-
-    /**
-     * @param allowNodeIcons the allowNodeIcons to set
-     */
-    public void setAllowNodeIcons(boolean allowNodeIcons) {
-        this.allowNodeIcons = allowNodeIcons;
-    }
-
-    /**
      * Analyzes all of the vertices and returns the predominant style of icons
      * used. The simple icons are preferred if both styles are used in equal
      * amount of vertices.
      */
-    public int getDominantIconStyle() {
+    private int getDominantIconStyle() {
         if (getVertices().size() < 1) {
-            // no vertices, can't find the predominant style
-            if (predominantVertexIcon == null)
-                //and one has not been saved previously
-                return VertexIcon.STYLE_SIMPLE;
-            else
-                return predominantVertexIcon.getStyle();
+            return VertexIcon.STYLE_SIMPLE;
         }
 
         int simpleIconCount = 0;
@@ -243,15 +220,11 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
      * used. If there are two types of icons used in equal amount of vertices,
      * the first one (in order of declaration) is selected.
      */
-    public int getDominantIconType() {
+    private int getDominantIconType() {
         if (getVertices().size() < 1) {
-            // no vertices, can't find the predominant style
-            if (predominantVertexIcon == null)
-                //and one has not been saved previously
-                return VertexIcon.TYPE_USER;
-            else
-                return predominantVertexIcon.getType();
+            return VertexIcon.TYPE_USER;
         }
+
         HashMap<Integer, Integer> iconTypeCounts = new HashMap<Integer, Integer>();
         for (Object vertex : getVertices()) {
             int iconType = ((MyVertex) vertex).getIcon().getType();
@@ -274,29 +247,27 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
     }
 
     public VertexIcon getDominantVertexIcon() {
-        return new VertexIcon(getDominantIconType(), getDominantIconStyle());
+        if (layoutParameters.getDominantVertexIcon() == null) {
+            updateDominantVertexIcon();
+        }
+        return layoutParameters.getDominantVertexIcon();
+    }
+
+    public void updateDominantVertexIcon() {
+        layoutParameters.setDominantVertexIcon(new VertexIcon(getDominantIconType(), getDominantIconStyle()));
     }
 
     /**
-     * Stores the most common style for vertex icons in this graph
+     * @return the layoutParameters
      */
-    public void updateDominantVertexIcon() {
-        this.predominantVertexIcon = getDominantVertexIcon();
+    public LayoutParameters getLayoutParameters() {
+        return layoutParameters;
     }
 
-    public int getBackgroundColorRgb() {
-        return backgroundColor.getRGB();
-    }
-
-    public void setBackgroundColor(int rgb) {
-        backgroundColor = new Color(rgb);
-    }
-
-    public int getEdgeColorRgb() {
-        return edgeColor.getRGB();
-    }
-
-    public void setEdgeColor(int rgb) {
-        edgeColor = new Color(rgb);
+    /**
+     * @param layoutParameters the layoutParameters to set
+     */
+    public void setLayoutParameters(LayoutParameters layoutParameters) {
+        this.layoutParameters = layoutParameters;
     }
 }

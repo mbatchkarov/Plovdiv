@@ -57,9 +57,6 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import java.awt.*;
-import java.awt.geom.Arc2D;
-import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -95,7 +92,7 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
         this.avgDegree = -1;
         this.degreeDistribution = new int[1];
         this.cumulativeDegreeDistribution = new int[1];
-        this.degreeDistXYSeries = new XYSeries("Degree", false, false);
+        this.degreeDistXYSeries = new XYSeries("Degree", true, false);
         this.assortativity = -1d;
         this.degreeCorrelation = -1d;
 
@@ -494,15 +491,16 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
         XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(this.degreeDistXYSeries);
 
-        final JFreeChart chart = ChartFactory.createXYLineChart(
+        final JFreeChart chart = ChartFactory.createScatterPlot(
                 "", // chart title
                 "", // domain axis label
                 "", // range axis label
                 dataset, // data
                 PlotOrientation.VERTICAL,
                 false, // include legend
-                true,
-                false);
+                true, //tooltips
+                false // urls
+                );
 
         XYPlot plot = chart.getXYPlot();
         plot.setRenderer(0, new XYSplineRenderer(1));
@@ -532,11 +530,10 @@ public class Stats implements GraphEventListener<MyVertex, MyEdge>,
         } else {
             buckets = getCumulativeDegreeDistribution();
         }
-        this.degreeDistXYSeries.clear();
         for (int i = 0; i < buckets.length; i++) {
             if (buckets[i] > 0) {
                 if (buckets[i] > 0) {
-                    this.degreeDistXYSeries.add(i, buckets[i]); //0s not ok for log plotting
+                    this.degreeDistXYSeries.addOrUpdate(i, buckets[i]); //0s not ok for log plotting
                 }
             }
         }

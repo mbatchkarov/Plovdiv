@@ -41,7 +41,7 @@ import javax.swing.JTextField;
 
 /**
  *
- * @author reseter
+ * @author Miroslav Batchkarov
  */
 public class RandomVerifier extends InputVerifier {
 

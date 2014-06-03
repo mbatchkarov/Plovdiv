@@ -155,7 +155,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                             }
                         }
                     }
-                    if (graph.areNodeIconsAllowed()) {
+                    if (graph.getLayoutParameters().areNodeIconsAllowed()) {
                         JMenu vertexIconMenu = new JMenu("Change Icon");
                         popup1.add(vertexIconMenu);
 
@@ -250,6 +250,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                                 pickedVertexState.pick(v, false);
                             }
                             graph.removeVertex(vertex);
+                            graph.updateDominantVertexIcon();
                             vv.repaint();
                             CustomPopupPlugin.this.d.updateStatsDisplay();
                         }
@@ -295,7 +296,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                     popup1.add(backgroundImageMenu);
                     popup1.add(setColorsMenu);
 
-                    String toggleNodeIconsText = graph.areNodeIconsAllowed() ? "Disable Icons" : "Enable Icons";
+                    String toggleNodeIconsText = graph.getLayoutParameters().areNodeIconsAllowed() ? "Disable Icons" : "Enable Icons";
 
                     nodeIconsMenu.add(new AbstractAction(toggleNodeIconsText) {
                         public void actionPerformed(ActionEvent e) {
@@ -303,7 +304,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                         }
                     });
 
-                    if (graph.areNodeIconsAllowed()) {
+                    if (graph.getLayoutParameters().areNodeIconsAllowed()) {
                         nodeIconsMenu.add(iconStyleMenu);
 
                         iconStyleMenu.add(new AbstractAction("Simple") {
@@ -402,7 +403,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                                     setGraphBackgroundColor(vv, graph, colorChooser.getColor());
                                 }
                             });
-                            final Color initialBackgroundColor = new Color(graph.getBackgroundColorRgb());
+                            final Color initialBackgroundColor = new Color(graph.getLayoutParameters().getBackgroundColorRgb());
 
                             ActionListener okListener = new ActionListener() {
 
@@ -430,7 +431,7 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
                                     setGraphEdgeColor(vv, graph, colorChooser.getColor());
                                 }
                             });
-                            final Color initialEdgeColor = new Color(graph.getEdgeColorRgb());
+                            final Color initialEdgeColor = new Color(graph.getLayoutParameters().getEdgeColorRgb());
 
                             ActionListener okListener = new ActionListener() {
 
@@ -453,9 +454,10 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
 
                         public void actionPerformed(ActionEvent e) {
                             final MyVertex newV = controller.getVertexFactory().create();
-                            newV.setIcon(new VertexIcon(((MyGraph) graph).getDominantIconType(), ((MyGraph) graph).getDominantIconStyle()));
+                            newV.setIcon(((MyGraph) graph).getDominantVertexIcon());
                             newV.setEpiState(EpiState.SUSCEPTIBLE);
                             graph.addVertex(newV);
+                            graph.updateDominantVertexIcon();
                             layout.setLocation(newV, vv.getRenderContext().getMultiLayerTransformer().inverseTransform(ivp));
                             vv.repaint();
                             CustomPopupPlugin.this.d.updateStatsDisplay();
@@ -469,19 +471,19 @@ public class CustomPopupPlugin extends EditingPopupGraphMousePlugin implements M
     }
 
     private void setGraphBackgroundColor(VisualizationViewer vv, MyGraph g, Color color) {
-        g.setBackgroundColor(color.getRGB());
+        g.getLayoutParameters().setBackgroundColor(color.getRGB());
         vv.setBackground(color);
         vv.repaint();
     }
 
     private void setGraphEdgeColor(VisualizationViewer vv, MyGraph g, Color color) {
-        g.setEdgeColor(color.getRGB());
+        g.getLayoutParameters().setEdgeColor(color.getRGB());
         vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(color));
         vv.repaint();
     }
 
     private void toggleVertexIconsAllowed(MyGraph graph) {
-        graph.setAllowNodeIcons(!graph.areNodeIconsAllowed());
+        graph.getLayoutParameters().setAllowNodeIcons(!graph.getLayoutParameters().areNodeIconsAllowed());
         d.setVertexRenderer();
     }
 

@@ -28,67 +28,23 @@
  * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-package model;
+package view;
 
-import java.io.Serializable;
-import java.util.HashMap;
+import edu.uci.ics.jung.algorithms.layout.Layout;
+import edu.uci.ics.jung.visualization.VisualizationViewer;
 
-/**
- * @author Miroslav Batchkarov
- */
-public class MyEdge implements Serializable {
+import java.awt.*;
 
-    private int id;
-    private double weigth;
+public class SynchronisedVisualizationViewer<MyVertex, MyEdge> extends VisualizationViewer<MyVertex, MyEdge> {
 
-    public MyEdge(int id) {
-        this(id, 1.0);
-    }
+	public SynchronisedVisualizationViewer(Layout<MyVertex, MyEdge> layout, Dimension preferredSize) {
+		super(layout, preferredSize);
+	}
 
-    public MyEdge(int id, double weigth) {
-        this.id = id;
-        this.weigth = weigth;
-    }
-
-    /**
-     * @return the id
-     */
-    public int getId() {
-        return id;
-    }
-
-    /**
-     * @return the weigth
-     */
-    public double getWeigth() {
-        return weigth;
-    }
-
-    /**
-     * @deprecated Do not use this method!!! Call MyGraph.setEdgeWeight instead
-     * @param weigth the weight to set
-     */
-    public void setWeigth(double weigth) {
-        this.weigth = weigth;
-    }
-
-    public boolean equals(Object o) {
-        if (o instanceof MyEdge) {
-            MyEdge e = (MyEdge) o;
-            return e.id == this.id;
-        }
-        return false;
-    }
-
-    public int hashCode() {
-        return 7 * id;
-    }
-
-    public String toString() {
-        return ("(" + id + ")");
-    }
+	@Override
+	protected void renderGraph(Graphics2D g2d) {
+		synchronized (model.getGraphLayout().getGraph()) {
+			super.renderGraph(g2d);
+		}
+	}
 }

@@ -142,8 +142,8 @@ public class CustomPajekNetReader<G extends Graph<V, E>, V, E> {
         StringTokenizer st = new StringTokenizer(curLine);
         st.nextToken(); // skip past "*colors";
         String[] colorMetadata = st.nextToken().split(",");
-        ((MyGraph) g).setBackgroundColor(Integer.parseInt(colorMetadata[0]));
-        ((MyGraph) g).setEdgeColor(Integer.parseInt(colorMetadata[1]));
+        ((MyGraph) g).getLayoutParameters().setBackgroundColor(Integer.parseInt(colorMetadata[0]));
+        ((MyGraph) g).getLayoutParameters().setEdgeColor(Integer.parseInt(colorMetadata[1]));
 
         // ignore everything until we see '*Vertices'
         curLine = skip(br, v_pred);
@@ -162,7 +162,7 @@ public class CustomPajekNetReader<G extends Graph<V, E>, V, E> {
         int num_vertices = Integer.parseInt(vertexMetadata[0]);
         boolean areVertexIconsAllowed = Boolean.parseBoolean(vertexMetadata[1]);
 
-        ((MyGraph) g).setAllowNodeIcons(areVertexIconsAllowed);
+        ((MyGraph) g).getLayoutParameters().setAllowNodeIcons(areVertexIconsAllowed);
 
         List<V> id = null;
         if (vertex_factory != null) {

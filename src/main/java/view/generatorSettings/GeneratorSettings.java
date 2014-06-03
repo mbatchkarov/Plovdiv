@@ -111,7 +111,12 @@ public class GeneratorSettings extends javax.swing.JFrame {
 
         graphTypeLabel.setText("Graph type:");
 
-        type.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Rectangular Lattice", "Hexagonal Lattice", "Scale-free", "Small-world", "Random"}));
+        type.setModel(new javax.swing.DefaultComboBoxModel(new String[]{"Rectangular Lattice",
+                                                                        "Hexagonal Lattice",
+                                                                        "Scale-free",
+                                                                        "Small-world",
+                                                                        "Erdos-Renyi",
+                                                                        "Random"}));
         type.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 typeActionPerformed(evt);
@@ -215,8 +220,11 @@ public class GeneratorSettings extends javax.swing.JFrame {
         if (index == 3) {
             pane.add(new SmallWorldSettings(this));
         }
-        help.setText("Parameters:");
         if (index == 4) {
+            pane.add(new ErdosRenyiSettings(this));
+        }
+        help.setText("Parameters:");
+        if (index == 5) {
             pane.add(new RandomSettings(this));
             help.setText("<html>Parameters:<br>* Generates a new random graph with the specified number of nodes<br>and edges.</html>");
         }
@@ -244,13 +252,15 @@ public class GeneratorSettings extends javax.swing.JFrame {
                 case 0: {
                     controller.generate4Lattice(
                             Integer.parseInt(((LatticeSettings) pane.getComponent(0)).getM().getText()),
-                            Integer.parseInt(((LatticeSettings) pane.getComponent(0)).getN().getText()), autodetermineIconType);
+                            Integer.parseInt(((LatticeSettings) pane.getComponent(0)).getN().getText()),
+                            Integer.parseInt(((LatticeSettings) pane.getComponent(0)).getN1().getText()), autodetermineIconType);
                     break;
                 }
                 case 1: {
                     controller.generate6Lattice(
                             Integer.parseInt(((LatticeSettings) pane.getComponent(0)).getM().getText()),
-                            Integer.parseInt(((LatticeSettings) pane.getComponent(0)).getN().getText()), autodetermineIconType);
+                            Integer.parseInt(((LatticeSettings) pane.getComponent(0)).getN().getText()),
+                            Integer.parseInt(((LatticeSettings) pane.getComponent(0)).getN1().getText()), autodetermineIconType);
                     break;
                 }
                 case 2: {
@@ -266,6 +276,13 @@ public class GeneratorSettings extends javax.swing.JFrame {
                     break;
                 }
                 case 4: {
+                    controller.generateErdosRenyi(
+                            Integer.parseInt(((ErdosRenyiSettings) pane.getComponent(0)).getM().getText()),
+                            Double.parseDouble(((ErdosRenyiSettings) pane.getComponent(0)).getP().getText()),
+                            autodetermineIconType);
+                    break;
+                }
+                case 5: {
                     controller.generateRandom(
                             Integer.parseInt(((RandomSettings) pane.getComponent(0)).getV().getText()),
                             Integer.parseInt(((RandomSettings) pane.getComponent(0)).getE().getText()), autodetermineIconType);

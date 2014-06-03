@@ -37,7 +37,7 @@ package view;
 
 /**
  *
- * @author reseter
+ * @author Miroslav Batchkarov
  */
 class LayoutTransition<T0, T1> {
 

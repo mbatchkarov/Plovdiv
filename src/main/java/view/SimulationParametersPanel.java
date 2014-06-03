@@ -223,8 +223,8 @@ public class SimulationParametersPanel extends javax.swing.JPanel {
 
             SimulationDynamics res = new SimulationDynamics(type,
                                                             transmissionRateVal,
-                                                            timeStepVal,
                                                             recoveryRateVal,
+                                                            timeStepVal,
                                                             advancedRates[0],
                                                             advancedRates[1],
                                                             advancedRates[2],

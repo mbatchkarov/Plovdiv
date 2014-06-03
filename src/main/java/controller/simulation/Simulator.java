@@ -48,6 +48,7 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.axis.NumberAxis;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.plot.XYPlot;
+import org.jfree.data.xy.XYDataItem;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
@@ -56,7 +57,7 @@ import java.awt.*;
 import java.util.*;
 
 /**
- * @author reseter
+ * @author Miroslav Batchkarov
  */
 public class Simulator {
     private Random rng;
@@ -78,7 +79,7 @@ public class Simulator {
         this.controller = controller;
         this.rng = new Random();
         this.doOneStepOnly = false;
-        this.infectedXYSeries = new XYSeries("Infected", false, false);
+        this.infectedXYSeries = new SynchronisedXYSeries("Infected", false, false);
         this.xValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
         this.yValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
 
@@ -113,6 +114,20 @@ public class Simulator {
         stats.recalculateAll();
     }
 
+    /**
+     * Checks if any edge creations, deletions of rewirings should occur at this time step.
+     *
+     * NB: Multiple edge rewirings may occur in a single time step. These are executed in
+     *          order. The process has two independent step- removing the old edge and then
+     *          adding a new one. However, the second part may fail if the edge we are adding
+     *          exists already (as we don't want to be adding multiple edges between a pair of
+     *          vertices). This means sometimes an edge rewiring mey just turn into an edge
+     *          deletion. This is particularly problematic when the edge rewiring rate is high.
+     *
+     * @param g the graph
+     * @param commands a list of changes that will be executed later. This methods appends to the
+     *                 list
+     */
     public void checkForTopologyChanges(MyGraph<MyVertex, MyEdge> g,
                                         LinkedList<SimulationCommand> commands) {
         // check for edge breaking
@@ -285,15 +300,19 @@ public class Simulator {
      * event and force the chart to update
      */
     public void updateChartUnderlyingData() {
+        if (xValues.size() != yValues.size())
+            throw new IllegalStateException("X and Y data of chart has different length");
+
         Integer[] xarr = new Integer[xValues.size()];
         Integer[] yarr = new Integer[yValues.size()];
         xarr = xValues.toArray(xarr);
         yarr = yValues.toArray(yarr);
-
-        infectedXYSeries.clear();
-        for (int i = 0; i < xarr.length; i++) {
-            infectedXYSeries.add(xarr[i], yarr[i]);
-        }
+		synchronized (infectedXYSeries){
+	        infectedXYSeries.clear();
+	        for (int i = 0; i < xarr.length; i++) {
+	            infectedXYSeries.add(xarr[i], yarr[i]);
+	        }
+		}
     }
 
     public void pauseSim() {
@@ -366,8 +385,6 @@ public class Simulator {
      * @author Miroslav Batchkarov
      */
     class SimModelThread extends Thread {
-
-        private final int WINDOW_WIDTH = 50;
 
         /**
          * Is the thread suspended?
@@ -455,5 +472,17 @@ public class Simulator {
         stepNumber++;
         g.fireExtraEvent(new ExtraGraphEvent(g, ExtraGraphEvent.SIM_STEP_COMPLETE));
     }
+
+	private class SynchronisedXYSeries extends XYSeries{
+
+		public SynchronisedXYSeries(Comparable key, boolean autoSort, boolean allowDuplicateXValues) {
+			super(key, autoSort, allowDuplicateXValues);
+		}
+
+		@Override
+		public synchronized XYDataItem getDataItem(int index) {
+			return super.getDataItem(index);
+		}
+	}
 
 }

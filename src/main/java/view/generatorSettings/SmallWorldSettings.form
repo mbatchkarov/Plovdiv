@@ -83,6 +83,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="e">
       <Properties>
+        <Property name="text" type="java.lang.String" value="0"/>
         <Property name="inputVerifier" type="javax.swing.InputVerifier" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
           <Connection code="new DoubleVerifier()" type="code"/>
         </Property>
@@ -93,6 +94,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="m">
       <Properties>
+        <Property name="text" type="java.lang.String" value="30"/>
         <Property name="inputVerifier" type="javax.swing.InputVerifier" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
           <Connection code="new IntVerifier()" type="code"/>
         </Property>
@@ -105,6 +107,7 @@
     </Component>
     <Component class="javax.swing.JTextField" name="n">
       <Properties>
+        <Property name="text" type="java.lang.String" value="4"/>
         <Property name="inputVerifier" type="javax.swing.InputVerifier" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
           <Connection code="new IntVerifier()" type="code"/>
         </Property>

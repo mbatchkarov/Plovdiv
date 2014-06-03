@@ -48,7 +48,7 @@ import org.apache.commons.collections15.Transformer;
 import java.io.IOException;
 
 /**
- * @author reseter
+ * @author Miroslav Batchkarov
  */
 public class PajekParser {
 
