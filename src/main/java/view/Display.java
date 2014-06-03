@@ -248,6 +248,17 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         simParamsPanel.parseSimulationParameters();// trigger parsing of default values
         // for transmission params
     }
+    
+    public void initDemoLayout() {
+        BackgroundImageController.getInstance().setGraphBackgroundImage(vv, "maps/UK_Map.png",
+                2, 2);
+        Color backgroundColor = new Color(10, 20, 20);
+        Color edgeColor = Color.WHITE;
+        this.g.getLayoutParameters().setBackgroundColor(backgroundColor.getRGB());
+        this.g.getLayoutParameters().setEdgeColor(edgeColor.getRGB());
+        vv.setBackground(backgroundColor);
+        vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(edgeColor));
+    }
 
     public ScalingControl getScaler() {
         return scaler;
@@ -1553,7 +1564,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         vv.addMouseListener(new MouseListener() {
 
             public void mouseClicked(MouseEvent e) {
-                if (e.getButton() == MouseEvent.BUTTON2){
+                if (e.getButton() == MouseEvent.BUTTON2) {
                     scaler.toggleZoomMode();
                 }
             }
@@ -1570,7 +1581,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
             public void mouseExited(MouseEvent e) {
             }
         });
-        initDemoMap();
 
         icons = new IconsStore(vv.getPickedVertexState());
         defaultRenderer = vv.getRenderer().getVertexRenderer();
@@ -1645,19 +1655,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         vv.getRenderContext().setVertexShapeTransformer(vertexIconShapeTransformer);
         vv.getRenderContext().setVertexIconTransformer(vertexShapeTransformer);
         vv.repaint();
-    }
-
-    private void initDemoMap() {
-        BackgroundImageController.getInstance().setGraphBackgroundImage(vv, "maps/UK_Map.png",
-                2, 2);
-        scaler.scale(vv, CustomScalingControl.DEFAULT_ZOOM_LEVEL, vv.getCenter());
-
-        Color backgroundColor = new Color(10, 20, 20);
-        Color edgeColor = Color.WHITE;
-        g.getLayoutParameters().setBackgroundColor(backgroundColor.getRGB());
-        g.getLayoutParameters().setEdgeColor(edgeColor.getRGB());
-        vv.setBackground(backgroundColor);
-        vv.getRenderContext().setEdgeDrawPaintTransformer(new ConstantTransformer(edgeColor));
     }
 
     private static void redisplayPartially() {

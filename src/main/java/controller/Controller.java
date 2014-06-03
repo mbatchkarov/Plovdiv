@@ -30,15 +30,10 @@
 package controller;
 
 import controller.simulation.Simulator;
-import edu.uci.ics.jung.algorithms.layout.Layout;
-import edu.uci.ics.jung.algorithms.layout.StaticLayout;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.layout.PersistentLayout;
-import java.awt.Dimension;
-import java.awt.Point;
-import java.awt.geom.Point2D;
 import model.EpiState;
 import model.MyEdge;
 import model.MyVertex;
@@ -52,7 +47,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
-import org.apache.commons.collections15.Transformer;
 import view.BackgroundImageController;
 
 /**
@@ -281,6 +275,7 @@ public class Controller {
         //display a graph
         d.handlingEvents = true;
         cont.generateScaleFree(20, 1, 1, true);
+        d.initDemoLayout();
     }
 
 }
