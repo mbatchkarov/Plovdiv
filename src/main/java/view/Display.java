@@ -58,6 +58,7 @@ import edu.uci.ics.jung.visualization.control.ModalGraphMouse;
 import edu.uci.ics.jung.visualization.control.ScalingControl;
 import edu.uci.ics.jung.visualization.decorators.EllipseVertexShapeTransformer;
 import edu.uci.ics.jung.visualization.layout.LayoutTransition;
+import edu.uci.ics.jung.visualization.layout.PersistentLayout;
 import edu.uci.ics.jung.visualization.layout.PersistentLayoutImpl;
 import edu.uci.ics.jung.visualization.renderers.DefaultVertexLabelRenderer;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
@@ -194,7 +195,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     private static CustomGraphMouse graphMouse;
     static AnnotationControls<MyVertex, MyEdge> annotationControls;
     static JToolBar annotationControlsToolbar;
-    private static PersistentLayoutImpl persistentLayout;
+    private static PersistentLayout persistentLayout;
     public boolean handlingEvents;
     private Stats stats;
     private Controller controller;
@@ -248,7 +249,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         simParamsPanel.parseSimulationParameters();// trigger parsing of default values
         // for transmission params
     }
-    
+
     public void initDemoLayout() {
         BackgroundImageController.getInstance().setGraphBackgroundImage(vv, "maps/UK_Map.png",
                 2, 2);
@@ -1669,8 +1670,12 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
      *
      * @return
      */
-    private Layout<MyVertex, MyEdge> getSelectedGraphLayout(Graph g) {
+    private Layout<MyVertex, MyEdge> getSelectedGraphLayout(MyGraph g) {
         //ascii code of 0 is 48, 1 is 49, etc, and the menus have been assigned mnemonics from 0-5
+        if (g.getLayoutParameters().isLayoutStatic()) {
+            g.getLayoutParameters().setLayoutStatic(false);
+            return generateStaticLayout(g);
+        }
         int type = layouts.getSelection().getMnemonic() - 48;
         Layout<MyVertex, MyEdge> l = null;
         switch (type) {
@@ -1730,10 +1735,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         try {
             Layout oldLayout = vv.getGraphLayout();
             Layout newLayoutBase = getSelectedGraphLayout(g);
-            if (g.getLayoutParameters().isLayoutStatic()) {
-                newLayoutBase = generateStaticLayout(g);
-                g.getLayoutParameters().setLayoutStatic(false);
-            }
             PersistentLayoutImpl newLayout = new PersistentLayoutImpl<MyVertex, MyEdge>(newLayoutBase);
             this.persistentLayout = newLayout;
             newLayout.setSize(oldLayout.getSize());
@@ -1748,6 +1749,10 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         } catch (Exception ex) {
             System.out.println("Error while changing layout: " + ex.getMessage());
         }
+    }
+
+    public PersistentLayout getPersistentLayout() {
+        return persistentLayout;
     }
 
     /**
@@ -1801,6 +1806,9 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     private Layout generateStaticLayout(final MyGraph g) {
         Layout<MyVertex, MyEdge> staticLayout = new StaticLayout<MyVertex, MyEdge>(g, new Transformer<MyVertex, Point2D>() {
             public Point2D transform(MyVertex v) {
+                if (v.getLatticePosition() == null) {
+                    return MouseInfo.getPointerInfo().getLocation();
+                }
                 double densityFactor = 100 / (double) g.getLayoutParameters().getNodeDensity();
                 double linearDensityFactor = Math.sqrt(densityFactor);
                 int graphWidth = (int) (vv.getSize().width * linearDensityFactor);

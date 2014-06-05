@@ -59,7 +59,7 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
     private int sleepTimeBetweenSteps; // how long to wait before another simulation step is made (ms)
 
     private LayoutParameters layoutParameters;
-
+    
     public MyGraph(Graph<V, E> delegate) {
         super(delegate);
         this.dynamics = null;
@@ -117,12 +117,6 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
             fireExtraEvent(new ExtraGraphEvent(this, ExtraGraphEvent.METADATA_CHANGED));
         } else {
             throw new IllegalStateException("Attempted to alter edge that does not belong to this graph");
-        }
-    }
-
-    public void fireGraphEvent(GraphEvent evt) {
-        for (GraphEventListener<V, E> listener : super.listenerList) {
-            listener.handleGraphEvent(evt);
         }
     }
 

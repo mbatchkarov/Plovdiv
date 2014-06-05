@@ -34,6 +34,8 @@ import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.layout.PersistentLayout;
+import edu.uci.ics.jung.visualization.layout.PersistentLayoutImpl;
+import java.awt.Dimension;
 import model.EpiState;
 import model.MyEdge;
 import model.MyVertex;
@@ -166,6 +168,7 @@ public class Controller {
         if (path != "nullnull") {
             //if the user pressed cancel, nullnull will be passed to this method
             PajekParser.save(path + ".graph", g);
+            layout.reset();
             layout.persist(path + ".layout");
             BackgroundImageController.getInstance().saveBackgroundImage(path);
         }
