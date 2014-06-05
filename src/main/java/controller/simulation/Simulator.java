@@ -63,7 +63,7 @@ public class Simulator {
     private Random rng;
     private SimModelThread thread;
     private volatile int stepNumber;
-    private CircularFifoBuffer<Integer> xValues;
+    private CircularFifoBuffer<Double> xValues;
     private CircularFifoBuffer<Integer> yValues;
     private boolean doOneStepOnly;
     private final int WINDOW_WIDTH = 50;
@@ -80,7 +80,7 @@ public class Simulator {
         this.rng = new Random();
         this.doOneStepOnly = false;
         this.infectedXYSeries = new SynchronisedXYSeries("Infected", false, false);
-        this.xValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
+        this.xValues = new CircularFifoBuffer<Double>(WINDOW_WIDTH);
         this.yValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
 
         this.thread = new SimModelThread("sim-thread");
@@ -109,7 +109,7 @@ public class Simulator {
 
         //record changes in number of inf/sus/res nodes
         controller.updateCounts();
-        xValues.add(stepNumber);
+        xValues.add(stepNumber * g.getDynamics().getTimeStep());
         yValues.add(g.getNumInfected());
         stats.recalculateAll();
     }
@@ -303,7 +303,7 @@ public class Simulator {
         if (xValues.size() != yValues.size())
             throw new IllegalStateException("X and Y data of chart has different length");
 
-        Integer[] xarr = new Integer[xValues.size()];
+        Double[] xarr = new Double[xValues.size()];
         Integer[] yarr = new Integer[yValues.size()];
         xarr = xValues.toArray(xarr);
         yarr = yValues.toArray(yarr);
@@ -441,7 +441,7 @@ public class Simulator {
          * Invokes Model.doStep() and sleeps for sleepTime milliseconds
          */
         public void run() {
-            xValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
+            xValues = new CircularFifoBuffer<Double>(WINDOW_WIDTH);
             yValues = new CircularFifoBuffer<Integer>(WINDOW_WIDTH);
 
             while (alive) {
