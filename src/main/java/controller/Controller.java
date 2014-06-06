@@ -177,44 +177,50 @@ public class Controller {
     //=========!!!all generated/loaded graphs will appear in a new window!!!=========
     //-----------GENERATION FUNCTIONALITY-------------------
     public void generateRandom(int a, int b, boolean autodetermineIconType) {
-        this.g.setInstance(Generator.generateRandom(a, b, this, autodetermineIconType));
+        this.g.setInstance(setNewGraphColorsFromOldGraph(Generator.generateRandom(a, b, this, autodetermineIconType)));
         gui.setVertexRenderer();
     }
 
     public void generate4Lattice(int a, int b, int nodeDensity, boolean autodetermineIconType) {
         MyGraph newGraph = Generator.generateRectangularLattice(a, b, this, autodetermineIconType);
         newGraph.getLayoutParameters().setNodeDensity(nodeDensity);
-        this.g.setInstance(newGraph);
+        this.g.setInstance(setNewGraphColorsFromOldGraph(newGraph));
         gui.setVertexRenderer();
     }
 
     public void generate6Lattice(int a, int b, int nodeDensity, boolean autodetermineIconType) {
         MyGraph newGraph = Generator.generateHexagonalLattice(a, b, this, autodetermineIconType);
         newGraph.getLayoutParameters().setNodeDensity(nodeDensity);
-        this.g.setInstance(newGraph);
+        this.g.setInstance(setNewGraphColorsFromOldGraph(newGraph));
         gui.setVertexRenderer();
     }
 
     public void generateKleinbergSmallWorld(int m, int n, double c, boolean autodetermineIconType) {
-        this.g.setInstance(Generator.generateKleinbergSmallWorld(m, n, c, this, autodetermineIconType));
+        this.g.setInstance(setNewGraphColorsFromOldGraph(Generator.generateKleinbergSmallWorld(m, n, c, this, autodetermineIconType)));
         gui.setVertexRenderer();
     }
 
     public void generateScaleFree(int a, int b, int c, boolean autodetermineIconType) {
-        this.g.setInstance(Generator.generateScaleFree(a, 1, c, this, autodetermineIconType));
+        this.g.setInstance(setNewGraphColorsFromOldGraph(Generator.generateScaleFree(a, 1, c, this, autodetermineIconType)));
         gui.setVertexRenderer();
     }
 
     public void generateEppsteinPowerLaw(int numVert, int numEdges, int r, boolean autodetermineIconType) {
-        this.g.setInstance(Generator.generateEppsteinPowerLaw(numVert, numEdges, r, this, autodetermineIconType));
+        this.g.setInstance(setNewGraphColorsFromOldGraph(Generator.generateEppsteinPowerLaw(numVert, numEdges, r, this, autodetermineIconType)));
         gui.setVertexRenderer();
     }
 
     public void generateEmptyGraph() {
         getEdgeFactory().reset();
         getVertexFactory().reset();
-        this.g.setInstance(getGraphFactory().create());
+        this.g.setInstance(setNewGraphColorsFromOldGraph(getGraphFactory().create()));
         gui.setVertexRenderer();
+    }
+
+    private MyGraph setNewGraphColorsFromOldGraph(MyGraph newGraph) {
+        newGraph.getLayoutParameters().setBackgroundColor(g.getLayoutParameters().getBackgroundColorRgb());
+        newGraph.getLayoutParameters().setEdgeColor(g.getLayoutParameters().getEdgeColorRgb());
+        return newGraph;
     }
 
     /**
@@ -222,7 +228,6 @@ public class Controller {
      * accessing the display directly
      */
     public void updateDisplay() {
-
         Display.vv.repaint();
     }
 

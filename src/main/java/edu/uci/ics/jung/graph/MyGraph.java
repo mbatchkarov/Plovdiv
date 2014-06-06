@@ -37,7 +37,6 @@ package edu.uci.ics.jung.graph;
  */
 import controller.ExtraGraphEvent;
 import controller.ExtraGraphEventListener;
-import edu.uci.ics.jung.graph.event.GraphEvent;
 import edu.uci.ics.jung.graph.event.GraphEventListener;
 
 import model.EpiState;
