@@ -263,7 +263,7 @@ public class Simulator {
         yAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
 
         final NumberAxis domainAxis = (NumberAxis) xyPlot.getDomainAxis();
-        domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
+//        domainAxis.setStandardTickUnits(NumberAxis.createIntegerTickUnits());
     }
 
     public void createInfectedCountGraph(JPanel statsPanel) {
