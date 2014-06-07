@@ -35,13 +35,8 @@ package controller;
 
 import edu.uci.ics.jung.algorithms.generators.random.BarabasiAlbertGenerator;
 import edu.uci.ics.jung.algorithms.generators.random.EppsteinPowerLawGenerator;
-import edu.uci.ics.jung.algorithms.layout.Layout;
-import edu.uci.ics.jung.algorithms.layout.StaticLayout;
 import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.graph.util.Pair;
-import edu.uci.ics.jung.visualization.renderers.Renderer.Vertex;
-import java.awt.Point;
-import java.awt.geom.Point2D;
 import model.MyEdge;
 import model.MyVertex;
 import model.factories.EdgeFactory;
@@ -49,7 +44,6 @@ import model.factories.VertexFactory;
 
 import java.util.HashSet;
 import model.VertexIcon;
-import org.apache.commons.collections15.Transformer;
 import view.Utils;
 
 /**
