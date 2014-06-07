@@ -143,7 +143,6 @@ public class Controller {
                 current.setEpiState(EpiState.SUSCEPTIBLE);
             }
         }
-
     }
 
     //------------SAVE/ LOAD FUNCTIONALITY--------------

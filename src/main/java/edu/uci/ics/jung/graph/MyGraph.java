@@ -115,7 +115,7 @@ public class MyGraph<V, E> extends ObservableGraph<V, E> implements Serializable
             e.setWeigth(newWeight);
             fireExtraEvent(new ExtraGraphEvent(this, ExtraGraphEvent.METADATA_CHANGED));
         } else {
-            throw new IllegalStateException("Attempted to alter edge that does not belong to this graph");
+            throw new IllegalStateException("Attempted to alter edge that does not belong to this graph.");
         }
     }
 

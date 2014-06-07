@@ -152,7 +152,7 @@ public class CustomPajekNetReader<G extends Graph<V, E>, V, E> {
         {
             return g;
         }
-        
+
         // create appropriate number of vertices
         st = new StringTokenizer(curLine);
         st.nextToken(); // skip past "*vertices";
@@ -275,8 +275,8 @@ public class CustomPajekNetReader<G extends Graph<V, E>, V, E> {
             ((MyVertex) v).setEpiState(state);
             ((MyVertex) v).getIcon().setStyle(Integer.parseInt(metadataSections[1]));
             ((MyVertex) v).getIcon().setType(Integer.parseInt(metadataSections[2]));
-            g.getVertices().toArray()[v_id] = v;
         }
+        g.getVertices().toArray()[v_id] = v;
 
         // only attach the label if there's one to attach
         if (label != null && label.length() > 0 && vertex_labels != null) {

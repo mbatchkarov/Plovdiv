@@ -59,7 +59,6 @@ import edu.uci.ics.jung.visualization.control.ScalingControl;
 import edu.uci.ics.jung.visualization.decorators.EllipseVertexShapeTransformer;
 import edu.uci.ics.jung.visualization.layout.LayoutTransition;
 import edu.uci.ics.jung.visualization.layout.PersistentLayout;
-import edu.uci.ics.jung.visualization.layout.PersistentLayoutImpl;
 import edu.uci.ics.jung.visualization.renderers.DefaultVertexLabelRenderer;
 import edu.uci.ics.jung.visualization.renderers.Renderer;
 import edu.uci.ics.jung.visualization.util.Animator;
@@ -89,6 +88,7 @@ import javax.swing.GroupLayout.SequentialGroup;
 
 import org.apache.commons.collections15.Transformer;
 import view.CustomMouse.CustomScalingControl;
+import view.CustomVisualization.CustomPersistentLayout;
 import view.CustomVisualization.CustomVertexRenderer;
 
 import static view.Utils.round;
@@ -1363,7 +1363,6 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
             File f = new File(path);
             IOClass.writeJPEGImage(vv, f);
         }
-
     }
 
     private void infectButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -1559,7 +1558,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         pane.removeAll();
         pane.setLayout(new BorderLayout());
 
-        persistentLayout = new PersistentLayoutImpl<MyVertex, MyEdge>(getSelectedGraphLayout(g));
+        persistentLayout = new CustomPersistentLayout<MyVertex, MyEdge>(getSelectedGraphLayout(g));
 
         vv = new VisualizationViewer<MyVertex, MyEdge>(persistentLayout, pane.getSize());
         vv.addMouseListener(new MouseListener() {
@@ -1735,7 +1734,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         try {
             Layout oldLayout = vv.getGraphLayout();
             Layout newLayoutBase = getSelectedGraphLayout(g);
-            PersistentLayoutImpl newLayout = new PersistentLayoutImpl<MyVertex, MyEdge>(newLayoutBase);
+            CustomPersistentLayout newLayout = new CustomPersistentLayout<MyVertex, MyEdge>(newLayoutBase);
             this.persistentLayout = newLayout;
             newLayout.setSize(oldLayout.getSize());
             oldLayout.initialize();
