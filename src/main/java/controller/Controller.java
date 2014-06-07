@@ -205,7 +205,11 @@ public class Controller {
                                                           getVertexFactory().reset(),
                                                           getEdgeFactory().reset(),
                                                           m, p);
-        this.g.setInstance(new MyGraph(setNewGraphColorsFromOldGraph(gen.create())));
+        MyGraph myGraph = setNewGraphColorsFromOldGraph(new MyGraph(gen.create()));
+        if (autodetermineIconType) {
+            Generator.determineInitialNodeTypes(myGraph);
+        }
+        this.g.setInstance(myGraph);
         gui.setVertexRenderer();
     }
     public void generateScaleFree(int a, int b, int c, boolean autodetermineIconType) {

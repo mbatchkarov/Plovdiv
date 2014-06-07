@@ -264,7 +264,7 @@ public class Generator {
         return myGraph;
     }
 
-    private static void determineInitialNodeTypes(MyGraph graph) {
+    public static void determineInitialNodeTypes(MyGraph graph) {
         for (Object vertex : graph.getVertices().toArray()) {
             int vertexDegree = graph.degree(vertex);
             int vertexIconType = Utils.getVertexIconTypeBasedOnDegree(vertexDegree);
