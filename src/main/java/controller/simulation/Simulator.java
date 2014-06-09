@@ -116,15 +116,15 @@ public class Simulator {
 
     /**
      * Checks if any edge creations, deletions of rewirings should occur at this time step.
-     *
+     * <p/>
      * NB: Multiple edge rewirings may occur in a single time step. These are executed in
-     *          order. The process has two independent step- removing the old edge and then
-     *          adding a new one. However, the second part may fail if the edge we are adding
-     *          exists already (as we don't want to be adding multiple edges between a pair of
-     *          vertices). This means sometimes an edge rewiring mey just turn into an edge
-     *          deletion. This is particularly problematic when the edge rewiring rate is high.
+     * order. The process has two independent step- removing the old edge and then
+     * adding a new one. However, the second part may fail if the edge we are adding
+     * exists already (as we don't want to be adding multiple edges between a pair of
+     * vertices). This means sometimes an edge rewiring mey just turn into an edge
+     * deletion. This is particularly problematic when the edge rewiring rate is high.
      *
-     * @param g the graph
+     * @param g        the graph
      * @param commands a list of changes that will be executed later. This methods appends to the
      *                 list
      */
@@ -232,7 +232,8 @@ public class Simulator {
         // to connect origin to
         ArrayList<MyVertex> susceptibles = new ArrayList<MyVertex>();
         for (MyVertex v : g.getVertices()) {
-            if (v.isSusceptible() && v != origin && v != oldEndoint) {
+            if (v.isSusceptible() && v != origin && v != oldEndoint &&
+                !g.isNeighbor(origin, v)) {
                 susceptibles.add(v);
             }
         }
@@ -246,10 +247,7 @@ public class Simulator {
         candidates = susceptibles.toArray(candidates);
         while (true) {
             int i = rng.nextInt(susceptibles.size());
-            if (!g.isNeighbor(origin, candidates[i])) {
-                //found a guy
-                return candidates[i];
-            }
+            return candidates[i];
         }
     }
 
@@ -307,12 +305,12 @@ public class Simulator {
         Integer[] yarr = new Integer[yValues.size()];
         xarr = xValues.toArray(xarr);
         yarr = yValues.toArray(yarr);
-		synchronized (infectedXYSeries){
-	        infectedXYSeries.clear();
-	        for (int i = 0; i < xarr.length; i++) {
-	            infectedXYSeries.add(xarr[i], yarr[i]);
-	        }
-		}
+        synchronized (infectedXYSeries) {
+            infectedXYSeries.clear();
+            for (int i = 0; i < xarr.length; i++) {
+                infectedXYSeries.add(xarr[i], yarr[i]);
+            }
+        }
     }
 
     public void pauseSim() {
@@ -473,16 +471,16 @@ public class Simulator {
         g.fireExtraEvent(new ExtraGraphEvent(g, ExtraGraphEvent.SIM_STEP_COMPLETE));
     }
 
-	private class SynchronisedXYSeries extends XYSeries{
+    private class SynchronisedXYSeries extends XYSeries {
 
-		public SynchronisedXYSeries(Comparable key, boolean autoSort, boolean allowDuplicateXValues) {
-			super(key, autoSort, allowDuplicateXValues);
-		}
+        public SynchronisedXYSeries(Comparable key, boolean autoSort, boolean allowDuplicateXValues) {
+            super(key, autoSort, allowDuplicateXValues);
+        }
 
-		@Override
-		public synchronized XYDataItem getDataItem(int index) {
-			return super.getDataItem(index);
-		}
-	}
+        @Override
+        public synchronized XYDataItem getDataItem(int index) {
+            return super.getDataItem(index);
+        }
+    }
 
 }
