@@ -12,6 +12,12 @@ import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.graph.UndirectedGraph;
 import edu.uci.ics.jung.graph.util.EdgeType;
+import model.EpiState;
+import model.MyVertex;
+import org.apache.commons.collections15.Factory;
+import org.apache.commons.collections15.Predicate;
+import org.apache.commons.collections15.functors.OrPredicate;
+
 import java.awt.geom.Point2D;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -21,11 +27,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.StringTokenizer;
-import model.EpiState;
-import model.MyVertex;
-import org.apache.commons.collections15.Factory;
-import org.apache.commons.collections15.Predicate;
-import org.apache.commons.collections15.functors.OrPredicate;
 
 /**
  *
@@ -266,9 +267,9 @@ public class CustomPajekNetReader<G extends Graph<V, E>, V, E> {
         // Parse the vertex metadata - node state, vertex icon style and type.
         if (metadataSections != null) {
             EpiState state = EpiState.SUSCEPTIBLE;
-            if (metadataSections[0].equals("INFECTED")) {
+            if (metadataSections[0].contains("INFECTED")) {
                 state = EpiState.INFECTED;
-            } else if (metadataSections[0].equals("RESISTANT")) {
+            } else if (metadataSections[0].contains("RESISTANT")) {
                 state = EpiState.RESISTANT;
             }
 
