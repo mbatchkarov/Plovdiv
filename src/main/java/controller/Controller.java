@@ -177,26 +177,26 @@ public class Controller {
     //=========!!!all generated/loaded graphs will appear in a new window!!!=========
     //-----------GENERATION FUNCTIONALITY-------------------
     public void generateRandom(int a, int b, boolean autodetermineIconType) {
-        this.g.setInstance(setNewGraphColorsFromOldGraph(Generator.generateRandom(a, b, this, autodetermineIconType)));
+        this.g.setInstance(setNewGraphStyleFromOldGraph(Generator.generateRandom(a, b, this, autodetermineIconType)));
         gui.setVertexRenderer();
     }
 
     public void generate4Lattice(int a, int b, int nodeDensity, boolean autodetermineIconType) {
         MyGraph newGraph = Generator.generateRectangularLattice(a, b, this, autodetermineIconType);
         newGraph.getLayoutParameters().setNodeDensity(nodeDensity);
-        this.g.setInstance(setNewGraphColorsFromOldGraph(newGraph));
+        this.g.setInstance(setNewGraphStyleFromOldGraph(newGraph));
         gui.setVertexRenderer();
     }
 
     public void generate6Lattice(int a, int b, int nodeDensity, boolean autodetermineIconType) {
         MyGraph newGraph = Generator.generateHexagonalLattice(a, b, this, autodetermineIconType);
         newGraph.getLayoutParameters().setNodeDensity(nodeDensity);
-        this.g.setInstance(setNewGraphColorsFromOldGraph(newGraph));
+        this.g.setInstance(setNewGraphStyleFromOldGraph(newGraph));
         gui.setVertexRenderer();
     }
 
     public void generateKleinbergSmallWorld(int m, int n, double c, boolean autodetermineIconType) {
-        this.g.setInstance(setNewGraphColorsFromOldGraph(Generator.generateKleinbergSmallWorld(m, n, c, this, autodetermineIconType)));
+        this.g.setInstance(setNewGraphStyleFromOldGraph(Generator.generateKleinbergSmallWorld(m, n, c, this, autodetermineIconType)));
         gui.setVertexRenderer();
     }
 
@@ -205,7 +205,7 @@ public class Controller {
                                                           getVertexFactory().reset(),
                                                           getEdgeFactory().reset(),
                                                           m, p);
-        MyGraph myGraph = setNewGraphColorsFromOldGraph(new MyGraph(gen.create()));
+        MyGraph myGraph = setNewGraphStyleFromOldGraph(new MyGraph(gen.create()));
         if (autodetermineIconType) {
             Generator.determineInitialNodeTypes(myGraph);
         }
@@ -213,25 +213,26 @@ public class Controller {
         gui.setVertexRenderer();
     }
     public void generateScaleFree(int a, int b, int c, boolean autodetermineIconType) {
-        this.g.setInstance(setNewGraphColorsFromOldGraph(Generator.generateScaleFree(a, 1, c, this, autodetermineIconType)));
+        this.g.setInstance(setNewGraphStyleFromOldGraph(Generator.generateScaleFree(a, 1, c, this, autodetermineIconType)));
         gui.setVertexRenderer();
     }
 
     public void generateEppsteinPowerLaw(int numVert, int numEdges, int r, boolean autodetermineIconType) {
-        this.g.setInstance(setNewGraphColorsFromOldGraph(Generator.generateEppsteinPowerLaw(numVert, numEdges, r, this, autodetermineIconType)));
+        this.g.setInstance(setNewGraphStyleFromOldGraph(Generator.generateEppsteinPowerLaw(numVert, numEdges, r, this, autodetermineIconType)));
         gui.setVertexRenderer();
     }
 
     public void generateEmptyGraph() {
         getEdgeFactory().reset();
         getVertexFactory().reset();
-        this.g.setInstance(setNewGraphColorsFromOldGraph(getGraphFactory().create()));
+        this.g.setInstance(setNewGraphStyleFromOldGraph(getGraphFactory().create()));
         gui.setVertexRenderer();
     }
 
-    private MyGraph setNewGraphColorsFromOldGraph(MyGraph newGraph) {
+    private MyGraph setNewGraphStyleFromOldGraph(MyGraph newGraph) {
         newGraph.getLayoutParameters().setBackgroundColor(g.getLayoutParameters().getBackgroundColorRgb());
         newGraph.getLayoutParameters().setEdgeColor(g.getLayoutParameters().getEdgeColorRgb());
+        newGraph.getLayoutParameters().setAllowNodeIcons(g.getLayoutParameters().areNodeIconsAllowed());
         return newGraph;
     }
 
