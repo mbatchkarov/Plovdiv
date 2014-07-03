@@ -121,4 +121,16 @@ public class StatsTest {
         glass.addEdge(e(4), v(1), v(3));
         assertEquals(2.5, glassStats.getAvgDegree(), 0.01);
     }
+
+    @Test
+    public void testGetDegreDistribution(){
+
+        Stats s = new Stats(triangle);
+        assertArrayEquals(s.getDegreeDistribution(),
+                          new int[]{0, 0, 3}); // three vertices of degree 2
+
+        s = new Stats(glass);
+        assertArrayEquals(s.getDegreeDistribution(),
+                          new int[]{0, 1, 2, 1});
+    }
 }
