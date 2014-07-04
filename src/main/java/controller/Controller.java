@@ -35,8 +35,9 @@ import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.graph.MyGraph;
 import edu.uci.ics.jung.visualization.VisualizationViewer;
 import edu.uci.ics.jung.visualization.layout.PersistentLayout;
-import edu.uci.ics.jung.visualization.layout.PersistentLayoutImpl;
-import java.awt.Dimension;
+
+import java.awt.*;
+
 import model.EpiState;
 import model.MyEdge;
 import model.MyVertex;
@@ -44,13 +45,28 @@ import model.SimulationDynamics;
 import model.factories.EdgeFactory;
 import model.factories.GraphFactory;
 import model.factories.VertexFactory;
+import org.jfree.chart.ChartFactory;
+import org.jfree.chart.ChartPanel;
+import org.jfree.chart.JFreeChart;
+import org.jfree.chart.axis.NumberAxis;
+import org.jfree.chart.axis.NumberTickUnit;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.plot.XYPlot;
+import org.jfree.chart.renderer.xy.XYItemRenderer;
+import org.jfree.data.xy.XYDataset;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
+import sun.jvm.hotspot.runtime.*;
 import view.Display;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Random;
+
 import view.BackgroundImageController;
+
+import javax.swing.*;
 
 /**
  * @author Miroslav Batchkarov
@@ -63,7 +79,7 @@ public class Controller {
     private Display gui;
     private Simulator sim;
 
-    private MyGraph g;
+    private MyGraph<MyVertex, MyEdge> g;
 
     public Controller(Stats stats, MyGraph g) {
         this.g = g;
@@ -147,6 +163,7 @@ public class Controller {
     }
 
     //------------SAVE/ LOAD FUNCTIONALITY--------------
+
     /**
      * Asks the parser to create a graph from file, makes a frame and displays
      * the graph in it
@@ -156,7 +173,7 @@ public class Controller {
     public void load(VisualizationViewer vv, String path) throws IOException {
         MyGraph g = PajekParser.load(path, getGraphFactory(),
                                      getVertexFactory().reset(),
-                                      getEdgeFactory().reset());
+                                     getEdgeFactory().reset());
         this.g.setInstance(g);
         gui.setVertexRenderer();
         IOClass.loadLayout(gui, path);
@@ -212,6 +229,7 @@ public class Controller {
         this.g.setInstance(myGraph);
         gui.setVertexRenderer();
     }
+
     public void generateScaleFree(int a, int b, int c, boolean autodetermineIconType) {
         this.g.setInstance(setNewGraphStyleFromOldGraph(Generator.generateScaleFree(a, 1, c, this, autodetermineIconType)));
         gui.setVertexRenderer();
@@ -298,4 +316,94 @@ public class Controller {
         cont.generateScaleFree(20, 1, 1, true);
     }
 
+    /**
+     * Does 100 simulation runs with the current settings and displays a graph showing how many
+     * times each vertex has been infected.
+     */
+    public void run100simulations() {
+        // in how many of the 100 runs each node has been infected
+        HashMap<MyVertex, Integer> timesInfected = new HashMap<MyVertex, Integer>();
+
+        // which vertices are infected before starting the sim- need to be able to run the same
+        // starting conditions over and over
+        HashMap<MyVertex, EpiState> originalState = new HashMap<MyVertex, EpiState>();
+        for (MyVertex v : g.getVertices()) {
+            timesInfected.put(v, 0);
+            originalState.put(v, v.getEpiState());
+        }
+
+        for (int i = 0; i < 100; i++) {
+            HashMap<MyVertex, Boolean> infectedThisTime = new HashMap<MyVertex, Boolean>();
+            for (MyVertex v : g.getVertices()) {
+                infectedThisTime.put(v, false);
+            }
+            // repeat until disease has died out
+            while (g.getNumInfected() > 0) {
+                getSimulator().doStepWithCurrentSettings();
+                for (MyVertex v : g.getVertices()) {
+                    if (v.isInfected()) {
+                        infectedThisTime.put(v, true);
+                    }
+                }
+            }
+
+            for (MyVertex v : g.getVertices()) {
+                if (infectedThisTime.get(v)) {
+                    int oldVal = timesInfected.get(v);
+                    timesInfected.put(v, oldVal + 1);
+                }
+            }
+
+            // restore original state of the simulation before doing another step
+            for (MyVertex v : g.getVertices()) {
+                v.setEpiState(originalState.get(v));
+            }
+            g.updateCounts();
+            sim.resetSimulation();
+        }
+
+        // display the data in a frame
+        createDemoPanel(timesInfected);
+    }
+
+    /**
+     * Demo code from http://stackoverflow.com/q/13792917/419338
+     * @param timesInfected
+     */
+    private void createDemoPanel(HashMap<MyVertex, Integer> timesInfected) {
+        JFreeChart jfreechart = ChartFactory.createScatterPlot(
+                "Times infected in 100 simulations", "Vertex id", "Times infected",
+                createDataset(timesInfected),
+                PlotOrientation.VERTICAL, false, true, false);
+        XYPlot xyPlot = (XYPlot) jfreechart.getPlot();
+        xyPlot.setDomainCrosshairVisible(true);
+        xyPlot.setRangeCrosshairVisible(true);
+        XYItemRenderer renderer = xyPlot.getRenderer();
+        renderer.setSeriesPaint(0, Color.blue);
+        adjustAxis((NumberAxis) xyPlot.getDomainAxis(), true);
+        xyPlot.setBackgroundPaint(Color.white);
+
+        JFrame frame = new JFrame("Times infected");
+        frame.setLayout(new FlowLayout());
+        frame.add(new ChartPanel(jfreechart));
+        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        frame.setVisible(true);
+        frame.pack();
+    }
+
+    private void adjustAxis(NumberAxis axis, boolean vertical) {
+        axis.setRange(0, g.getVertexCount());
+        axis.setTickUnit(new NumberTickUnit(1));
+        axis.setVerticalTickLabels(vertical);
+    }
+
+    private XYDataset createDataset(HashMap<MyVertex, Integer> timesInfected) {
+        XYSeries series = new XYSeries("Times infected");
+        XYSeriesCollection xySeriesCollection = new XYSeriesCollection();
+        for (MyVertex v : timesInfected.keySet()) {
+            series.add(v.getId(), timesInfected.get(v));
+        }
+        xySeriesCollection.addSeries(series);
+        return xySeriesCollection;
+    }
 }

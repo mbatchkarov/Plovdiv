@@ -123,6 +123,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
     static javax.swing.JLabel globalVertexCount;
     private javax.swing.JPanel graphStatsPanel;
     private javax.swing.JMenuItem healAllNodesButton;
+    private javax.swing.JMenuItem run100simulations;
     private javax.swing.JMenuItem helpAbout;
     private javax.swing.JMenuItem helpHowTo;
     private static javax.swing.JLabel in;
@@ -416,6 +417,7 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         simulationMenuSeparator = new javax.swing.JSeparator();
         infectNodesButton = new javax.swing.JMenuItem();
         healAllNodesButton = new javax.swing.JMenuItem();
+        run100simulations = new javax.swing.JMenuItem();
         menuHelp = new javax.swing.JMenu();
         helpHowTo = new javax.swing.JMenuItem();
         helpAbout = new javax.swing.JMenuItem();
@@ -1253,6 +1255,16 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
         });
         menuSimulation.add(healAllNodesButton);
 
+        run100simulations.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_D, 0));
+        run100simulations.setText("Run 100 simulations");
+        run100simulations.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                run100simulations(evt);
+            }
+        });
+        menuSimulation.add(new JSeparator());
+        menuSimulation.add(run100simulations);
+
         topMenuBar.add(menuSimulation);
 
         menuHelp.setText("Help");
@@ -1371,6 +1383,22 @@ public class Display extends JFrame implements GraphEventListener<MyVertex, MyEd
             vv.repaint();
         } else {
             JOptionPane.showMessageDialog(this, "That makes no sense when the graph is empty!");
+        }
+    }
+
+    private void run100simulations(java.awt.event.ActionEvent evt) {
+        if(controller.getGraph().getNumInfected() == 0){
+            JOptionPane.showMessageDialog(null, "There must be some infected vertices");
+            return;
+        }
+        if(this.g.getDynamics().getType() != SimulationDynamics.DynamicsType.SIR){
+            JOptionPane.showMessageDialog(null, "Simulation dynamics must be SIR");
+            return;
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Plovdiv will now do 100 simulation runs. This " +
+                                                "may take some time...");
+            controller.run100simulations();
         }
     }
 
