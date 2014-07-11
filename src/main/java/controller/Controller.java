@@ -337,14 +337,15 @@ public class Controller {
             for (MyVertex v : g.getVertices()) {
                 infectedThisTime.put(v, false);
             }
-            // repeat until disease has died out
+            // run a simulation until disease has died out
             while (g.getNumInfected() > 0) {
-                getSimulator().doStepWithCurrentSettings();
                 for (MyVertex v : g.getVertices()) {
                     if (v.isInfected()) {
                         infectedThisTime.put(v, true);
                     }
                 }
+                getSimulator().doStepWithCurrentSettings();
+                g.updateCounts();
             }
 
             for (MyVertex v : g.getVertices()) {
@@ -368,6 +369,7 @@ public class Controller {
 
     /**
      * Demo code from http://stackoverflow.com/q/13792917/419338
+     *
      * @param timesInfected
      */
     private void createDemoPanel(HashMap<MyVertex, Integer> timesInfected) {

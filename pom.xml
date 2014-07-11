@@ -18,7 +18,7 @@
 
     <groupId>mlcl.susx.ac.uk</groupId>
     <artifactId>Plovdiv</artifactId>
-    <version>3.3.1</version>
+    <version>3.3.2</version>
     <dependencies>
         <dependency>
             <groupId>net.sf.jung</groupId>
