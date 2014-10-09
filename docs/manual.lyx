@@ -1,5 +1,5 @@
-#LyX 2.0 created this file. For more info see http://www.lyx.org/
-\lyxformat 413
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
 \begin_document
 \begin_header
 \textclass article
@@ -12,13 +12,13 @@
 \font_roman default
 \font_sans default
 \font_typewriter default
+\font_math auto
 \font_default_family default
 \use_non_tex_fonts false
 \font_sc false
 \font_osf false
 \font_sf_scale 100
 \font_tt_scale 100
-
 \graphics default
 \default_output_format default
 \output_sync 0
@@ -38,15 +38,24 @@
 \pdf_pdfusetitle true
 \papersize default
 \use_geometry false
-\use_amsmath 1
-\use_esint 1
-\use_mhchem 1
-\use_mathdots 1
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 0
+\use_package mhchem 1
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
 \cite_engine basic
+\cite_engine_type default
+\biblio_style plain
 \use_bibtopic false
 \use_indices false
 \paperorientation portrait
 \suppress_date false
+\justification true
 \use_refstyle 1
 \index Index
 \shortcut idx
@@ -70,7 +79,7 @@
 \begin_body
 
 \begin_layout Title
-Project Plovdiv 3.1 user manual 
+Project Plovdiv 3.3 user manual 
 \end_layout
 
 \begin_layout Author
@@ -137,6 +146,16 @@ url{https://github.com/mbatchkarov/Plovdiv/issues}
  We welcome contributions from the community.
 \end_layout
 
+\begin_layout Subsection
+Requirements
+\end_layout
+
+\begin_layout Standard
+Plovdiv is written in Java 7 and built with Maven.
+ To run it, you need a recent version of Java 7, preferrably by Sun.
+ OpenJDK may work, but has not been tested.
+\end_layout
+
 \begin_layout Section
 User interface
 \end_layout
@@ -174,7 +193,7 @@ status collapsed
 \end_inset
 
 
-\begin_inset Caption
+\begin_inset Caption Standard
 
 \begin_layout Plain Layout
 Overall appearance
@@ -198,7 +217,7 @@ name "fig:overall"
 \end_layout
 
 \begin_layout Subsection
-Graph rendering
+Graph rendering (Area B)
 \end_layout
 
 \begin_layout Standard
@@ -241,7 +260,7 @@ Node icons> Enable/Disable icons
 \end_layout
 
 \begin_layout Standard
-The colour of a vertex encodes it state.
+The colour of a vertex encodes it epidemiologic state.
  Yellow stands for susceptible, red stands for infected and green for resistant/
 immune.
  Selected nodes (Section 
@@ -253,7 +272,7 @@ reference "sub:Mouse-modes"
 
 ) are blue.
  Edges are not colour coded.
- Their colour can be change by right-clicking the background and selecting
+ Their colour can be changed by right-clicking the background and selecting
  
 \series bold
 Change colors> Edges
@@ -287,25 +306,25 @@ Change colors> Background
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \align center
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename img/1.jpg
+	filename img/1.png
 	lyxscale 30
 	width 45text%
 
 \end_inset
 
 
-\begin_inset Caption
+\begin_inset Caption Standard
 
 \begin_layout Plain Layout
 Background image, simple icons
@@ -326,18 +345,18 @@ Background image, simple icons
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename img/2.jpg
+	filename img/2.png
 	lyxscale 30
 	width 45text%
 
 \end_inset
 
 
-\begin_inset Caption
+\begin_inset Caption Standard
 
 \begin_layout Plain Layout
 Background image, 3D icons
@@ -358,18 +377,18 @@ Background image, 3D icons
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename img/3.jpg
+	filename img/3.png
 	lyxscale 30
 	width 45text%
 
 \end_inset
 
 
-\begin_inset Caption
+\begin_inset Caption Standard
 
 \begin_layout Plain Layout
 Background image, no icons
@@ -390,18 +409,18 @@ Background image, no icons
 \begin_inset Float figure
 wide false
 sideways false
-status collapsed
+status open
 
 \begin_layout Plain Layout
 \begin_inset Graphics
-	filename img/4.jpg
+	filename img/4.png
 	lyxscale 30
 	width 45text%
 
 \end_inset
 
 
-\begin_inset Caption
+\begin_inset Caption Standard
 
 \begin_layout Plain Layout
 No background image, no icons
@@ -419,7 +438,7 @@ No background image, no icons
 \end_inset
 
 
-\begin_inset Caption
+\begin_inset Caption Standard
 
 \begin_layout Plain Layout
 The same graph with different rendering styles
@@ -443,7 +462,7 @@ name "fig:view-options"
 \end_layout
 
 \begin_layout Subsection
-Mouse modes
+Mouse modes (Area A)
 \begin_inset CommandInset label
 LatexCommand label
 name "sub:Mouse-modes"
@@ -455,18 +474,23 @@ name "sub:Mouse-modes"
 
 \begin_layout Standard
 The mouse is can be used to control how the graph is visualised.
- It can operate in four different modes:
+ You use the mouse to zoom and pan, to create and delete vertices and edges,
+ etc.
+ The mouse operates in four different modes, each of which is used for a
+ different kind of action:
 \end_layout
 
 \begin_layout Enumerate
-Selection mode allows the user to select vertices and change their characteristi
-cs (see Vertex data).
- 
+Selection mode allows the user to select vertices and move vertices.
 \end_layout
 
 \begin_deeper
 \begin_layout Enumerate
 Left-clicking a vertex will select it
+\end_layout
+
+\begin_layout Enumerate
+Left-clicking and dragging moves a vertex
 \end_layout
 
 \begin_layout Enumerate
@@ -498,7 +522,7 @@ Shift+left click will select multiple vertices Click and drag will draw
 
 \end_deeper
 \begin_layout Enumerate
-Editing mode: allows the user to create vertices and edges
+Editing mode: allows the user to create vertices and edges.
 \end_layout
 
 \begin_deeper
@@ -519,7 +543,7 @@ Holding Shift while dragging will create a directed edge
 
 \end_deeper
 \begin_layout Enumerate
-Transforming mode: changes the way the graph is drawn (also see Layouts)
+Transforming mode changes the way the graph is laid out.
 \end_layout
 
 \begin_deeper
@@ -628,7 +652,7 @@ status collapsed
 \end_inset
 
 
-\begin_inset Caption
+\begin_inset Caption Standard
 
 \begin_layout Plain Layout
 Annotations with and without fill
@@ -666,7 +690,7 @@ status collapsed
 \end_inset
 
 
-\begin_inset Caption
+\begin_inset Caption Standard
 
 \begin_layout Plain Layout
 Annotations in lower (blue) and upper (red) position
@@ -710,7 +734,7 @@ Right clicking a selected vertex will pop up a context-sensitive menu, which
 \end_layout
 
 \begin_layout Subsection
-Information panel
+Information panel (Area B)
 \end_layout
 
 \begin_layout Standard
@@ -743,7 +767,7 @@ status open
 \end_inset
 
 
-\begin_inset Caption
+\begin_inset Caption Standard
 
 \begin_layout Plain Layout
 The information panel and its components
@@ -787,7 +811,23 @@ S
 \series bold
 Resume (R)
 \series default
- button will start the simulation and will then change to 
+ button will resume
+\begin_inset Foot
+status open
+
+\begin_layout Plain Layout
+We think of 
+\emph on
+running
+\emph default
+ as the default state of the simulation, and pausing it as a temporary action.
+ A simulation always starts when Plovdiv starts.
+ 
+\end_layout
+
+\end_inset
+
+ the simulation and will then change to 
 \series bold
 Pause
 \series default
@@ -806,7 +846,8 @@ Resume
 \series bold
 Heal all (H)
 \series default
- resets the simulation to its initial state and heals all vertices.
+ resets the simulation to its initial state and heals all individuals (sets
+ them to susceptible state).
 \end_layout
 
 \begin_layout Standard
@@ -827,10 +868,55 @@ reference "fig:infect"
 \end_layout
 
 \begin_layout Standard
+All actions described above are also available in the 
+\series bold
+Simulation
+\series default
+ dropdown menu.
+ An additional action, called 
+\series bold
+Run 100 simulations
+\series default
+ (keyboard shortcut 
+\series bold
+D
+\series default
+) is also available in the dropdown menu.
+ This action runs 100 simulations until convergence, where all individuals
+ are either susceptible or resistant.
+ It requires that there are some infected vertices to begin with and the
+ the simulation dynamics is SIR.
+ At the end the action displays a scatter plot (Figure 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "fig:times-infected"
+
+\end_inset
+
+), where the 
+\series bold
+x
+\series default
+ axis corresponds to vertex ID and the 
+\series bold
+y
+\series default
+ axis to how many times (out of 100) that vertex was infected.
+ Points in the window are clickable to improve legibility.
+ Additionally, you may want to label vertices with their ID by clicking
+ 
+\series bold
+Label vertices with ...
+ > ID
+\series default
+.
+\end_layout
+
+\begin_layout Standard
 \begin_inset Float figure
 wide false
 sideways false
-status open
+status collapsed
 
 \begin_layout Plain Layout
 \align center
@@ -842,10 +928,10 @@ status open
 \end_inset
 
 
-\begin_inset Caption
+\begin_inset Caption Standard
 
 \begin_layout Plain Layout
-The information panel and its components
+The Infect dialog
 \end_layout
 
 \end_inset
@@ -854,6 +940,45 @@ The information panel and its components
 \begin_inset CommandInset label
 LatexCommand label
 name "fig:infect"
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+\begin_inset Float figure
+wide false
+sideways false
+status collapsed
+
+\begin_layout Plain Layout
+\align center
+\begin_inset Graphics
+	filename img/infect.png
+	lyxscale 20
+	width 100text%
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+The Times infected information window
+\end_layout
+
+\end_inset
+
+
+\begin_inset CommandInset label
+LatexCommand label
+name "fig:times-infected"
 
 \end_inset
 
@@ -875,7 +1000,58 @@ This panel controls various parameters of the infection, such as its type
  Input validation is performed on the fly and the text will change to red
  if invalid data is entered (e.g.
  string instead of a number).
+ You need to press 
+\series bold
+Apply 
+\series default
+for your changes to be saved.
+ Additionally, extra options are available upon clicking 
+\series bold
+More...
+\series default
+.
+ A window will pop up that allows you to specify the rate of creation, deletion
+ and rewiring of edges based on the state of the endpoints of that edge
+ (susceptible, infected, resistant).
+ For example, to simulate the real-world scenario where susceptible individuals
+ stop contacting infected ones, enter a positive number if the cell correspondin
+g to 
+\series bold
+SI
+\series default
+ and 
+\series bold
+Edge deletion
+\series default
+.
+ This means that edges between S (susceptible) and I (infected) vertices
+ will be deleted at the specified rate.
+\end_layout
+
+\begin_layout Standard
+Note: all numbers in this section refer to 
+\series bold
+rates
+\series default
+.
+ A rate is a the 
+\begin_inset Formula $k$
+\end_inset
+
+ parameter the function 
+\begin_inset Formula $f(k)=exp(-k\Delta t)$
+\end_inset
+
+, where 
+\begin_inset Formula $\Delta t$
+\end_inset
+
+ is the time step of the simulation.
  
+\begin_inset Formula $f(k)$
+\end_inset
+
+ is the probability of an event occurring.
 \end_layout
 
 \begin_layout Subsubsection
@@ -886,6 +1062,14 @@ C: Simulation speed
 When the simulation is running, this slider controls how much time should
  pass before the next simulation step.
  Use the left and right arrow keys to adjust this value.
+ If the simulation is pause, you can trigger a step manually by pressing
+ 
+\series bold
+S 
+\series default
+or clicking 
+\series bold
+Do step.
 \end_layout
 
 \begin_layout Subsubsection
@@ -896,6 +1080,28 @@ D: Infection statistics
 Displays a graph of the number of infected vertices over the past 100 time
  steps.
  This updates dynamically as the simulation runs.
+ The values on the 
+\series bold
+x
+\series default
+ axis may seem low.
+ This is because it shows the 
+\begin_inset Quotes eld
+\end_inset
+
+real time
+\begin_inset Quotes erd
+\end_inset
+
+ that has elapse.
+ For instance, a single time unit would have elapsed after running 10 time
+ steps at a 
+\begin_inset Formula $\Delta t=0.1$
+\end_inset
+
+.
+ Note a time step does not correspond to any real-world unit of time.
+ 
 \end_layout
 
 \begin_layout Subsubsection
@@ -904,15 +1110,27 @@ E: Graph statistics
 
 \begin_layout Standard
 Displays statistics for the whole graph.
- These include average clustering coefficient, the average, min and max
- degree, average weighted path length, etc.
+ These include average clustering coefficient, average, min and max degree,
+ average weighted path length, etc.
  There is also a chart of the degree distribution of the graph, which can
  be switched to cumulative degree distribution.
- The y-axis of the chart can be switched to log scale.
+ 
 \end_layout
 
 \begin_layout Subsubsection
-F: Selected node statistics 
+F: Selected node statistics
+\begin_inset Foot
+status collapsed
+
+\begin_layout Plain Layout
+Note in later version of Plovdiv this panel has been moved to the top of
+ the main window and only appears when a vertex is selected.
+ To do that, put the mouse into Select mode and left-click a vertex.
+\end_layout
+
+\end_inset
+
+ 
 \end_layout
 
 \begin_layout Standard
@@ -954,14 +1172,27 @@ CMD+N
 
 \begin_layout Description
 Save Saves the graph to a file.
- This creates two files, one with a .graph extension and one with a .layout.
+ This creates two or three files, one with a .graph extension, one with a
+ .layout and one with a .backgroun.
  The first one contains a description of the graph in Pajek plain text format.
  Information about the state of each vertex (infected, susceptible of resistant)
  is also encoded in this file.
  This is editable in any text editor.
  The second file is binary (not editable) and describes where each vertex
  of the graph should be positioned on screen.
- The two files should be thought of as one for all intents an purposes.
+ The third file is a standard jpeg image (with a non-standard file extension)
+ that holds the background image.
+ The three files should be thought of as one for all intents an purposes.
+ The second and third file 
+\series bold
+need to have the same name
+\series default
+ as the first file and a different extensions.
+ Renaming them will lead to Plovdiv not detecting them when the .graph wile
+ is loaded.
+ The layout and background files are optional though- if they are missing,
+ Plovdiv will work fine.
+ If they are present, you will be asked if you want to use them.
  Keyboard shortcut is 
 \series bold
 CTRL+S.
@@ -975,6 +1206,8 @@ Load Loads a .graph file that has been previously saved.
  If a .layout file is present, it will be loaded and all vertices will be
  restored to their previous position.
  Otherwise an the graph will be laid out using one of the built-in algorithms.
+ Make sure to always load the graph file, even when a layout or a background
+ files are available.
  Keyboard shortcut is 
 \series bold
 CTRL+O.
@@ -991,8 +1224,13 @@ CTRL+G.
 \end_layout
 
 \begin_layout Enumerate
-Rectangular lattice: a lattice in which each vertex has for local connections
- 
+Rectangular lattice: a lattice in which each vertex has four local connections.
+ The 
+\series bold
+Node density
+\series default
+ parameter controls how densely the nodes are laid out on screen.
+ You probably do not want to change that.
 \end_layout
 
 \begin_layout Enumerate
@@ -1013,6 +1251,16 @@ Small world generator- starts with a circular lattice of the specified size,
 
 \begin_layout Enumerate
 Random, with a pre-defined number of vertices and edges.
+ Edges are chosen uniformly from the pool of all possible edges.
+\end_layout
+
+\begin_layout Enumerate
+Erdos- Renyi- generates a random graph by creating a predefined number of
+ edges and the adding each possible edge with a probability of 
+\series bold
+Edge probability
+\series default
+.
 \end_layout
 
 \begin_layout Standard
@@ -1037,6 +1285,8 @@ reference "fig:generated_graphs"
 \end_inset
 
 .
+ Please refer to one of the standard textbooks on graph theory for a detailed
+ description of the generation algorithm used to these graph.
 \end_layout
 
 \begin_layout Standard
@@ -1061,7 +1311,7 @@ status open
 \end_inset
 
 
-\begin_inset Caption
+\begin_inset Caption Standard
 
 \begin_layout Plain Layout
 Rectangular lattice
@@ -1093,7 +1343,7 @@ status open
 \end_inset
 
 
-\begin_inset Caption
+\begin_inset Caption Standard
 
 \begin_layout Plain Layout
 Hexagonal lattice
@@ -1125,7 +1375,7 @@ status open
 \end_inset
 
 
-\begin_inset Caption
+\begin_inset Caption Standard
 
 \begin_layout Plain Layout
 Scale free
@@ -1157,7 +1407,7 @@ status open
 \end_inset
 
 
-\begin_inset Caption
+\begin_inset Caption Standard
 
 \begin_layout Plain Layout
 Small world
@@ -1190,7 +1440,7 @@ status open
 \end_inset
 
 
-\begin_inset Caption
+\begin_inset Caption Standard
 
 \begin_layout Plain Layout
 Random
@@ -1204,7 +1454,39 @@ Random
 \end_inset
 
 
-\begin_inset Caption
+\begin_inset space \enskip{}
+\end_inset
+
+
+\begin_inset Float figure
+wide false
+sideways false
+status open
+
+\begin_layout Plain Layout
+\begin_inset Graphics
+	filename img/erdos.png
+	lyxscale 30
+	width 45text%
+
+\end_inset
+
+
+\begin_inset Caption Standard
+
+\begin_layout Plain Layout
+Erdos-Renyi
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+
+
+\begin_inset Caption Standard
 
 \begin_layout Plain Layout
 Example generated graphs
@@ -1236,9 +1518,22 @@ The View menu
 \end_layout
 
 \begin_layout Standard
-This menu currently contain a single command.
- To save the what is currently on the screen to a jpg file, click View>
- Save to .jpg.
+This menu currently contain a sto save the what is currently on the screen
+ to a jpg file (
+\series bold
+View> Save to .jpg
+\series default
+).
+ To hide the side bar on the right hand side, click 
+\series bold
+View> Hide sidebar.
+ 
+\series default
+The keyboard shortcut for this is 
+\series bold
+F1
+\series default
+.
 \end_layout
 
 \begin_layout Subsection
@@ -1264,6 +1559,9 @@ If the graph looks cluttered or unordered, try changing the layout.
  Some algorithms will work better than others on certain types of graphs.
  This is still an open research area, so there is no optimal layout- try
  which one looks best for you.
+ Lattice graphs (both hexagonal and rectangular) come with a special grid
+ layout when generated by Plovdiv, but you cannot use this layout for other
+ kinds of graphs.
 \end_layout
 
 \begin_layout Standard
