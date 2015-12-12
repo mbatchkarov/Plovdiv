@@ -45,7 +45,9 @@ import model.factories.GraphFactory;
 import model.factories.VertexFactory;
 import org.apache.commons.collections15.Transformer;
 
+import javax.swing.*;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * @author Miroslav Batchkarov
@@ -58,7 +60,11 @@ public class PajekParser {
 
     public static MyGraph load(String path, GraphFactory gf, VertexFactory vf, EdgeFactory ef) throws IOException {
         CustomPajekNetReader reader = new CustomPajekNetReader(vf, ef);
-        return (MyGraph) reader.load(path, gf);
+        MyGraph g = (MyGraph) reader.load(path, gf);
+        if(reader.parsingErrors.size() > 0)
+            JOptionPane.showMessageDialog(null, "File read, but errors were encountered: \n" +
+                    Arrays.deepToString(reader.parsingErrors.toArray()));
+        return g;
     }
 
     public static void save(String path, MyGraph g) throws IOException {

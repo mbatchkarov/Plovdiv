@@ -16,7 +16,6 @@ import model.EpiState;
 import model.MyVertex;
 import org.apache.commons.collections15.Factory;
 import org.apache.commons.collections15.Predicate;
-import org.apache.commons.collections15.functors.OrPredicate;
 
 import java.awt.geom.Point2D;
 import java.io.BufferedReader;
@@ -29,13 +28,13 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 /**
- *
  * @author User
  */
 public class CustomPajekNetReader<G extends Graph<V, E>, V, E> {
 
     protected Factory<V> vertex_factory;
     protected Factory<E> edge_factory;
+    public ArrayList<String> parsingErrors;
 
     /**
      * The map for vertex labels (if any) created by this class.
@@ -54,20 +53,19 @@ public class CustomPajekNetReader<G extends Graph<V, E>, V, E> {
      * Used to specify whether the most recently read line is a Pajek-specific
      * tag.
      */
-    private static final Predicate<String> cc_pred = new StartsWithPredicate("*colors");
-    private static final Predicate<String> v_pred = new StartsWithPredicate("*vertices");
-    private static final Predicate<String> a_pred = new StartsWithPredicate("*arcs");
-    private static final Predicate<String> e_pred = new StartsWithPredicate("*edges");
-    private static final Predicate<String> t_pred = new StartsWithPredicate("*");
-    private static final Predicate<String> c_pred = OrPredicate.getInstance(a_pred, e_pred);
-    protected static final Predicate<String> l_pred = ListTagPred.getInstance();
+    private static final Predicate<String> colors_pred = new StartsWithPredicate("*colors");
+    private static final Predicate<String> vertices_pred = new StartsWithPredicate("*vertices");
+    private static final Predicate<String> arcs_pred = new StartsWithPredicate("*arcs");
+    private static final Predicate<String> edges_pred = new StartsWithPredicate("*edges");
+    private static final Predicate<String> header_pred = new StartsWithPredicate("*");
+    protected static final Predicate<String> list_pred = ListTagPred.getInstance();
 
     /**
      * Creates a PajekNetReader instance with the specified vertex and edge
      * factories.
      *
      * @param vertex_factory the factory to use to create vertex objects
-     * @param edge_factory the factory to use to create edge objects
+     * @param edge_factory   the factory to use to create edge objects
      */
     public CustomPajekNetReader(Factory<V> vertex_factory, Factory<E> edge_factory) {
         this.vertex_factory = vertex_factory;
@@ -123,11 +121,11 @@ public class CustomPajekNetReader<G extends Graph<V, E>, V, E> {
      * Populates the graph <code>g</code> with the graph represented by the
      * Pajek-format data supplied by <code>reader</code>. Stores edge weights,
      * if any, according to <code>nev</code> (if non-null).
-     *
-     * <p>
+     * <p/>
+     * <p/>
      * Any existing vertices/edges of <code>g</code>, if any, are unaffected.
-     *
-     * <p>
+     * <p/>
+     * <p/>
      * The edge data are filtered according to <code>g</code>'s constraints, if
      * any; thus, if <code>g</code> only accepts directed edges, any undirected
      * edges in the input are ignored.
@@ -135,76 +133,123 @@ public class CustomPajekNetReader<G extends Graph<V, E>, V, E> {
      * @throws IOException
      */
     public G load(Reader reader, G g) throws IOException {
+        parsingErrors = new ArrayList<String>();
         BufferedReader br = new BufferedReader(reader);
+        StringTokenizer st;
 
-        // ignore everything until we see '*Colors'
-        String curLine = skip(br, cc_pred);
+        // ignore empty lines
+        // what are we consuming now, vertices or edges
+        String nowConsuming = "";
 
-        StringTokenizer st = new StringTokenizer(curLine);
-        st.nextToken(); // skip past "*colors";
-        String[] colorMetadata = st.nextToken().split(",");
-        ((MyGraph) g).getLayoutParameters().setBackgroundColor(Integer.parseInt(colorMetadata[0]));
-        ((MyGraph) g).getLayoutParameters().setEdgeColor(Integer.parseInt(colorMetadata[1]));
+        int numVertices = -1;
+        List<V> id = null;
+        EdgeType edgeDirectedness = null;
 
-        // ignore everything until we see '*Vertices'
-        curLine = skip(br, v_pred);
-
-        if (curLine == null) // no vertices in the graph; return empty graph
-        {
-            return g;
+        String curLine;
+        while (br.ready()) {
+            curLine = br.readLine();
+            if (curLine.trim().equals("")) continue; // skip blank lines
+            if (header_pred.evaluate(curLine)) {
+                if (colors_pred.evaluate(curLine)) {
+                    readColoursLine((MyGraph) g, curLine);
+                }
+                if (vertices_pred.evaluate(curLine)) {
+                    numVertices = readVerticesHeader(curLine, (MyGraph) g);
+                    id = createVertices(g, numVertices);
+                    nowConsuming = "vertices";
+                }
+                if (edges_pred.evaluate(curLine)) {
+                    if (g instanceof DirectedGraph) {
+                        String msg = "Supplied directed-only graph cannot be populated with undirected edges";
+                        parsingErrors.add(msg);
+                        throw new IllegalArgumentException(msg);
+                    }
+                    edgeDirectedness = EdgeType.UNDIRECTED;
+                    nowConsuming = "edges";
+                }
+                if (arcs_pred.evaluate(curLine)) {
+                    if (g instanceof UndirectedGraph) {
+                        String msg = "Supplied undirected-only graph cannot be populated with directed edges";
+                        parsingErrors.add(msg);
+                        throw new IllegalArgumentException(msg);
+                    }
+                    edgeDirectedness = EdgeType.DIRECTED;
+                    nowConsuming = "edges";
+                }
+            } else {
+                if (nowConsuming.equals("vertices")) {
+                    try {
+                        readVertex(curLine, id, numVertices, g);
+                    } catch (Exception e) {
+                        parsingErrors.add("Malformed line: " + curLine);
+                        continue;
+                    }
+                }
+                if (nowConsuming.equals("edges")) {
+                    // skip over the intermediate stuff (if any)
+                    // and read the next arcs/edges section that we find
+                    try {
+                        readArcsOrEdges(curLine, g, id, edgeDirectedness, edge_factory);
+                    } catch (Exception e) {
+                        parsingErrors.add("Malformed line: " + curLine);
+                        continue;
+                    }
+                }
+            }
         }
 
-        // create appropriate number of vertices
+        br.close();
+        reader.close();
+        if (parsingErrors.size() > 0) {
+            System.out.println("Parsing errors encountered:\n");
+            for (String err : parsingErrors)
+                System.out.println(err);
+        }
+        return g;
+    }
+
+    /**
+     * Reads lines like "*Colors -986896,-16777216"
+     */
+    private void readColoursLine(MyGraph g, String curLine) {
+        StringTokenizer st;// line describes edge/background colors
         st = new StringTokenizer(curLine);
+        st.nextToken(); // skip past "*colors";
+        String[] colorMetadata = st.nextToken().split(",");
+        g.getLayoutParameters().setBackgroundColor(Integer.parseInt(colorMetadata[0]));
+        g.getLayoutParameters().setEdgeColor(Integer.parseInt(colorMetadata[1]));
+    }
+
+    private List<V> createVertices(G g, int numVertices) {
+        List<V> id = new ArrayList<V>(numVertices);
+        // create the vertices
+        if (vertex_factory != null) {
+            for (int i = 1; i <= numVertices; i++) {
+                g.addVertex(vertex_factory.create());
+            }
+            id = new ArrayList<V>(g.getVertices());
+        }
+        return id;
+    }
+
+    /**
+     * Reads "*Vertices 81" or "*Vertices 81,false
+     *
+     * @return num vertices
+     */
+    private int readVerticesHeader(String curLine, MyGraph g) {
+        // create appropriate number of vertices
+        StringTokenizer st = new StringTokenizer(curLine);
         st.nextToken(); // skip past "*vertices";
 
         String[] vertexMetadata = st.nextToken().split(",");
 
         int num_vertices = Integer.parseInt(vertexMetadata[0]);
-        boolean areVertexIconsAllowed = Boolean.parseBoolean(vertexMetadata[1]);
-
-        ((MyGraph) g).getLayoutParameters().setAllowNodeIcons(areVertexIconsAllowed);
-
-        List<V> id = null;
-        if (vertex_factory != null) {
-            for (int i = 1; i <= num_vertices; i++) {
-                g.addVertex(vertex_factory.create());
-            }
-            id = new ArrayList<V>(g.getVertices());
+        if (vertexMetadata.length > 1) {
+            boolean areVertexIconsAllowed = Boolean.parseBoolean(vertexMetadata[1]);
+            g.getLayoutParameters().setAllowNodeIcons(areVertexIconsAllowed);
         }
-
-        // read vertices until we see any Pajek format tag ('*...')
-        curLine = null;
-        while (br.ready()) {
-            curLine = br.readLine();
-            if (curLine == null || t_pred.evaluate(curLine)) {
-                break;
-            }
-            if (curLine == "") // skip blank lines
-            {
-                continue;
-            }
-
-            try {
-                readVertex(curLine, id, num_vertices, g);
-            } catch (IllegalArgumentException iae) {
-                br.close();
-                reader.close();
-                throw iae;
-            }
-        }
-
-        // skip over the intermediate stuff (if any) 
-        // and read the next arcs/edges section that we find
-        curLine = readArcsOrEdges(curLine, br, g, id, edge_factory);
-
-        // ditto
-        readArcsOrEdges(curLine, br, g, id, edge_factory);
-
-        br.close();
-        reader.close();
-
-        return g;
+        return num_vertices;
     }
 
     /**
@@ -225,8 +270,9 @@ public class CustomPajekNetReader<G extends Graph<V, E>, V, E> {
             String[] initial_split = curLine.trim().split("\"");
             // if there are any quote marks, there should be exactly 2
             if (initial_split.length < 2 || initial_split.length > 3) {
-                throw new IllegalArgumentException("Unbalanced (or too many) "
-                        + "quote marks in " + curLine);
+                String msg = "Unbalanced (or too many) quote marks in " + curLine;
+                parsingErrors.add(msg);
+                throw new IllegalArgumentException(msg);
             }
             index = initial_split[0].trim();
             metadata = initial_split[1].trim();
@@ -255,8 +301,9 @@ public class CustomPajekNetReader<G extends Graph<V, E>, V, E> {
         }
         int v_id = Integer.parseInt(index) - 1; // go from 1-based to 0-based index
         if (v_id >= num_vertices || v_id < 0) {
-            throw new IllegalArgumentException("Vertex number " + v_id
-                    + "is not in the range [1," + num_vertices + "]");
+            String msg = "Vertex number " + v_id + "is not in the range [1," + num_vertices + "]";
+            parsingErrors.add(msg);
+            throw new IllegalArgumentException(msg);
         }
         if (id != null) {
             v = id.get(v_id);
@@ -293,81 +340,36 @@ public class CustomPajekNetReader<G extends Graph<V, E>, V, E> {
     }
 
     @SuppressWarnings("unchecked")
-    private String readArcsOrEdges(String curLine, BufferedReader br, Graph<V, E> g, List<V> id, Factory<E> edge_factory)
-            throws IOException {
-        String nextLine = curLine;
+    private void readArcsOrEdges(String curLine, Graph<V, E> g, List<V> id, EdgeType directedness, Factory<E> edge_factory) {
+        boolean is_list = list_pred.evaluate(curLine);
+        StringTokenizer st = new StringTokenizer(curLine.trim());
 
-        // in case we're not there yet (i.e., format tag isn't arcs or edges)
-        if (!c_pred.evaluate(curLine)) {
-            nextLine = skip(br, c_pred);
+        int vid1 = Integer.parseInt(st.nextToken()) - 1;
+        V v1;
+        if (id != null) {
+            v1 = id.get(vid1);
+        } else {
+            v1 = (V) new Integer(vid1);
         }
 
-        boolean reading_arcs = false;
-        boolean reading_edges = false;
-        EdgeType directedness = null;
-        if (a_pred.evaluate(nextLine)) {
-            if (g instanceof UndirectedGraph) {
-                throw new IllegalArgumentException("Supplied undirected-only graph cannot be populated with directed edges");
-            } else {
-                reading_arcs = true;
-                directedness = EdgeType.DIRECTED;
+        if (is_list) // one source, multiple destinations
+        {
+            do {
+                createAddEdge(st, v1, directedness, g, id, edge_factory);
+            } while (st.hasMoreTokens());
+        } else // one source, one destination, at most one weight
+        {
+            E e = createAddEdge(st, v1, directedness, g, id, edge_factory);
+            // get the edge weight if we care
+            if (edge_weights != null && st.hasMoreTokens()) {
+                edge_weights.set(e, new Float(st.nextToken()));
             }
         }
-        if (e_pred.evaluate(nextLine)) {
-            if (g instanceof DirectedGraph) {
-                throw new IllegalArgumentException("Supplied directed-only graph cannot be populated with undirected edges");
-            } else {
-                reading_edges = true;
-            }
-            directedness = EdgeType.UNDIRECTED;
-        }
-
-        if (!(reading_arcs || reading_edges)) {
-            return nextLine;
-        }
-
-        boolean is_list = l_pred.evaluate(nextLine);
-
-        while (br.ready()) {
-            nextLine = br.readLine();
-            if (nextLine == null || t_pred.evaluate(nextLine)) {
-                break;
-            }
-            if (curLine == "") // skip blank lines
-            {
-                continue;
-            }
-
-            StringTokenizer st = new StringTokenizer(nextLine.trim());
-
-            int vid1 = Integer.parseInt(st.nextToken()) - 1;
-            V v1;
-            if (id != null) {
-                v1 = id.get(vid1);
-            } else {
-                v1 = (V) new Integer(vid1);
-            }
-
-            if (is_list) // one source, multiple destinations
-            {
-                do {
-                    createAddEdge(st, v1, directedness, g, id, edge_factory);
-                } while (st.hasMoreTokens());
-            } else // one source, one destination, at most one weight
-            {
-                E e = createAddEdge(st, v1, directedness, g, id, edge_factory);
-                // get the edge weight if we care
-                if (edge_weights != null && st.hasMoreTokens()) {
-                    edge_weights.set(e, new Float(st.nextToken()));
-                }
-            }
-        }
-        return nextLine;
     }
 
     @SuppressWarnings("unchecked")
     protected E createAddEdge(StringTokenizer st, V v1,
-            EdgeType directed, Graph<V, E> g, List<V> id, Factory<E> edge_factory) {
+                              EdgeType directed, Graph<V, E> g, List<V> id, Factory<E> edge_factory) {
         int vid2 = Integer.parseInt(st.nextToken()) - 1;
         V v2;
         if (id != null) {
@@ -383,25 +385,6 @@ public class CustomPajekNetReader<G extends Graph<V, E>, V, E> {
         return e;
     }
 
-    /**
-     * Returns the first line read from <code>br</code> for which <code>p</code>
-     * returns <code>true</code>, or <code>null</code> if there is no such line.
-     *
-     * @throws IOException
-     */
-    protected String skip(BufferedReader br, Predicate<String> p) throws IOException {
-        while (br.ready()) {
-            String curLine = br.readLine();
-            if (curLine == null) {
-                break;
-            }
-            curLine = curLine.trim();
-            if (p.evaluate(curLine)) {
-                return curLine;
-            }
-        }
-        return null;
-    }
 
     /**
      * A Predicate which evaluates to <code>true</code> if the argument starts
