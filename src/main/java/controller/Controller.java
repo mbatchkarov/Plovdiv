@@ -56,7 +56,6 @@ import org.jfree.chart.renderer.xy.XYItemRenderer;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
-import sun.jvm.hotspot.runtime.*;
 import view.Display;
 
 import java.io.IOException;

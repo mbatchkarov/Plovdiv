@@ -39,7 +39,7 @@ package model;
  */
 public abstract class Strings {
 
-    public static final String about = "Project Plovdiv v3.1 \n April 2014 \n " +
+    public static final String about = "Project Plovdiv v3.3.3 \n November 2016 \n " +
                                        "Miroslav Batchkarov \n University of Sussex, \n" +
                                        "Brighton, UK \n mmb28 (at) sussex.ac.uk \n" +
                                        "https://github.com/mbatchkarov/Plovdiv";
